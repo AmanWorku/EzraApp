@@ -27,13 +27,13 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-slate-500">
+    <SafeAreaView className="flex-1 items-center justify-center bg-primary-1">
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <View>
-        <Text style={styles.text}> Hello World </Text>
+        <Text className="text-4xl text-accent-6 font-nokia-light"> እዝራ ሴሚናሪ </Text>
       </View>
     </SafeAreaView>
   );
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'black',
     fontSize: 60,
-    fontFamily: 'Nokia Pure Headline Bold',
+    fontFamily: 'Nokia Pure Headline Ultra Light',
   },
 });
 
