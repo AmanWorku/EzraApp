@@ -16,6 +16,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import {User} from 'phosphor-react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -29,11 +30,15 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView className="flex-1 items-center justify-center bg-primary-1">
       <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        // barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        // backgroundColor={backgroundStyle.backgroundColor}
+        className="bg-accent-6"
       />
       <View>
-        <Text className="text-4xl text-accent-6 font-nokia-light"> እዝራ ሴሚናሪ </Text>
+        <User className="self-center" weight="fill" color="#EA9215" />
+        <Text className="text-2xl text-accent-6 font-nokia-light">
+          እዝራ ሴሚናሪ
+        </Text>
       </View>
     </SafeAreaView>
   );
