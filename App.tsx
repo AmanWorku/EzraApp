@@ -27,17 +27,13 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView className="flex-1 items-center justify-center bg-slate-500">
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-      />
       <View>
-        <Text>  Hello World </Text>
+        <Text> Hello World </Text>
       </View>
     </SafeAreaView>
   );
