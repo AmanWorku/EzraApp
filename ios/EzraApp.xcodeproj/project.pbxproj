@@ -14,6 +14,13 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		7699B88040F8A987B510C191 /* libPods-EzraApp-EzraAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-EzraApp-EzraAppTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		0371880A74264BC986CC894C /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 300F4DDEB03D4548972EFE42 /* Lato-Black.ttf */; };
+		038979B432ED4D2AAC0804CD /* Lato-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5401A7A231224EA487A092FC /* Lato-Bold.ttf */; };
+		B3DC24D639724D1F9BE48E94 /* Lato-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ECC0C17B081644DFBFB30E60 /* Lato-Light.ttf */; };
+		48E9E47BAF564798A92222E4 /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06F6D518F43B415AB642E680 /* Lato-Regular.ttf */; };
+		50FFCAC7781F477C86189873 /* Lato-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B9D6562D9BF4104A60044B0 /* Lato-Thin.ttf */; };
+		9AA87D5081E143C3B326862A /* Nokia Pure Headline Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 98FB2A69063C49D2BEC774F8 /* Nokia Pure Headline Bold.ttf */; };
+		59A6FF2BE2A34661B0857B45 /* Nokia Pure Headline Ultra Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5B14BAA2271B43E1BC2EDC1A /* Nokia Pure Headline Ultra Light.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +51,13 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = EzraApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-EzraApp-EzraAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EzraApp-EzraAppTests.release.xcconfig"; path = "Target Support Files/Pods-EzraApp-EzraAppTests/Pods-EzraApp-EzraAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		300F4DDEB03D4548972EFE42 /* Lato-Black.ttf */ = {isa = PBXFileReference; name = "Lato-Black.ttf"; path = "../assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5401A7A231224EA487A092FC /* Lato-Bold.ttf */ = {isa = PBXFileReference; name = "Lato-Bold.ttf"; path = "../assets/fonts/Lato-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		ECC0C17B081644DFBFB30E60 /* Lato-Light.ttf */ = {isa = PBXFileReference; name = "Lato-Light.ttf"; path = "../assets/fonts/Lato-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		06F6D518F43B415AB642E680 /* Lato-Regular.ttf */ = {isa = PBXFileReference; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4B9D6562D9BF4104A60044B0 /* Lato-Thin.ttf */ = {isa = PBXFileReference; name = "Lato-Thin.ttf"; path = "../assets/fonts/Lato-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		98FB2A69063C49D2BEC774F8 /* Nokia Pure Headline Bold.ttf */ = {isa = PBXFileReference; name = "Nokia Pure Headline Bold.ttf"; path = "../assets/fonts/Nokia Pure Headline Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5B14BAA2271B43E1BC2EDC1A /* Nokia Pure Headline Ultra Light.ttf */ = {isa = PBXFileReference; name = "Nokia Pure Headline Ultra Light.ttf"; path = "../assets/fonts/Nokia Pure Headline Ultra Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +136,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				7B23133CCB6D4230AA11C236 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -147,6 +162,21 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		7B23133CCB6D4230AA11C236 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				300F4DDEB03D4548972EFE42 /* Lato-Black.ttf */,
+				5401A7A231224EA487A092FC /* Lato-Bold.ttf */,
+				ECC0C17B081644DFBFB30E60 /* Lato-Light.ttf */,
+				06F6D518F43B415AB642E680 /* Lato-Regular.ttf */,
+				4B9D6562D9BF4104A60044B0 /* Lato-Thin.ttf */,
+				98FB2A69063C49D2BEC774F8 /* Nokia Pure Headline Bold.ttf */,
+				5B14BAA2271B43E1BC2EDC1A /* Nokia Pure Headline Ultra Light.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -243,6 +273,13 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				0371880A74264BC986CC894C /* Lato-Black.ttf in Resources */,
+				038979B432ED4D2AAC0804CD /* Lato-Bold.ttf in Resources */,
+				B3DC24D639724D1F9BE48E94 /* Lato-Light.ttf in Resources */,
+				48E9E47BAF564798A92222E4 /* Lato-Regular.ttf in Resources */,
+				50FFCAC7781F477C86189873 /* Lato-Thin.ttf in Resources */,
+				9AA87D5081E143C3B326862A /* Nokia Pure Headline Bold.ttf in Resources */,
+				59A6FF2BE2A34661B0857B45 /* Nokia Pure Headline Ultra Light.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
