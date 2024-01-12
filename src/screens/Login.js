@@ -10,7 +10,7 @@ import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import Button from '../components/Button';
-import {Eye} from 'phosphor-react-native';
+// import {Eye} from 'phosphor-react-native';
 
 const Login = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -107,11 +107,11 @@ const Login = ({navigation}) => {
                 position: 'absolute',
                 right: 12,
               }}>
-              {isPasswordShown == true ? (
+              {/* {isPasswordShown == true ? (
                 <Eye size={24} color={COLORS.black} />
               ) : (
                 <Eye size={24} color={COLORS.black} />
-              )}
+              )} */}
             </TouchableOpacity>
           </View>
         </View>
