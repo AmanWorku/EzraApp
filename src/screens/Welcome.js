@@ -9,11 +9,10 @@ const Welcome = ({navigation}) => {
       <View style={styles.flexContainer}>
         <Image source={require('../assets/Logo.png')} style={styles.image} />
       </View>
-      <View style={styles.flexContainer}>
+      <View style={{marginBottom: 10}}>
         <Button
           title="Get Started"
           onPress={() => navigation.navigate('Signup')}
-          className="w-20"
         />
       </View>
     </SafeAreaView>
@@ -34,8 +33,8 @@ const styles = StyleSheet.create({
   image: {
     resizeMode: 'contain',
     aspectRatio: 1,
-    width: '25%',
-    height: '25%',
+    width: '30%',
+    height: '30%',
   },
 });
 

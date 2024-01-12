@@ -16,7 +16,14 @@ const Button = props => {
         ...props.style,
       }}
       onPress={props.onPress}>
-      <Text style={{fontSize: 18, ...{color: textColor}}}>{props.title}</Text>
+      <Text
+        style={{
+          fontSize: 18,
+          ...{color: textColor},
+          fontFamily: 'Nokia Pure Headline Bold',
+        }}>
+        {props.title}
+      </Text>
     </TouchableOpacity>
   );
 };
@@ -25,9 +32,10 @@ const styles = StyleSheet.create({
   button: {
     paddingBottom: 16,
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderColor: COLORS.primary,
-    borderWidth: 2,
-    borderRadius: 12,
+    borderWidth: 1,
+    borderRadius: 25,
     alignItems: 'center',
     justifyContent: 'center',
   },
