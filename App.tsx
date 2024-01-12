@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -17,6 +10,8 @@ import {
   View,
 } from 'react-native';
 import {User} from 'phosphor-react-native';
+import TabNavigator from './src/navigation/TabNavigator';
+import { NavigationContainer } from '@react-navigation/native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -32,6 +27,7 @@ function App(): React.JSX.Element {
           እዝራ ሴሚናሪ
         </Text>
       </View>
+      <TabNavigator />
     </SafeAreaView>
   );
 }
