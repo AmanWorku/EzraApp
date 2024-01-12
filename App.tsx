@@ -11,24 +11,21 @@ import {
 } from 'react-native';
 import {User} from 'phosphor-react-native';
 import TabNavigator from './src/navigation/TabNavigator';
-import { NavigationContainer } from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
+const Stack = createStackNavigator();
+
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-center bg-primary-1">
-      <StatusBar className="bg-accent-6" />
-      <View>
-        <User className="self-center" weight="fill" color="#EA9215" />
-        <Text className="text-2xl text-accent-6 font-nokia-light">
-          እዝራ ሴሚናሪ
-        </Text>
-      </View>
-      <TabNavigator />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {/* <Stack.Screen name="Home" component={TabNavigator} /> */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
