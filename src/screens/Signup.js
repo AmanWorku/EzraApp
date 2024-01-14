@@ -10,6 +10,9 @@ import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import Button from '../components/Button';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+
+const icon = <FontAwesome6 name={'comments'} />;
 
 const Signup = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -75,51 +78,6 @@ const Signup = ({navigation}) => {
               fontWeight: 400,
               marginVertical: 8,
             }}>
-            Mobile Number
-          </Text>
-
-          <View
-            style={{
-              width: '100%',
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingLeft: 22,
-            }}>
-            <TextInput
-              placeholder="+91"
-              placeholderTextColor={COLORS.black}
-              keyboardType="numeric"
-              style={{
-                width: '12%',
-                borderRightWidth: 1,
-                borderLeftColor: COLORS.grey,
-                height: '100%',
-              }}
-            />
-
-            <TextInput
-              placeholder="Enter your phone number"
-              placeholderTextColor={COLORS.black}
-              keyboardType="numeric"
-              style={{
-                width: '80%',
-              }}
-            />
-          </View>
-        </View>
-
-        <View style={{marginBottom: 12}}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}>
             Password
           </Text>
 
@@ -149,11 +107,47 @@ const Signup = ({navigation}) => {
                 position: 'absolute',
                 right: 12,
               }}>
-              {/* {isPasswordShown === true ? (
-                <Eye size={24} color={COLORS.black} />
-              ) : (
-                <Eye size={24} color={COLORS.black} />
-              )} */}
+              {icon}
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View style={{marginBottom: 12}}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 400,
+              marginVertical: 8,
+            }}>
+            Confirm Password
+          </Text>
+
+          <View
+            style={{
+              width: '100%',
+              height: 48,
+              borderColor: COLORS.black,
+              borderWidth: 1,
+              borderRadius: 8,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingLeft: 22,
+            }}>
+            <TextInput
+              placeholder="Confirm your password"
+              placeholderTextColor={COLORS.black}
+              secureTextEntry={isPasswordShown}
+              style={{
+                width: '100%',
+              }}
+            />
+
+            <TouchableOpacity
+              onPress={() => setIsPasswordShown(!isPasswordShown)}
+              style={{
+                position: 'absolute',
+                right: 12,
+              }}>
+              {icon}
             </TouchableOpacity>
           </View>
         </View>
