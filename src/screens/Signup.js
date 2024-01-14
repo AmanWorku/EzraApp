@@ -10,7 +10,6 @@ import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import Button from '../components/Button';
-// import {Eye} from 'phosphor-react-native';
 
 const Signup = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -20,20 +19,20 @@ const Signup = ({navigation}) => {
         <View style={{marginVertical: 22}}>
           <Text
             style={{
-              fontSize: 22,
+              fontSize: 42,
               fontWeight: 'bold',
               marginVertical: 12,
               color: COLORS.black,
             }}>
-            Create Account
+            Create an
           </Text>
-
           <Text
             style={{
-              fontSize: 16,
+              fontSize: 42,
+              fontWeight: 'bold',
               color: COLORS.black,
             }}>
-            Connect with your friend today!
+            account
           </Text>
         </View>
 
