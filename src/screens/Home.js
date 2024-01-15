@@ -1,25 +1,62 @@
-import {View, Image, StyleSheet, Text} from 'react-native';
-import {SafeAreaView} from 'react-native';
 import React from 'react';
-import Button from '../components/Button';
-// import tw from 'nativewind';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 
-const Home = ({navigation}) => {
+import {
+  DebugInstructions,
+  Header,
+  LearnMoreLinks,
+  ReloadInstructions,
+} from 'react-native/Libraries/NewAppScreen';
+
+const Section = ({children, title}) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View className="flex-1">
-        <Text className="text-2xl text-accent-8">Home</Text>
-      </View>
-    </SafeAreaView>
+    <View className="mt-8 px-2">
+      <Text className="text-2xl text-black dark:text-white">{title}</Text>
+      <Text className="mt-2 text-lg text-black dark:text-white">
+        {children}
+      </Text>
+    </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const Home = () => {
+  const isDarkMode = useColorScheme() === 'dark';
+  const backgroundStyle = 'bg-neutral-300 dark:bg-slate-900';
+
+  return (
+    <SafeAreaView className={backgroundStyle}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        className={backgroundStyle}>
+        <Header />
+
+        <View className="bg-white dark:bg-black">
+          <Section title="Step One">
+            Edit <Text className="font-bold">App.js</Text> to change this screen
+            and then come back to see your edits.
+          </Section>
+          <Section title="See Your Changes">
+            <ReloadInstructions />
+          </Section>
+          <Section title="Debug">
+            <DebugInstructions />
+          </Section>
+          <Section title="Learn More">
+            Read the docs to discover what to do next:
+          </Section>
+          <LearnMoreLinks />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 export default Home;
