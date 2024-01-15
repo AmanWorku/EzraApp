@@ -162,6 +162,7 @@ const Signup = ({navigation}) => {
 
         <Button
           title="Sign Up"
+          onPress={() => navigation.navigate('Home')}
           filled
           style={{
             marginTop: 18,
