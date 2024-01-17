@@ -44,8 +44,8 @@ function MainTabNavigator() {
           return iconComponent;
         },
         headerShown: false,
-        activeTintColor: '#EA9215',
-        inactiveTintColor: '#3A4750',
+        tabBarActiveTintColor: '#EA9215',
+        tabBarInactiveTintColor: '#3A4750',
       })}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Course" component={Course} />
