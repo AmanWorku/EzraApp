@@ -162,7 +162,7 @@ const Signup = ({navigation}) => {
 
         <Button
           title="Sign Up"
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('MainTab')}
           filled
           style={{
             marginTop: 18,
