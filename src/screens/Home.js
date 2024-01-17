@@ -52,11 +52,16 @@ const Home = () => {
           </Text>
         </View>
       </View>
-      <View style={tw`border-b border-primary-7 my-4`}></View>
+      <View style={tw`border-b border-primary-7 mt-4 mb-2`}></View>
       <View style={tw`flex flex-row justify-between items-center`}>
-        <Text>Continue Studying</Text>
-        <TouchableOpacity>
-          <Text>All Courses</Text>
+        <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
+          Continue Studying
+        </Text>
+        <TouchableOpacity
+          style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+            All Courses
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
