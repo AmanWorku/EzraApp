@@ -29,21 +29,35 @@ const Home = () => {
         />
       </View>
       <View
-        style={tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-md`}>
-        <View
-          style={tw`flex flex-row w-[100%] px-4 py-4 justify-between items-center`}>
-          <BookOpenText size={32} weight="bold" style={tw`text-accent-6`} />
-          <Text style={tw`text-secondary-6 font-nokia-bold text-sm`}>
-            የዕለቱ ጥቅስ
-          </Text>
+        style={tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`}>
+        <View style={tw`flex flex-row w-[100%] justify-between items-center`}>
+          <View style={tw`flex flex-row items-center gap-2`}>
+            <BookOpenText size={32} weight="bold" style={tw`text-accent-6`} />
+            <Text style={tw`text-secondary-6 font-nokia-bold text-lg`}>
+              የዕለቱ ጥቅስ
+            </Text>
+          </View>
           <TouchableOpacity style={tw`bg-accent-6 px-4 py-1 rounded-full`}>
             <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>Open</Text>
           </TouchableOpacity>
         </View>
-        <View style={`border-b-4 border-red-600`}></View>
+        <View style={tw`border-b border-accent-6 mt-2 mb-1`}></View>
         <View>
-          <Text></Text>
+          <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
+            “የሌላውን ሕይወት መቤዠት የሚችል ሰው፣ ወይም ለእግዚአብሔር ወጆ የሚከፍልለት ማንም የለም። የነፍስ ቤዛ
+            ውድ ነውና፤”
+          </Text>
+          <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
+            መዝሙር 49:7፣8
+          </Text>
         </View>
+      </View>
+      <View style={tw`border-b border-primary-7 my-4`}></View>
+      <View style={tw`flex flex-row justify-between items-center`}>
+        <Text>Continue Studying</Text>
+        <TouchableOpacity>
+          <Text>All Courses</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
