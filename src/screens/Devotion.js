@@ -1,12 +1,12 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 
-const Settings = () => {
+const Devotion = () => {
   return (
     <View>
-      <Text>Settings</Text>
+      <Text>Devotion</Text>
     </View>
   );
 };
 
-export default Settings;
+export default Devotion;

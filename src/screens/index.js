@@ -2,7 +2,9 @@ import Login from './Login';
 import Welcome from './Welcome';
 import Signup from './Signup';
 import Home from './Home';
-import Settings from './Settings';
-import Profile from './Profile';
+import Setting from './Setting';
+import Course from './Course';
+import SSL from './SSL';
+import Devotion from './Devotion';
 
-export {Login, Welcome, Signup, Home, Settings, Profile};
+export {Login, Welcome, Signup, Home, Setting, Course, SSL, Devotion};
