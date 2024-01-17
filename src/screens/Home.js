@@ -17,8 +17,7 @@ const Home = () => {
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View
-          style={tw`flex flex-row justify-between h-screen my-4 text-secondary-6`}>
+        <View style={tw`flex flex-row justify-between my-4 text-secondary-6`}>
           <List size={32} weight="bold" style={tw`text-secondary-6`} />
           <Text style={tw`font-nokia-bold text-xl text-secondary-6`}>Home</Text>
           <User size={32} weight="bold" style={tw`text-secondary-6`} />
@@ -124,12 +123,12 @@ const Home = () => {
           </TouchableOpacity>
         </View>
         <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
-          <Viiiew style={tw`h-48`}>
+          <View style={tw`h-48`}>
             <Image
               source={require('./../assets/bible.png')}
               style={tw`w-full h-full rounded-3`}
             />
-          </Viiiew>
+          </View>
           <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
             የአጠናን ዘዴዎች
           </Text>
