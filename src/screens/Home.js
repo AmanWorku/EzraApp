@@ -124,35 +124,12 @@ const Home = () => {
           </TouchableOpacity>
         </View>
         <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
-          {/* <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={tw`mt-4`}>
-          <View style={tw`flex flex-row items-center gap-4`}>
-            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
-                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
-              </Text>
-              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
-                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
-              </Text>
-            </View>
-            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
-                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
-              </Text>
-              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
-                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
-              </Text>
-            </View>
-          </View>
-        </ScrollView> */}
-          <View style={tw`h-48`}>
+          <Viiiew style={tw`h-48`}>
             <Image
               source={require('./../assets/bible.png')}
               style={tw`w-full h-full rounded-3`}
             />
-          </View>
+          </Viiiew>
           <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
             የአጠናን ዘዴዎች
           </Text>
