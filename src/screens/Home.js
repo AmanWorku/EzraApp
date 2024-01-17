@@ -122,26 +122,39 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
-          <View style={tw`h-48`}>
+        <View
+          style={tw`flex flex-row border border-accent-6 mt-4 rounded-4 p-2 gap-2`}>
+          <View style={tw`h-32 w-32`}>
             <Image
               source={require('./../assets/bible.png')}
               style={tw`w-full h-full rounded-3`}
             />
           </View>
-          <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-            የአጠናን ዘዴዎች
-          </Text>
-          <Text style={tw`font-nokia-bold text-secondary-6 text-2xl`}>
-            ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
-          </Text>
-          <TouchableOpacity
-            style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}>
+          <View style={tw`w-full`}>
             <Text
-              style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-              ኮርሱን ክፈት
+              style={tw`font-nokia-bold text-accent-6 text-sm leading-tight`}>
+              የአጠናን ዘዴዎች
             </Text>
-          </TouchableOpacity>
+            <Text
+              style={tw`font-nokia-bold text-secondary-6 text-lg leading-tight`}>
+              ፍሬያማ የመጽሃፍ ቅዱስ አጠናን
+            </Text>
+            <Text
+              style={tw`font-nokia-bold text-secondary-6 text-lg leading-tight`}>
+              ዘዴዎች
+            </Text>
+            <View style={tw`border-b border-accent-6 mt-1 w-[63%]`}></View>
+            <Text style={tw`font-nokia-bold text-secondary-5 text-xs`}>
+              ጥቅምት 01 - ጥቅምት 07
+            </Text>
+            <TouchableOpacity
+              style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-1`}>
+              <Text
+                style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                ኮርሱን ክፈት
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
