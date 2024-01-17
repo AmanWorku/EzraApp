@@ -1,7 +1,7 @@
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
+  Image,
   TouchableOpacity,
   Text,
   TextInput,
@@ -64,7 +64,7 @@ const Home = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
         {/* <ScrollView
           horizontal={true}
           showsHorizontalScrollIndicator={false}
@@ -88,6 +88,24 @@ const Home = () => {
             </View>
           </View>
         </ScrollView> */}
+        <View style={tw`h-48`}>
+          <Image
+            source={require('./../assets/bible.png')}
+            style={tw`w-full h-full rounded-3`}
+          />
+        </View>
+        <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
+          የአጠናን ዘዴዎች
+        </Text>
+        <Text style={tw`font-nokia-bold text-secondary-6 text-2xl`}>
+          ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
+        </Text>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            ኮርሱን ክፈት
+          </Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
