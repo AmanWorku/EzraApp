@@ -156,6 +156,32 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-2`}></View>
+        <View style={tw`flex flex-row justify-between items-center`}>
+          <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
+            Discover Devotionals
+          </Text>
+          <TouchableOpacity
+            style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+              All Devotionals
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View>
+            <Text>ታህሳስ 18</Text>
+          </View>
+          <View>
+            <Text>ታህሳስ 17</Text>
+          </View>
+          <View>
+            <Text>ታህሳስ 16</Text>
+          </View>
+          <View>
+            <Text>ታህሳስ 15</Text>
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
