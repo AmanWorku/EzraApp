@@ -7,8 +7,15 @@ import {
   TextInput,
   useColorScheme,
   View,
+  ImageBackground,
+  StyleSheet,
 } from 'react-native';
-import {List, User, BookOpenText} from 'phosphor-react-native';
+import {
+  List,
+  User,
+  BookOpenText,
+  ArrowSquareUpRight,
+} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const Home = () => {
@@ -168,23 +175,90 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View>
-          <View>
-            <Text>ታህሳስ 18</Text>
+        <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-2`}>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/bible.png')}
+              style={tw`overflow-hidden p-2`}>
+              <ArrowSquareUpRight
+                size={32}
+                weight="fill"
+                style={tw`text-secondary-1 self-end`}
+              />
+              <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                ታህሳስ 18
+              </Text>
+            </ImageBackground>
           </View>
-          <View>
-            <Text>ታህሳስ 17</Text>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day22.png')}
+              style={tw`overflow-hidden p-2`}>
+              <ArrowSquareUpRight
+                size={32}
+                weight="fill"
+                style={tw`text-secondary-1 self-end`}
+              />
+              <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                ታህሳስ 18
+              </Text>
+            </ImageBackground>
           </View>
-          <View>
-            <Text>ታህሳስ 16</Text>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day4.jpeg')}
+              style={tw`overflow-hidden p-2`}>
+              <View style={tw`flex-1 bg-opacity-50 bg-black`}>
+                <ArrowSquareUpRight
+                  size={32}
+                  weight="fill"
+                  style={tw`text-secondary-1 self-end`}
+                />
+                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                  ታህሳስ 18
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
-          <View>
-            <Text>ታህሳስ 15</Text>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day1.jpeg')}
+              // Remove the overflow-hidden style
+              style={tw`p-2`}>
+              {/* Color overlay */}
+              <View style={tw`flex-1 bg-opacity-50 bg-black`} />
+
+              {/* Card content */}
+              <View style={tw`flex-1 justify-between p-2`}>
+                <View>
+                  <ArrowSquareUpRight
+                    size={32}
+                    weight="fill"
+                    style={tw`text-secondary-1 self-end`}
+                  />
+                  <Text
+                    style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                    ታህሳስ 18
+                  </Text>
+                </View>
+              </View>
+            </ImageBackground>
           </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 255, 255, 0.5)', // Change this to the color and opacity you want
+  },
+});
 
 export default Home;
