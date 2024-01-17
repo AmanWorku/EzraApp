@@ -64,6 +64,31 @@ const Home = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      <View>
+        {/* <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          style={tw`mt-4`}>
+          <View style={tw`flex flex-row items-center gap-4`}>
+            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
+              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
+                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
+              </Text>
+              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
+                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
+              </Text>
+            </View>
+            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
+              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
+                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
+              </Text>
+              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
+                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
+              </Text>
+            </View>
+          </View>
+        </ScrollView> */}
+      </View>
     </SafeAreaView>
   );
 };
