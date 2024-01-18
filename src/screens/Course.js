@@ -6,16 +6,11 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  ImageBackground,
 } from 'react-native';
 import React from 'react';
 import {
   List,
   User,
-  BookOpenText,
-  ArrowSquareUpRight,
-  DownloadSimple,
-  ShareNetwork,
   CaretCircleDown,
   Star,
   ArrowSquareRight,
