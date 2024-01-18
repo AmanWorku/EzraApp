@@ -18,6 +18,7 @@ import {
   CalendarCheck,
   GearSix,
 } from 'phosphor-react-native';
+import HomeStack from './src/navigation/HomeStack';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,7 +48,7 @@ function MainTabNavigator() {
         tabBarActiveTintColor: '#EA9215',
         tabBarInactiveTintColor: '#3A4750',
       })}>
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={Course} />
       <Tab.Screen name="SSL" component={SSL} />
       <Tab.Screen name="Devotional" component={Devotion} />

@@ -3,8 +3,8 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {View, Button} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import Home from './Home';
-import AnotherPage from './AnotherPage';
+import Home from './../screens/Home';
+import DisplayCourse from './../screens/CoursePages/DisplayCourse';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +17,8 @@ const HomeStack = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="AnotherPage"
-        component={AnotherPage}
+        name="DisplayCourse"
+        component={DisplayCourse}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
