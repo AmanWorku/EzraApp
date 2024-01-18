@@ -1,10 +1,20 @@
-import {View, Text, ScrollView, SafeAreaView, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  SafeAreaView,
+  TextInput,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import {
   List,
   User,
   BookOpenText,
   ArrowSquareUpRight,
+  DownloadSimple,
+  ShareNetwork,
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
 
@@ -99,6 +109,41 @@ const Devotion = () => {
             አጥብቀን ስንይዝ አንደበታችን በምስጋና ይሞላል። ጉልበታችን ይታደሳል። ለእግዚአብሔር ብዙ ክብር የሚያመጣ
             ሕይወት እንኖራለን።
           </Text>
+        </View>
+        <View
+          style={tw`border border-accent-6 p-4 rounded-4 mt-4 bg-primary-4 shadow-sm mb-2`}>
+          <Text
+            style={tw`font-nokia-bold text-accent-6 text-sm leading-tight text-center`}>
+            አባት ሆይ፣ በእርግጥም አንተን ማመስገን መልካም እንደሆነ ተረድተን በምስጋና የተሞላ ሕይወት እንድንኖርና
+            ማጉረምረም ከእኛ እንዲርቅ በጸጋህ እርዳን። አሜን።
+          </Text>
+        </View>
+        <View style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
+          <Image
+            source={require('./../assets/day18.png')}
+            style={tw`w-full h-96`}
+            resizeMode="cover"
+          />
+          <View style={tw`flex flex-row gap-2 justify-center my-4`}>
+            <TouchableOpacity
+              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
+              <Text style={tw`font-nokia-bold text-primary-1`}> ምስሉን አውርድ</Text>
+              <DownloadSimple
+                size={28}
+                weight="bold"
+                style={tw`text-primary-1`}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
+              <Text style={tw`font-nokia-bold text-primary-1`}> ምስሉን አጋራ</Text>
+              <ShareNetwork
+                size={28}
+                weight="bold"
+                style={tw`text-primary-1`}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
