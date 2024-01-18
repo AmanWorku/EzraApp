@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import React from 'react';
 import {
@@ -143,6 +144,84 @@ const Devotion = () => {
                 style={tw`text-primary-1`}
               />
             </TouchableOpacity>
+          </View>
+        </View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-4`}></View>
+        <View style={tw`flex flex-row justify-between items-center`}>
+          <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
+            Discover Devotionals
+          </Text>
+          <TouchableOpacity
+            style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+              All Devotionals
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-4`}>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/bible.png')}
+              style={tw`overflow-hidden p-2`}>
+              <ArrowSquareUpRight
+                size={32}
+                weight="fill"
+                style={tw`text-secondary-1 self-end`}
+              />
+              <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                ታህሳስ 18
+              </Text>
+            </ImageBackground>
+          </View>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day22.png')}
+              style={tw`overflow-hidden p-2`}>
+              <ArrowSquareUpRight
+                size={32}
+                weight="fill"
+                style={tw`text-secondary-1 self-end`}
+              />
+              <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                ታህሳስ 17
+              </Text>
+            </ImageBackground>
+          </View>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day4.jpeg')}
+              style={tw`overflow-hidden p-2`}>
+              <View>
+                <ArrowSquareUpRight
+                  size={32}
+                  weight="fill"
+                  style={tw`text-secondary-1 self-end`}
+                />
+                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                  ታህሳስ 16
+                </Text>
+              </View>
+            </ImageBackground>
+          </View>
+          <View
+            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            <ImageBackground
+              source={require('./../assets/day1.jpeg')}
+              style={tw`overflow-hidden p-2`}>
+              <View>
+                <ArrowSquareUpRight
+                  size={32}
+                  weight="fill"
+                  style={tw`text-secondary-1 self-end`}
+                />
+                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                  ታህሳስ 15
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
         </View>
       </ScrollView>

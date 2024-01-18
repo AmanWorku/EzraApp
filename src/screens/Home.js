@@ -163,7 +163,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={tw`border-b border-primary-7 mt-4 mb-2`}></View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-4`}></View>
         <View style={tw`flex flex-row justify-between items-center`}>
           <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
             Discover Devotionals
@@ -175,7 +175,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-2`}>
+        <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-4`}>
           <View
             style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
@@ -202,7 +202,7 @@ const Home = () => {
                 style={tw`text-secondary-1 self-end`}
               />
               <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                ታህሳስ 18
+                ታህሳስ 17
               </Text>
             </ImageBackground>
           </View>
@@ -218,7 +218,7 @@ const Home = () => {
                   style={tw`text-secondary-1 self-end`}
                 />
                 <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                  ታህሳስ 18
+                  ታህሳስ 16
                 </Text>
               </View>
             </ImageBackground>
@@ -235,7 +235,7 @@ const Home = () => {
                   style={tw`text-secondary-1 self-end`}
                 />
                 <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                  ታህሳስ 18
+                  ታህሳስ 15
                 </Text>
               </View>
             </ImageBackground>
