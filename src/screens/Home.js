@@ -16,8 +16,6 @@ import {
   BookOpenText,
   ArrowSquareUpRight,
 } from 'phosphor-react-native';
-import LinearGradient from 'react-native-linear-gradient';
-
 import tw from './../../tailwind';
 
 const Home = () => {
@@ -227,28 +225,20 @@ const Home = () => {
           </View>
           <View
             style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
-            <LinearGradient
-              colors={['rgba(0,255,0,1)', 'rgba(0,0,255,0.6)']}
-              style={tw`flex-1`}>
-              <ImageBackground
-                source={require('./../assets/day1.jpeg')}
-                style={tw`flex-1 overflow-hidden p-2`}>
-                {/* Card content */}
-                <View style={tw`flex-1 justify-between p-2`}>
-                  <View>
-                    <ArrowSquareUpRight
-                      size={32}
-                      weight="fill"
-                      style={tw`text-secondary-1 self-end`}
-                    />
-                    <Text
-                      style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                      ታህሳስ 18
-                    </Text>
-                  </View>
-                </View>
-              </ImageBackground>
-            </LinearGradient>
+            <ImageBackground
+              source={require('./../assets/day1.jpeg')}
+              style={tw`overflow-hidden p-2`}>
+              <View>
+                <ArrowSquareUpRight
+                  size={32}
+                  weight="fill"
+                  style={tw`text-secondary-1 self-end`}
+                />
+                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
+                  ታህሳስ 18
+                </Text>
+              </View>
+            </ImageBackground>
           </View>
         </View>
       </ScrollView>

@@ -34,7 +34,7 @@ function MainTabNavigator() {
             iconComponent = <Student size={size} color={color} weight="fill" />;
           } else if (route.name === 'SSL') {
             iconComponent = <Cross size={size} color={color} weight="fill" />;
-          } else if (route.name === 'Devotion') {
+          } else if (route.name === 'Devotional') {
             iconComponent = (
               <CalendarCheck size={size} color={color} weight="fill" />
             );
@@ -50,7 +50,7 @@ function MainTabNavigator() {
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="Course" component={Course} />
       <Tab.Screen name="SSL" component={SSL} />
-      <Tab.Screen name="Devotion" component={Devotion} />
+      <Tab.Screen name="Devotional" component={Devotion} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>
   );
