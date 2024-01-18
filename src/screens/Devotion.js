@@ -168,6 +168,7 @@ const Devotion = () => {
                 size={32}
                 weight="fill"
                 style={tw`text-secondary-1 self-end`}
+                color={'#FDFDFD'}
               />
               <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
                 ታህሳስ 18
@@ -183,6 +184,7 @@ const Devotion = () => {
                 size={32}
                 weight="fill"
                 style={tw`text-secondary-1 self-end`}
+                color={'#FDFDFD'}
               />
               <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
                 ታህሳስ 17
@@ -199,6 +201,7 @@ const Devotion = () => {
                   size={32}
                   weight="fill"
                   style={tw`text-secondary-1 self-end`}
+                  color={'#FDFDFD'}
                 />
                 <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
                   ታህሳስ 16
@@ -216,6 +219,7 @@ const Devotion = () => {
                   size={32}
                   weight="fill"
                   style={tw`text-secondary-1 self-end`}
+                  color={'#FDFDFD'}
                 />
                 <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
                   ታህሳስ 15

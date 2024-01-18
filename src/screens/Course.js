@@ -36,11 +36,15 @@ const Course = () => {
             style={tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`}
           />
         </View>
-        <View style={tw`flex flex-row justify-between mt-3`}>
-          <Text>Popular Courses</Text>
-          <View style={tw`flex flex-row justify-between`}>
-            <Text>Latest</Text>
-            <CaretCircleDown size={24} weight="fill" />
+        <View style={tw`flex flex-row justify-between mt-3 items-center`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
+            Popular Courses
+          </Text>
+          <View style={tw`flex flex-row justify-between items-center gap-2`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
+              Latest
+            </Text>
+            <CaretCircleDown size={24} weight="fill" color={'#EA9215'} />
           </View>
         </View>
       </ScrollView>
