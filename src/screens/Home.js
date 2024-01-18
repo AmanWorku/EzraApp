@@ -137,18 +137,14 @@ const Home = () => {
               style={tw`w-full h-full rounded-3`}
             />
           </View>
-          <View style={tw`w-full`}>
+          <View style={tw`w-65%`}>
             <Text
               style={tw`font-nokia-bold text-accent-6 text-sm leading-tight`}>
               የአጠናን ዘዴዎች
             </Text>
             <Text
               style={tw`font-nokia-bold text-secondary-6 text-lg leading-tight`}>
-              ፍሬያማ የመጽሃፍ ቅዱስ አጠናን
-            </Text>
-            <Text
-              style={tw`font-nokia-bold text-secondary-6 text-lg leading-tight`}>
-              ዘዴዎች
+              ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
             </Text>
             <View style={tw`border-b border-accent-6 mt-1 w-[63%]`}></View>
             <Text style={tw`font-nokia-bold text-secondary-5 text-xs`}>
@@ -177,7 +173,7 @@ const Home = () => {
         </View>
         <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-4`}>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/bible.png')}
               style={tw`overflow-hidden p-2`}>
@@ -193,7 +189,7 @@ const Home = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day22.png')}
               style={tw`overflow-hidden p-2`}>
@@ -209,7 +205,7 @@ const Home = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day4.jpeg')}
               style={tw`overflow-hidden p-2`}>
@@ -227,7 +223,7 @@ const Home = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day1.jpeg')}
               style={tw`overflow-hidden p-2`}>

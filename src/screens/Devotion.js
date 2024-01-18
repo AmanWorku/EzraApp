@@ -160,7 +160,7 @@ const Devotion = () => {
         </View>
         <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-4`}>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/bible.png')}
               style={tw`overflow-hidden p-2`}>
@@ -176,7 +176,7 @@ const Devotion = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day22.png')}
               style={tw`overflow-hidden p-2`}>
@@ -192,7 +192,7 @@ const Devotion = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day4.jpeg')}
               style={tw`overflow-hidden p-2`}>
@@ -210,7 +210,7 @@ const Devotion = () => {
             </ImageBackground>
           </View>
           <View
-            style={tw`w-[45%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
+            style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
             <ImageBackground
               source={require('./../assets/day1.jpeg')}
               style={tw`overflow-hidden p-2`}>
