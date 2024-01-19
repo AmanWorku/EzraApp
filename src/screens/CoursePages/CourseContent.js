@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft} from 'phosphor-react-native';
+import {ArrowSquareLeft, CheckCircle} from 'phosphor-react-native';
 
 const CourseContent = () => {
   return (
@@ -33,9 +33,12 @@ const CourseContent = () => {
           </View>
         </View>
         <View style={tw`flex mx-auto w-[92%]`}>
-          <Text>ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች</Text>
-          <Text>
-            {' '}
+          <Text style={tw`font-nokia-bold text-secondary-6 text-2xl mt-2`}>
+            ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
+          </Text>
+          <Text
+            style={tw`font-nokia-bold text-secondary-6 text-justify text-lg leading-tight my-3`}>
+            {'    '}
             መጽሃፍ ቅዱስን በተለያየ መንገድ ማጥናት ይቻላል። ነገር ግን ፍሪያማ ከሆኑት መንገዶች መካከል የሚከተሉት
             ወሳኝ ነጥቦችን ይይዛሉ። ከእነዚህም... More
           </Text>
@@ -44,6 +47,21 @@ const CourseContent = () => {
               <Text style={tw`py-2`}>ትምህርቶች</Text>
             </View>
             <View style={tw`border-b border-accent-6 h-4 flex-grow mt-5`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል ሁለት- የሰባቱ የአጠናን ዘዴዎች ዳሰሳ
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  15/15 Slides
+                </Text>
+              </View>
+              <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
           </View>
         </View>
       </ScrollView>
