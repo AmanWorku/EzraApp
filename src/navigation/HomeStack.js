@@ -1,8 +1,5 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {View, Button} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-
 import Home from './../screens/Home';
 import DisplayCourse from './../screens/CoursePages/DisplayCourse';
 

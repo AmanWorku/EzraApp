@@ -11,7 +11,6 @@ import React from 'react';
 import {
   List,
   User,
-  CaretCircleDown,
   Star,
   ArrowSquareLeft,
   ArrowSquareRight,
@@ -22,7 +21,6 @@ import {useNavigation} from '@react-navigation/native';
 
 const DisplayCourse = () => {
   const navigation = useNavigation();
-
   const handleButtonPress = () => {
     navigation.navigate('MyHome');
   };

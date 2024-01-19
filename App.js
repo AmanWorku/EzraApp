@@ -5,7 +5,6 @@ import {
   Login,
   Signup,
   Welcome,
-  Home,
   Setting,
   Course,
   SSL,

@@ -12,7 +12,6 @@ import React from 'react';
 import {
   List,
   User,
-  BookOpenText,
   ArrowSquareUpRight,
   DownloadSimple,
   ShareNetwork,
@@ -72,7 +71,7 @@ const Devotion = () => {
         </View>
         <View style={tw`mt-2`}>
           <Text
-            style={tw`font-nokia-bold text-secondary-6 text-sm leading-tight text-justify my-2`}>
+            style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`}>
             {'  '}
             አምላካችን እግዚአብሔር ላደረገልን ዘርዝረንና ቆጥረን ስለማንጨርሰው እጅግ የበዛ መልካምነቱ ምስጋና እጅግ
             በጣም ያንስበታል። ግን ከዚያ ሌላ የምንሰጠው ምንም ስለሌለ ከልባችን የመነጨ እውነተኛ ምሥጋና ለእርሱ
@@ -80,7 +79,7 @@ const Devotion = () => {
             50:23
           </Text>
           <Text
-            style={tw`font-nokia-bold text-secondary-6 text-sm leading-tight text-justify my-2`}>
+            style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`}>
             {'  '}
             በምሥጋና ደግሞ ታላቅ ድል አለ። ንጉስ ኢዮሳፋጥ እጅግ አስፈሪ በሆነ የጠላት ጦር በተከበበ ጊዜ
             “እግዚአብሔርን አመስግኑ፣ ፍቅሩ ለዘላለም ጸንቶ ይኖራልና” የሚሉ መዘምራን ከሠራዊቱ ፊት ቀድመው እንዲሄዱ
@@ -88,7 +87,7 @@ const Devotion = () => {
             ሰዎች ላይ ድብቅ ጦር አመጣባቸው፤ ተሸነፉም።” 2 ዜና 20:22
           </Text>
           <Text
-            style={tw`font-nokia-bold text-secondary-6 text-sm leading-tight text-justify my-2`}>
+            style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`}>
             {'  '}
             ጳውሎስና ሲላስ እጅግ ከደረሰባቸው ከባድ ድብደባና የእስር እንግልት የተነሳ እጅግ በከባድ ስይቃ ውስጥ ሆነው
             ሳለ የሆነውን ቅዱስ ቃሉ እንዲህ ይለናል፦ “እኩለ ሌሊት አካባቢ ጳውሎስና ሲላስ እየጸለዩና እየዘመሩ
@@ -97,13 +96,13 @@ const Devotion = () => {
             የሐዋ 16፡ 25፣ 26
           </Text>
           <Text
-            style={tw`font-nokia-bold text-secondary-6 text-sm leading-tight text-justify my-2`}>
+            style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`}>
             {'  '}
             በእርግጥም የእግዚአብሔርን መልካምነትና ለዘላለም ጸንቶ የሚኖረውን የእርሱን ፍቅር በማሰብ በምስጋና ውስጣችን
             ሲሞላ በጠላታችን ላይ ድል የምንቀዳጅበትን መለኮታዊ ኃይል እንለማመዳለን።
           </Text>
           <Text
-            style={tw`font-nokia-bold text-secondary-6 text-sm leading-tight text-justify my-2`}>
+            style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`}>
             {'  '}
             እጅግ ከባድ በሆነ የሕይወት እኩለ ሌሊት ውስጥ ሆነንም ቢሆን እግዚአብሔርን ስናመሰግን፣ የተዘጋብን በር
             ሲከፈት እስራታችንም ሲበጠስ እናየዋለን። ተስፋን የሰጠን እርሱ የታመነ ነውና የተስፋውን ቃል በእምነት

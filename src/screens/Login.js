@@ -14,7 +14,6 @@ import Button from '../components/Button';
 
 const Login = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
