@@ -37,8 +37,14 @@ const CourseContent = () => {
           <Text>
             {' '}
             መጽሃፍ ቅዱስን በተለያየ መንገድ ማጥናት ይቻላል። ነገር ግን ፍሪያማ ከሆኑት መንገዶች መካከል የሚከተሉት
-            ወሳኝ ነጥቦችን ይይዛሉ። ከእነዚህም... More{' '}
+            ወሳኝ ነጥቦችን ይይዛሉ። ከእነዚህም... More
           </Text>
+          <View style={tw`flex flex-row items-center`}>
+            <View style={tw`border-b-4 border-accent-6`}>
+              <Text style={tw`py-2`}>ትምህርቶች</Text>
+            </View>
+            <View style={tw`border-b border-accent-6 h-4 flex-grow mt-5`} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
