@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -56,7 +57,7 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={tw`border-b border-accent-6 mt-2 mb-1`}></View>
+          <View style={tw`border-b border-accent-6 mt-2 mb-1`} />
           <View>
             <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
               “የሌላውን ሕይወት መቤዠት የሚችል ሰው፣ ወይም ለእግዚአብሔር ወጆ የሚከፍልለት ማንም የለም። የነፍስ ቤዛ
@@ -67,7 +68,7 @@ const Home = () => {
             </Text>
           </View>
         </View>
-        <View style={tw`border-b border-primary-7 mt-4 mb-2`}></View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
         <View style={tw`flex flex-row justify-between items-center`}>
           <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
             Continue Studying
@@ -124,7 +125,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
         </View>
-        <View style={tw`border-b border-primary-7 mt-4 mb-2`}></View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
         <View style={tw`flex flex-row justify-between items-center`}>
           <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
             Study this week's SSL

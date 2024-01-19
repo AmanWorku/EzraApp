@@ -24,6 +24,9 @@ const DisplayCourse = () => {
   const handleButtonPress = () => {
     navigation.navigate('MyHome');
   };
+  const handleOpenCourse = () => {
+    navigation.navigate('CourseContent');
+  };
 
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
@@ -72,7 +75,8 @@ const DisplayCourse = () => {
           በጎ ተግባር ልንላቸው ከምንችለው ነገሮች መሃከል አንዱ ታዳጊዎችን በእውቀት እንዲዳብሩ ይረዳል::
         </Text>
         <TouchableOpacity
-          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}>
+          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
+          onPress={handleOpenCourse}>
           <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
             ኮርሱን ክፈት
           </Text>
