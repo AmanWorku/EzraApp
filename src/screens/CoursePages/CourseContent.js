@@ -8,7 +8,7 @@ import {
 import React from 'react';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft, CheckCircle} from 'phosphor-react-native';
+import {ArrowSquareLeft, CheckCircle, Circle} from 'phosphor-react-native';
 
 const CourseContent = () => {
   return (
@@ -60,6 +60,81 @@ const CourseContent = () => {
                 </Text>
               </View>
               <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል ሦስት- የጥሞና ጥናት
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  0/15 Slides
+                </Text>
+              </View>
+              <Circle size={20} color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል አራት- የመጽሐፍ ጥናት
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  0/15 Slides
+                </Text>
+              </View>
+              <Circle size={20} color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል አምስት- የምዕራፍ ጥናት
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  0/15 Slides
+                </Text>
+              </View>
+              <Circle size={20} color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል ስድስት- የጥቅስ ጥናት
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  0/15 Slides
+                </Text>
+              </View>
+              <Circle size={20} color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </View>
+          <View>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <View style={tw`flex`}>
+                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                  ክፍል ሰባት- የርዕስ ጥናት
+                </Text>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                  0/15 Slides
+                </Text>
+              </View>
+              <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
           </View>
