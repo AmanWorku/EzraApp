@@ -10,11 +10,6 @@ const CourseStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="MyHome"
-        component={Home}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="DisplayCourse"
         component={DisplayCourse}
         options={{headerShown: false}}

@@ -22,7 +22,7 @@ import {useNavigation} from '@react-navigation/native';
 const DisplayCourse = () => {
   const navigation = useNavigation();
   const handleButtonPress = () => {
-    navigation.navigate('MyHome');
+    navigation.navigate('Home');
   };
   const handleOpenCourse = () => {
     navigation.navigate('CourseContent');

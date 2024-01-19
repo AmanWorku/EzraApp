@@ -11,6 +11,10 @@ import {useNavigation} from '@react-navigation/native';
 import {ArrowSquareLeft, CheckCircle, Circle} from 'phosphor-react-native';
 
 const CourseContent = () => {
+  const navigation = useNavigation();
+  const backButtonPress = () => {
+    navigation.navigate('DisplayCourse');
+  };
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -23,6 +27,7 @@ const CourseContent = () => {
               weight="fill"
               color={'#EA9215'}
               style={tw`px-8 mt-4`}
+              onPress={backButtonPress}
             />
           </ImageBackground>
           <View style={tw`flex-1 bg-primary-7 flex-row gap-2 items-center`}>
