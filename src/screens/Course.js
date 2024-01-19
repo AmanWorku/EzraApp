@@ -16,7 +16,13 @@ import {
   ArrowSquareRight,
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
+import {useNavigation} from '@react-navigation/native';
 const Course = () => {
+  const navigation = useNavigation();
+  const handleButtonPress = () => {
+    navigation.navigate('DisplayCourse');
+  };
+
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -59,7 +65,8 @@ const Course = () => {
           </Text>
           <View style={tw`flex flex-row items-center justify-between`}>
             <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}>
+              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
+              onPress={handleButtonPress}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                 ኮርሱን ክፈት
