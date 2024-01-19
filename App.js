@@ -1,16 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {
-  Login,
-  Signup,
-  Welcome,
-  Setting,
-  Course,
-  SSL,
-  Devotion,
-  Home,
-} from './src/screens';
+import {Login, Signup, Welcome, Setting, SSL, Devotion} from './src/screens';
 import {
   House,
   Student,
@@ -19,6 +10,7 @@ import {
   GearSix,
 } from 'phosphor-react-native';
 import CourseStack from './src/navigation/CourseStack';
+import HomeStack from './src/navigation/HomeStack';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +40,7 @@ function MainTabNavigator() {
         tabBarActiveTintColor: '#EA9215',
         tabBarInactiveTintColor: '#3A4750',
       })}>
-      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
       <Tab.Screen name="SSL" component={SSL} />
       <Tab.Screen name="Devotional" component={Devotion} />

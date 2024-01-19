@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   ScrollView,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import tw from './../../../tailwind';
@@ -22,13 +23,14 @@ const CourseContent = () => {
           <ImageBackground
             source={require('./../../assets/bible2.jpeg')}
             style={tw`flex-5`}>
-            <ArrowSquareLeft
-              size={36}
-              weight="fill"
-              color={'#EA9215'}
-              style={tw`px-8 mt-4`}
-              onPress={backButtonPress}
-            />
+            <TouchableOpacity onPress={backButtonPress}>
+              <ArrowSquareLeft
+                size={36}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`px-8 mt-4`}
+              />
+            </TouchableOpacity>
           </ImageBackground>
           <View style={tw`flex-1 bg-primary-7 flex-row gap-2 items-center`}>
             <View style={tw`ml-6 p-1 bg-accent-6 rounded-1`}>
