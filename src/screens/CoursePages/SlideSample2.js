@@ -50,11 +50,34 @@ const SlideSample2 = () => {
             <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
           <ScrollView
-            contentContainerStyle={tw`flex-grow justify-center pt-8 px-2`}>
+            contentContainerStyle={tw`flex-grow justify-center pt-8 px-2`}
+            showsVerticalScrollIndicator={false}>
             <View style={tw`flex gap-4`}>
               <Text
                 style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
-                ክፍል ሦስት - የጥሞና ጥናት
+                ቃሉን በሕይወታችን የመለማመድ አስፈላጊነት
+              </Text>
+              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
+                ማስተዋልን ይጨምራል
+              </Text>
+              <View
+                style={tw`w-95% border-2 border-accent-7 shadow-lg self-center`}>
+                <Image
+                  source={require('./../../assets/day1.jpeg')}
+                  style={tw`w-full h-54`}
+                  resizeMode="cover"
+                />
+              </View>
+              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
+                1. ፈቃዱን እንደሚገባ ለማስተዋል እንደሚገባ ለማስተዋል
+              </Text>
+              <Text
+                style={tw`font-nokia-bold text-lg text-primary-1 text-justify`}>
+                {'   '}ቃሉን በሕይወታችን እስክንለማመደው ድረስ እንደሚገባ ልናስተውለው አንችልም። የእግዚአብሔርን
+                ቃል በተግባር ላይ ማዋል በብርሃን ውስጥ ብርሃንን ለማየት የሚያስችለን ብቸኛው ጎዳና ነው። ጌታችን
+                አኢየሱስ ይዞት የመጣውን ድንቅ መገለጥ ለመረዳት የቻሉት በትህትና እርሱን ለመታዘዝ ዝቅ ያሉት እንጂ
+                በእውቀታቸው አንቱ የተባሉት ሊቃውንት አልነበሩም። “የሰማይና የምድር ጌታ አባት ሆይ፤ ይህን
+                ከጥበበኞችና ከዐዋቂዎች ሰውረህ ለሕፃናት ስለ ገለጥህላቸው አመሰግንሃለሁ፤ “ ማቴ 11፡ 25
               </Text>
             </View>
           </ScrollView>
@@ -64,7 +87,7 @@ const SlideSample2 = () => {
               style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                ትምህርቱን ጀምር
+                ቀጥል
               </Text>
             </TouchableOpacity>
           </View>

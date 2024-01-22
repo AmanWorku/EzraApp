@@ -55,7 +55,8 @@ const SlideSample1 = () => {
             <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
           <ScrollView
-            contentContainerStyle={tw`flex-grow justify-center pt-8 px-2`}>
+            contentContainerStyle={tw`flex-grow justify-center pt-8 px-2`}
+            showsVerticalScrollIndicator={false}>
             <View style={tw`flex gap-4`}>
               <Text
                 style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
