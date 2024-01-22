@@ -25,8 +25,7 @@ const SlideSample1 = () => {
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
         <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-80`} />
-        <ScrollView
-          contentContainerStyle={tw`flex-grow justify-between pt-8 px-2`}>
+        <View style={tw`flex-grow justify-between pt-8 px-2`}>
           <View>
             <View style={tw`flex flex-row items-center justify-between`}>
               <View style={tw`flex flex-row items-center gap-3`}>
@@ -50,17 +49,20 @@ const SlideSample1 = () => {
             </View>
             <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
-          <View style={tw`flex gap-4`}>
-            <Text
-              style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
-              ክፍል ሦስት - የጥሞና ጥናት
-            </Text>
-            <Text
-              style={tw`font-nokia-bold text-xl text-primary-1 text-center`}>
-              ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን
-              ዘዴዎች አንዱ የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
-            </Text>
-          </View>
+          <ScrollView
+            contentContainerStyle={tw`flex-grow justify-center pt-8 px-2`}>
+            <View style={tw`flex gap-4`}>
+              <Text
+                style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
+                ክፍል ሦስት - የጥሞና ጥናት
+              </Text>
+              <Text
+                style={tw`font-nokia-bold text-lg text-primary-1 text-center`}>
+                ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን
+                ዘዴዎች አንዱ የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
+              </Text>
+            </View>
+          </ScrollView>
           <View>
             <View style={tw`border-b border-accent-6 my-2`} />
             <TouchableOpacity
@@ -71,7 +73,7 @@ const SlideSample1 = () => {
               </Text>
             </TouchableOpacity>
           </View>
-        </ScrollView>
+        </View>
       </ImageBackground>
     </View>
   );
