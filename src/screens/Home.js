@@ -26,7 +26,7 @@ const Home = () => {
   const navigation = useNavigation();
 
   const handleButtonPress = () => {
-    navigation.navigate('DisplayCourse');
+    navigation.navigate('CourseContent');
   };
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>

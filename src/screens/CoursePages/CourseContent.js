@@ -16,6 +16,9 @@ const CourseContent = () => {
   const backButtonPress = () => {
     navigation.navigate('DisplayCourse');
   };
+  const openSlide = () => {
+    navigation.navigate('SlideSample1');
+  };
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -55,7 +58,7 @@ const CourseContent = () => {
             </View>
             <View style={tw`border-b border-accent-6 h-4 flex-grow mt-5`} />
           </View>
-          <View>
+          <TouchableOpacity onPress={openSlide}>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -69,8 +72,8 @@ const CourseContent = () => {
               <CheckCircle size={20} weight="fill" color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -84,8 +87,8 @@ const CourseContent = () => {
               <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -99,8 +102,8 @@ const CourseContent = () => {
               <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -114,8 +117,8 @@ const CourseContent = () => {
               <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -129,8 +132,8 @@ const CourseContent = () => {
               <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
-          <View>
+          </TouchableOpacity>
+          <TouchableOpacity>
             <View
               style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
               <View style={tw`flex`}>
@@ -144,7 +147,7 @@ const CourseContent = () => {
               <Circle size={20} color={'#EA9215'} />
             </View>
             <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
