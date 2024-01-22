@@ -11,8 +11,13 @@ import {
 import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const SlideSample1 = () => {
+  const navigate = useNavigation();
+  const handleOpenCourse = () => {
+    navigate.navigate('SlideSample2');
+  };
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setHidden(true);
@@ -66,7 +71,8 @@ const SlideSample1 = () => {
           <View>
             <View style={tw`border-b border-accent-6 my-2`} />
             <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
+              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
+              onPress={handleOpenCourse}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                 ትምህርቱን ጀምር
