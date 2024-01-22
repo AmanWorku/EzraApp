@@ -6,6 +6,7 @@ import {
   ImageBackground,
   ScrollView,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
@@ -24,28 +25,52 @@ const SlideSample1 = () => {
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
         <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-80`} />
-        <ScrollView contentContainerStyle={tw`flex-grow pt-8 px-2`}>
-          <View style={tw`flex flex-row items-center justify-between`}>
-            <View style={tw`flex flex-row items-center gap-3`}>
-              <View style={tw`pr-2 border-r border-primary-1`}>
-                <Image
-                  source={require('./../../assets/LogoSmall.png')}
-                  style={tw`w-22 h-11`}
-                  resizeMode="contain"
-                />
+        <ScrollView
+          contentContainerStyle={tw`flex-grow justify-between pt-8 px-2`}>
+          <View>
+            <View style={tw`flex flex-row items-center justify-between`}>
+              <View style={tw`flex flex-row items-center gap-3`}>
+                <View style={tw`pr-2 border-r border-primary-1`}>
+                  <Image
+                    source={require('./../../assets/LogoSmall.png')}
+                    style={tw`w-22 h-11`}
+                    resizeMode="contain"
+                  />
+                </View>
+                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                  ክፍል ሦስት - የጥሞና ጥናት
+                </Text>
               </View>
-              <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-                ክፍል ሦስት - የጥሞና ጥናት
-              </Text>
+              <View style={tw`flex flex-row items-center gap-1`}>
+                <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
+                  1/15
+                </Text>
+                <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+              </View>
             </View>
-            <View style={tw`flex flex-row items-center gap-1`}>
-              <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
-                1/15
-              </Text>
-              <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
-            </View>
+            <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
-          <View style={tw`border-b border-accent-6 mt-2`} />
+          <View style={tw`flex gap-4`}>
+            <Text
+              style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
+              ክፍል ሦስት - የጥሞና ጥናት
+            </Text>
+            <Text
+              style={tw`font-nokia-bold text-xl text-primary-1 text-center`}>
+              ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን
+              ዘዴዎች አንዱ የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
+            </Text>
+          </View>
+          <View>
+            <View style={tw`border-b border-accent-6 my-2`} />
+            <TouchableOpacity
+              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
+              <Text
+                style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                ትምህርቱን ጀምር
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </ImageBackground>
     </View>
