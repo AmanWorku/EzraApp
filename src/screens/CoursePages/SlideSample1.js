@@ -5,11 +5,13 @@ import {
   SafeAreaView,
   ImageBackground,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import tw from './../../../tailwind';
 const SlideSample1 = () => {
+  StatusBar.setHidden(true);
   return (
-    <SafeAreaView style={tw`flex-1`}>
+    <View style={tw`flex-1`}>
       <ImageBackground
         source={require('./../../assets/day4.jpeg')}
         style={tw`flex-1 p-2`}>
@@ -21,7 +23,7 @@ const SlideSample1 = () => {
           </Text>
         </ScrollView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 

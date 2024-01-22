@@ -28,7 +28,7 @@ const CourseStack = () => {
       <Stack.Screen
         name="SlideSample1"
         component={SlideSample1}
-        options={{headerShown: false}}
+        options={{headerShown: false, tabBarStyle: {display: 'none'}}}
       />
     </Stack.Navigator>
   );
