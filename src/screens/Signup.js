@@ -11,6 +11,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import COLORS from '../constants/colors';
 import Button from '../components/Button';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import {Eye} from 'phosphor-react-native';
 
 const icon = <FontAwesome6 name={'comments'} />;
 
@@ -107,7 +108,7 @@ const Signup = ({navigation}) => {
                 position: 'absolute',
                 right: 12,
               }}>
-              {icon}
+              <Eye size={20} weight="fill" />
             </TouchableOpacity>
           </View>
         </View>
@@ -147,7 +148,7 @@ const Signup = ({navigation}) => {
                 position: 'absolute',
                 right: 12,
               }}>
-              {icon}
+              <Eye size={20} weight="fill" />
             </TouchableOpacity>
           </View>
         </View>
