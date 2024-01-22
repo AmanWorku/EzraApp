@@ -9,14 +9,21 @@ import {
 } from 'react-native';
 import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
+import {useFocusEffect} from '@react-navigation/native';
+
 const SlideSample1 = () => {
-  StatusBar.setHidden(true);
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setHidden(true);
+      return () => StatusBar.setHidden(false);
+    }, []),
+  );
   return (
     <View style={tw`flex-1`}>
       <ImageBackground
-        source={require('./../../assets/day4.jpeg')}
+        source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
-        <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-70`} />
+        <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-80`} />
         <ScrollView contentContainerStyle={tw`flex-grow pt-8 px-2`}>
           <View style={tw`flex flex-row items-center justify-between`}>
             <View style={tw`flex flex-row items-center gap-3`}>
