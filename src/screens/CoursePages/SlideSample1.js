@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Text,
   View,
-  SafeAreaView,
+  Image,
   ImageBackground,
   ScrollView,
   StatusBar,
@@ -16,11 +16,14 @@ const SlideSample1 = () => {
         source={require('./../../assets/day4.jpeg')}
         style={tw`flex-1 p-2`}>
         <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-70`} />
-
-        <ScrollView contentContainerStyle={tw`flex-grow`}>
-          <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-            ታህሳስ 16
-          </Text>
+        <ScrollView contentContainerStyle={tw`flex-grow pt-3 px-2`}>
+          <View style={tw`flex flex-row`}>
+            <Image
+              source={require('./../../assets/LogoSmall.png')}
+              style={tw`w-24`}
+              resizeMode="contain"
+            />
+          </View>
         </ScrollView>
       </ImageBackground>
     </View>
