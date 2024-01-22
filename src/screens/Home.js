@@ -154,7 +154,7 @@ const Home = () => {
               style={tw`font-nokia-bold text-secondary-6 text-lg leading-tight`}>
               ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
             </Text>
-            <View style={tw`border-b border-accent-6 mt-1 w-[63%]`}></View>
+            <View style={tw`border-b border-accent-6 mt-1 w-[63%]`} />
             <Text style={tw`font-nokia-bold text-secondary-5 text-xs`}>
               ጥቅምት 01 - ጥቅምት 07
             </Text>
@@ -167,7 +167,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={tw`border-b border-primary-7 mt-4 mb-4`}></View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
         <View style={tw`flex flex-row justify-between items-center`}>
           <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
             Discover Devotionals
