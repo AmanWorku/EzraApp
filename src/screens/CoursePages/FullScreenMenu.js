@@ -19,16 +19,30 @@ const FullScreenMenu = ({isVisible, onClose}) => {
   }
 
   return (
-    <View style={[styles.menuContainer, tw`bg-opacity-90 bg-accent-11`]}>
-      <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <XCircle
-          style={tw`flex self-end`}
-          size={32}
-          weight="fill"
-          color="#EA9215"
-        />
-      </TouchableOpacity>
-      <View style={tw`mt-20 p-4`}>
+    <View style={[styles.menuContainer, tw`bg-opacity-90 bg-accent-11 p-4`]}>
+      <View
+        style={[
+          styles.closeButton,
+          tw` flex flex-row justify-between items-center`,
+        ]}>
+        <Text style={tw`font-nokia-bold text-primary-1 text-xl`}>
+          ክፍል ሦስት - የጥሞና ጥናት
+        </Text>
+        <TouchableOpacity onPress={onClose} style={tw``}>
+          <XCircle
+            style={tw`flex self-end`}
+            size={32}
+            weight="fill"
+            color="#EA9215"
+          />
+        </TouchableOpacity>
+      </View>
+      <Text style={tw`font-nokia-light text-primary-1 text-sm mt-4`}>
+        ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን ዘዴዎች አንዱ
+        የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
+      </Text>
+      <View style={tw`border-b border-primary-1 my-4`} />
+      <View style={tw``}>
         <Text style={tw`text-white text-lg mb-4`}>Menu Item 1</Text>
         <Text style={tw`text-white text-lg mb-4`}>Menu Item 2</Text>
         <Text style={tw`text-white text-lg`}>Menu Item 3</Text>
@@ -50,7 +64,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: StatusBar.currentHeight || 40,
-    marginRight: 20,
   },
 });
 
