@@ -32,6 +32,7 @@ const SlideSample1 = () => {
   );
   return (
     <View style={tw`flex-1`}>
+      <FullScreenMenu isVisible={menuVisible} onClose={toggleMenu} />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
@@ -55,7 +56,7 @@ const SlideSample1 = () => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   1/15
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={toggleMenu}>
                   <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
                 </TouchableOpacity>
               </View>
