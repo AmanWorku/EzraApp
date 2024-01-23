@@ -20,7 +20,8 @@ const FullScreenMenu = ({isVisible, onClose}) => {
   }
 
   return (
-    <View style={[styles.menuContainer, tw`bg-opacity-90 bg-accent-11 p-4`]}>
+    <View
+      style={[styles.menuContainer, tw`flex-1 bg-opacity-90 bg-accent-11 p-4`]}>
       <View
         style={[
           styles.closeButton,
@@ -49,7 +50,7 @@ const FullScreenMenu = ({isVisible, onClose}) => {
           Slide 3/15
         </Text>
       </View>
-      <ScrollView style={tw``}>
+      <ScrollView contentContainerStyle={tw`flex-grow justify-center`}>
         <TouchableOpacity>
           <View
             style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
@@ -157,6 +158,14 @@ const FullScreenMenu = ({isVisible, onClose}) => {
           <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
         </TouchableOpacity>
       </ScrollView>
+      <View style={tw`flex-none`}>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            Exit Lesson
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
