@@ -6,9 +6,10 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  ScrollView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {X, XCircle} from 'phosphor-react-native';
+import {ListBullets, CheckCircle, Circle, XCircle} from 'phosphor-react-native';
 
 // Screen dimensions to cover the full screen
 const {width, height} = Dimensions.get('window');
@@ -42,11 +43,120 @@ const FullScreenMenu = ({isVisible, onClose}) => {
         የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
       </Text>
       <View style={tw`border-b border-primary-1 my-4`} />
-      <View style={tw``}>
-        <Text style={tw`text-white text-lg mb-4`}>Menu Item 1</Text>
-        <Text style={tw`text-white text-lg mb-4`}>Menu Item 2</Text>
-        <Text style={tw`text-white text-lg`}>Menu Item 3</Text>
+      <View style={tw`flex flex-row gap-2 mb-2`}>
+        <ListBullets size={24} weight="fill" color="#EA9215" />
+        <Text style={tw`font-nokia-bold text-primary-1 text-sm `}>
+          Slide 3/15
+        </Text>
       </View>
+      <ScrollView style={tw``}>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>መግቢያ</Text>
+            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ዕዝራ የእግዚአብሔርን ሕግ በማጥናትና...
+            </Text>
+            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              Quiz - Choose
+            </Text>
+            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ክፍል ሦስት- የጥሞና ጥናት
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ቃሉን በሕይወታችን የመለማመድ...
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ቃሉን በሕይወታችን አለመለማመድ
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              Quiz - Choose
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ቃሉ የሚናገረውን አድርጉ እንጂ ሰሚዎች
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ቃሉን በሕይወታችን እንዳንለማመድ
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>መጸለይ</Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <View
+            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+              ማሰላሰል
+            </Text>
+            <Circle size={20} color={'#EA9215'} />
+          </View>
+          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+        </TouchableOpacity>
+      </ScrollView>
     </View>
   );
 };
