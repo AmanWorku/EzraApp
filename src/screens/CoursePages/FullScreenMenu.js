@@ -21,7 +21,7 @@ const FullScreenMenu = ({isVisible, onClose}) => {
 
   return (
     <View
-      style={[styles.menuContainer, tw`flex-1 bg-opacity-90 bg-accent-11 p-4`]}>
+      style={[styles.menuContainer, tw`flex-1 bg-opacity-95 bg-accent-11 p-4`]}>
       <View
         style={[
           styles.closeButton,

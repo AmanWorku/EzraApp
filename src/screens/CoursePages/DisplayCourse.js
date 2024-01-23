@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import React from 'react';
 import {
@@ -21,6 +22,14 @@ import {useNavigation} from '@react-navigation/native';
 
 const DisplayCourse = () => {
   const navigation = useNavigation();
+  const {width} = Dimensions.get('window'); // Get the width of the screen
+
+  // Define responsive image styles based on the width
+  const imageStyle = {
+    width: width - 40, // For example, total horizontal padding might be 20 on each side
+    height: (width - 40) * 0.5625, // Maintain a 16:9 aspect ratio
+    resizeMode: 'contain', // Ensure the whole image is shown
+  };
   const handleButtonPress = () => {
     navigation.navigate('CourseHome');
   };
@@ -29,11 +38,11 @@ const DisplayCourse = () => {
   };
 
   return (
-    <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
+    <SafeAreaView style={tw`flex-1 mx-auto w-[92%]`}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={tw`flex flex-row justify-between my-4 text-secondary-6`}>
           <List size={32} weight="bold" style={tw`text-secondary-6`} />
-          <Text style={tw`font-nokia-bold text-xl text-secondary-6`}>
+          <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
             Course
           </Text>
           <User size={32} weight="bold" style={tw`text-secondary-6`} />
@@ -49,25 +58,25 @@ const DisplayCourse = () => {
         </View>
         <Image
           source={require('./../../assets/intro.png')}
-          style={tw`w-98 h-56 mt-4`}
+          style={[imageStyle, tw`mt-4`]}
           resizeMode="contain"
         />
-        <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-4`}>
+        <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-4`}>
           የአጠናን ዘዴዎች
         </Text>
         <Text
-          style={tw`font-nokia-bold text-secondary-6 text-2xl leading-tight`}>
+          style={tw`font-nokia-bold text-secondary-6 text-xl leading-tight`}>
           ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
         </Text>
         <View style={tw`flex flex-row items-center gap-2 mt-2`}>
-          <PencilSimple size={24} weight="fill" color={'#EA9215'} />
-          <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
+          <PencilSimple size={18} weight="fill" color={'#EA9215'} />
+          <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
             ፓ/ር መልዓክ አለማየሁ
           </Text>
         </View>
-        <View style={tw`border-b border-accent-6 my-4`}></View>
+        <View style={tw`border-b border-accent-6 my-4`} />
         <Text
-          style={tw`font-nokia-bold text-secondary-6 text-lg leading-snug text-justify`}>
+          style={tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify leading-tight`}>
           {'   '}
           መጽሃፍ ቅዱስን በተለያየ መንገድ ማጥናት ይቻላል። ነገር ግን ፍሪያማ ከሆኑት መንገዶች መካከል የሚከተሉት ወሳኝ
           ነጥቦችን ይይዛሉ። ከእነዚህም መካከል ሰባቱን አንድ በአንድ … ቪድዮ ጌሞችን ማዘውተር እና የተለያዩ ገጾችን
