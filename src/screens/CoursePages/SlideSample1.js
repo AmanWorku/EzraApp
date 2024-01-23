@@ -12,9 +12,15 @@ import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
+import FullScreenMenu from './FullScreenMenu';
 
 const SlideSample1 = () => {
   const navigate = useNavigation();
+  const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
+  };
   const handleOpenCourse = () => {
     navigate.navigate('SlideSample2');
   };
@@ -49,7 +55,9 @@ const SlideSample1 = () => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   1/15
                 </Text>
-                <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+                <TouchableOpacity>
+                  <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+                </TouchableOpacity>
               </View>
             </View>
             <View style={tw`border-b border-accent-6 mt-2`} />
