@@ -49,9 +49,7 @@ const CourseContent = ({route}) => {
   const backButtonPress = () => {
     navigation.navigate('CourseHome');
   };
-  const openSlide = () => {
-    navigation.navigate('SlideSample1');
-  };
+
   return (
     <SafeAreaView>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -96,7 +94,11 @@ const CourseContent = ({route}) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  openSlide();
+                  navigation.navigate('SlideSample1', {
+                    chapterTitle: chapter.chapter,
+                    courseDescription: 'Short description of the course...',
+                    chapterId: chapter._id,
+                  });
                   updateIndex(index);
                 }}
                 key={index}>
