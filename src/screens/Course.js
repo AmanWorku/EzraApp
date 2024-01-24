@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -16,8 +17,18 @@ import {
   ArrowSquareRight,
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
+import {useGetCoursesQuery} from '../../services/api';
 import {useNavigation} from '@react-navigation/native';
 const Course = () => {
+  const {data: courses, error, isLoading} = useGetCoursesQuery();
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleSearch = e => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredData = courses?.filter(course => {
+    return course.title.toLowerCase().includes(searchTerm.toLowerCase());
+  });
   const navigation = useNavigation();
   const handleButtonPress = () => {
     navigation.navigate('DisplayCourse');
@@ -36,6 +47,8 @@ const Course = () => {
         <View>
           <TextInput
             placeholder="Search courses..."
+            value={searchTerm}
+            onChange={handleSearch}
             style={tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`}
           />
         </View>
