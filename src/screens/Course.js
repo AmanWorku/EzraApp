@@ -29,8 +29,8 @@ const Course = () => {
     return course.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
   const navigation = useNavigation();
-  const handleButtonPress = () => {
-    navigation.navigate('DisplayCourse');
+  const handleButtonPress = id => {
+    navigation.navigate('CourseContent', id);
   };
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -92,7 +92,7 @@ const Course = () => {
                 <View style={tw`flex flex-row items-center justify-between`}>
                   <TouchableOpacity
                     style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-                    onPress={handleButtonPress}>
+                    onPress={handleButtonPress(course.id)}>
                     <Text
                       style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                       ኮርሱን ክፈት

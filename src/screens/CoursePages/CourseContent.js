@@ -6,12 +6,13 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {ArrowSquareLeft, CheckCircle, Circle} from 'phosphor-react-native';
 
-const CourseContent = () => {
+const CourseContent = ({route}) => {
+  const {courseId} = route.params;
   const navigation = useNavigation();
   const backButtonPress = () => {
     navigation.navigate('DisplayCourse');
