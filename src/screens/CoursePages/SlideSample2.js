@@ -15,6 +15,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
+import FullScreenMenu from './FullScreenMenu';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,6 +23,10 @@ const SlideSample2 = ({route}) => {
   const navigation = useNavigation();
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
+  const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
+  };
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setHidden(true);
@@ -74,6 +79,7 @@ const SlideSample2 = ({route}) => {
 
   return (
     <View style={tw`flex-1`}>
+      <FullScreenMenu isVisible={menuVisible} onClose={toggleMenu} />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
@@ -97,7 +103,9 @@ const SlideSample2 = ({route}) => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   {currentDataNumber}/{totalDataNumber}
                 </Text>
-                <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+                <TouchableOpacity onPress={toggleMenu}>
+                  <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+                </TouchableOpacity>
               </View>
             </View>
             <View style={tw`border-b border-accent-6 mt-2`} />
@@ -105,7 +113,54 @@ const SlideSample2 = ({route}) => {
           <ScrollView
             contentContainerStyle={tw` flex-grow justify-center pt-8 px-2`}
             showsVerticalScrollIndicator={false}>
-            <View style={tw`flex gap-4`}>
+            {data.map((slides, index) => {
+              if (index === activeIndex) {
+                return (
+                  <View key={slides._id} style={tw`flex gap-4`}>
+                    {slides.elements.map(element => {
+                      if (element.type === 'title') {
+                        return (
+                          <Text
+                            key={element._id}
+                            style={tw`text-primary-1 text-3xl font-nokia-bold text-center`}>
+                            {element.value}
+                          </Text>
+                        );
+                      } else if (element.type === 'sub') {
+                        return (
+                          <Text
+                            key={element._id}
+                            style={tw`font-nokia-bold text-primary-1 text-xl text-center`}>
+                            {element.value}
+                          </Text>
+                        );
+                      } else if (element.type === 'text') {
+                        return (
+                          <Text
+                            key={element._id}
+                            style={tw`font-nokia-bold text-primary-1 text-justify`}>
+                            {element.value}
+                          </Text>
+                        );
+                      } else if (element.type === 'img') {
+                        return (
+                          <Image
+                            key={element._id}
+                            source={{
+                              uri: `https://ezra-seminary-api.onrender.com/images/${element.value}`,
+                            }}
+                            style={tw`w-36 h-36`}
+                          />
+                        );
+                      } else {
+                        return null;
+                      }
+                    })}
+                  </View>
+                );
+              }
+            })}
+            {/* <View style={tw`flex gap-4`}>
               <Text
                 style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
                 ቃሉን በሕይወታችን የመለማመድ አስፈላጊነት
@@ -154,7 +209,7 @@ const SlideSample2 = ({route}) => {
                 በእውቀታቸው አንቱ የተባሉት ሊቃውንት አልነበሩም። “የሰማይና የምድር ጌታ አባት ሆይ፤ ይህን
                 ከጥበበኞችና ከዐዋቂዎች ሰውረህ ለሕፃናት ስለ ገለጥህላቸው አመሰግንሃለሁ፤ “ ማቴ 11፡ 25
               </Text>
-            </View>
+            </View> */}
           </ScrollView>
           <View style={tw`flex-none`}>
             <View style={tw`border-b border-accent-6 my-2`} />
