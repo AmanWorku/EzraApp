@@ -85,7 +85,9 @@ const CourseContent = ({route}) => {
           </Text>
           <View style={tw`flex flex-row items-center`}>
             <View style={tw`border-b-4 border-accent-6`}>
-              <Text style={tw`py-2`}>ትምህርቶች</Text>
+              <Text style={tw`py-2`}>
+                ትምህርቶች {currentDataNumber}/{totalDataNumber}
+              </Text>
             </View>
             <View style={tw`border-b border-accent-6 h-4 flex-grow mt-5`} />
           </View>

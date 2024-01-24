@@ -14,7 +14,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import FullScreenMenu from './FullScreenMenu';
 
-const SlideSample1 = () => {
+const SlideSample1 = ({route}) => {
+  const {chapterTitle, courseDescription, chapterId} = route.params;
   const navigate = useNavigation();
   const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
 
@@ -49,7 +50,7 @@ const SlideSample1 = () => {
                   />
                 </View>
                 <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-                  ክፍል ሦስት - የጥሞና ጥናት
+                  {chapterTitle}
                 </Text>
               </View>
               <View style={tw`flex flex-row items-center gap-1`}>
@@ -69,12 +70,11 @@ const SlideSample1 = () => {
             <View style={tw`flex gap-4`}>
               <Text
                 style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
-                ክፍል ሦስት - የጥሞና ጥናት
+                {chapterTitle}
               </Text>
               <Text
                 style={tw`font-nokia-bold text-lg text-primary-1 text-center`}>
-                ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን
-                ዘዴዎች አንዱ የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
+                {courseDescription}
               </Text>
             </View>
           </ScrollView>
