@@ -8,7 +8,6 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
 import {
   List,
   User,
@@ -17,7 +16,7 @@ import {
   ArrowSquareRight,
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
-import {useGetCoursesQuery} from '../../services/api';
+import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 const Course = () => {
   const {data: courses, error, isLoading} = useGetCoursesQuery();
@@ -70,8 +69,7 @@ const Course = () => {
               key={index}>
               <View style={tw`h-48`}>
                 <Image
-                  source={require(`https://ezra-seminary-api.onrender.com/images/` +
-                    course.image)}
+                  source={require('./../assets/bible.png')}
                   style={tw`w-full h-full rounded-3`}
                 />
               </View>
