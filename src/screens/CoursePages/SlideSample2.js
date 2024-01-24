@@ -16,11 +16,10 @@ import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 
-const SlideSample2 = () => {
+const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
-  const route = useRoute();
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   useFocusEffect(
@@ -33,7 +32,7 @@ const SlideSample2 = () => {
   let chapter = courseData
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
-  console.log(error);
+  // console.log(chapterId);
   // If the chapter is not found, handle accordingly
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found
@@ -58,7 +57,10 @@ const SlideSample2 = () => {
   if (isLoading) {
     return (
       <SafeAreaView>
-        <ActivityIndicator size="large" color="#707070" />
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
       </SafeAreaView>
     );
   }

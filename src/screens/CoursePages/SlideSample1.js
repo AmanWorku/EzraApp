@@ -15,15 +15,20 @@ import {useNavigation} from '@react-navigation/native';
 import FullScreenMenu from './FullScreenMenu';
 
 const SlideSample1 = ({route}) => {
-  const {chapterTitle, courseDescription, chapterId} = route.params;
+  const {chapterTitle, courseDescription, chapterId, courseId} = route.params;
   const navigate = useNavigation();
   const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
+  console.log('Chapter ID ' + chapterId);
+  console.log('Course ID ' + courseId);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
   };
   const handleOpenCourse = () => {
-    navigate.navigate('SlideSample2', {chapterId: chapterId});
+    navigate.navigate('SlideSample2', {
+      courseId: courseId,
+      chapterId: chapterId,
+    });
   };
   useFocusEffect(
     React.useCallback(() => {

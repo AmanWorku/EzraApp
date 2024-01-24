@@ -100,6 +100,7 @@ const CourseContent = ({route}) => {
                     chapterTitle: chapter.chapter,
                     courseDescription: 'Short description of the course...',
                     chapterId: chapter._id,
+                    courseId: courseId,
                   });
                   updateIndex(index);
                 }}

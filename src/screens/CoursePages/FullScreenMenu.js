@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,77 @@ import {
   Dimensions,
   StatusBar,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {ListBullets, CheckCircle, Circle, XCircle} from 'phosphor-react-native';
-
+import {useFocusEffect} from '@react-navigation/native';
+import {useGetCourseByIdQuery} from './../../services/api';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {ActivityIndicator} from 'react-native';
 // Screen dimensions to cover the full screen
 const {width, height} = Dimensions.get('window');
 
 const FullScreenMenu = ({isVisible, onClose}) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [unlockedIndex, setUnlockedIndex] = useState(0);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const {courseId, chapterId} = route.params;
+  const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
+  useFocusEffect(
+    React.useCallback(() => {
+      StatusBar.setHidden(true);
+      return () => StatusBar.setHidden(false);
+    }, []),
+  );
+
+  let chapter = courseData
+    ? courseData.chapters.find(chap => chap._id === chapterId)
+    : null;
+  console.log(chapter);
+  // If the chapter is not found, handle accordingly
+  if (!chapter) {
+    chapter = {slides: []}; // Fallback for chapter if not found
+  }
+  const data = chapter.slides;
+  const currentDataNumber = activeIndex + 1;
+  const totalDataNumber = data.length;
+
+  const updateIndex = newIndex => {
+    setActiveIndex(
+      newIndex >= data.length ? data.length - 1 : Math.max(newIndex, 0),
+    );
+    if (newIndex > unlockedIndex) {
+      setUnlockedIndex(newIndex);
+    }
+  };
+
+  const isSlideUnlocked = index => {
+    return index <= unlockedIndex;
+  };
   if (!isVisible) {
     return null;
   }
+
+  // if (isLoading) {
+  //   return (
+  //     <SafeAreaView>
+  //       <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+  //       <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+  //         Loading
+  //       </Text>
+  //     </SafeAreaView>
+  //   );
+  // }
+
+  // if (error) {
+  //   return (
+  //     <SafeAreaView>
+  //       <Text>Error: {error.message}</Text>
+  //     </SafeAreaView>
+  //   );
+  // }
 
   return (
     <View
@@ -28,7 +88,7 @@ const FullScreenMenu = ({isVisible, onClose}) => {
           tw` flex flex-row justify-between items-center`,
         ]}>
         <Text style={tw`font-nokia-bold text-primary-1 text-xl`}>
-          ክፍል ሦስት - የጥሞና ጥናት
+          {chapter.title}
         </Text>
         <TouchableOpacity onPress={onClose} style={tw``}>
           <XCircle
