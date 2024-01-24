@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import tw from './../../../tailwind';
-import {useGetCourseQuery} from './../../services/api';
+import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {ArrowSquareLeft, CheckCircle, Circle} from 'phosphor-react-native';
 
@@ -21,7 +21,7 @@ const CourseContent = ({route}) => {
     data: courseData,
     error,
     isLoading,
-  } = useGetCourseQuery(courseId, {
+  } = useGetCourseByIdQuery(courseId, {
     skip: !courseId,
   });
   const data = courseData?.chapters || [];
@@ -47,7 +47,7 @@ const CourseContent = ({route}) => {
     return index <= unlockedIndex; // Check if the slide is unlocked based on the unlocked index
   };
   const backButtonPress = () => {
-    navigation.navigate('DisplayCourse');
+    navigation.navigate('CourseHome');
   };
   const openSlide = () => {
     navigation.navigate('SlideSample1');
@@ -94,7 +94,12 @@ const CourseContent = ({route}) => {
           {data.map((chapter, index) => {
             const unlocked = isSlideUnlocked(index);
             return (
-              <TouchableOpacity onPress={openSlide} key={index}>
+              <TouchableOpacity
+                onPress={() => {
+                  openSlide();
+                  updateIndex(index);
+                }}
+                key={index}>
                 <View
                   style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
                   <View style={tw`flex`}>
@@ -105,7 +110,11 @@ const CourseContent = ({route}) => {
                       15/15 Slides
                     </Text>
                   </View>
-                  <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+                  {unlocked ? (
+                    <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+                  ) : (
+                    <Circle size={20} color={'#EA9215'} />
+                  )}
                 </View>
                 <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
               </TouchableOpacity>

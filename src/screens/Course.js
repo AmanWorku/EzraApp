@@ -30,7 +30,7 @@ const Course = () => {
   });
   const navigation = useNavigation();
   const handleButtonPress = id => {
-    navigation.navigate('CourseContent', id);
+    navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
   };
   if (isLoading) {
     return <Text>Loading...</Text>;
@@ -54,7 +54,7 @@ const Course = () => {
           <TextInput
             placeholder="Search courses..."
             value={searchTerm}
-            onChange={handleSearch}
+            onChangeText={handleSearch}
             style={tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`}
           />
         </View>
@@ -92,7 +92,7 @@ const Course = () => {
                 <View style={tw`flex flex-row items-center justify-between`}>
                   <TouchableOpacity
                     style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-                    onPress={handleButtonPress(course.id)}>
+                    onPress={() => handleButtonPress(course._id)}>
                     <Text
                       style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                       ኮርሱን ክፈት
