@@ -23,7 +23,7 @@ const SlideSample1 = ({route}) => {
     setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
   };
   const handleOpenCourse = () => {
-    navigate.navigate('SlideSample2');
+    navigate.navigate('SlideSample2', {chapterId: chapterId});
   };
   useFocusEffect(
     React.useCallback(() => {

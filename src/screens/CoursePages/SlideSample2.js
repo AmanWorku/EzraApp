@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -11,14 +11,65 @@ import {
 import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
+import {useGetCourseByIdQuery} from './../../services/api';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {ActivityIndicator} from 'react-native';
 
 const SlideSample2 = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [unlockedIndex, setUnlockedIndex] = useState(0);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const {courseId, chapterId} = route.params;
+  const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setHidden(true);
       return () => StatusBar.setHidden(false);
     }, []),
   );
+  const data = chapter.slides;
+  let chapter = courseData
+    ? courseData.chapters.find(chap => chap._id === chapterId)
+    : null;
+
+  // If the chapter is not found, handle accordingly
+  if (!chapter) {
+    chapter = {slides: []}; // Fallback for chapter if not found
+  }
+
+  const currentDataNumber = activeIndex + 1;
+  const totalDataNumber = data.length;
+
+  const updateIndex = newIndex => {
+    setActiveIndex(
+      newIndex >= data.length ? data.length - 1 : Math.max(newIndex, 0),
+    );
+    if (newIndex > unlockedIndex) {
+      setUnlockedIndex(newIndex);
+    }
+  };
+
+  const isSlideUnlocked = index => {
+    return index <= unlockedIndex;
+  };
+
+  if (isLoading) {
+    return (
+      <View>
+        <ActivityIndicator size="large" color="#707070" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View>
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={tw`flex-1`}>
       <ImageBackground
@@ -37,12 +88,12 @@ const SlideSample2 = () => {
                   />
                 </View>
                 <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-                  ክፍል ሦስት - የጥሞና ጥናት
+                  {chapter.chapter}
                 </Text>
               </View>
               <View style={tw`flex flex-row items-center gap-1`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
-                  4/15
+                  {currentDataNumber}/{totalDataNumber}
                 </Text>
                 <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
               </View>
