@@ -91,96 +91,26 @@ const CourseContent = ({route}) => {
             </View>
             <View style={tw`border-b border-accent-6 h-4 flex-grow mt-5`} />
           </View>
-          <TouchableOpacity onPress={openSlide}>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል ሁለት- የሰባቱ የአጠናን ዘዴዎች ዳሰሳ
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  15/15 Slides
-                </Text>
-              </View>
-              <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል ሦስት- የጥሞና ጥናት
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  0/15 Slides
-                </Text>
-              </View>
-              <Circle size={20} color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል አራት- የመጽሐፍ ጥናት
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  0/15 Slides
-                </Text>
-              </View>
-              <Circle size={20} color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል አምስት- የምዕራፍ ጥናት
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  0/15 Slides
-                </Text>
-              </View>
-              <Circle size={20} color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል ስድስት- የጥቅስ ጥናት
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  0/15 Slides
-                </Text>
-              </View>
-              <Circle size={20} color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <View style={tw`flex`}>
-                <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
-                  ክፍል ሰባት- የርዕስ ጥናት
-                </Text>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                  0/15 Slides
-                </Text>
-              </View>
-              <Circle size={20} color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
+          {data.map((chapter, index) => {
+            const unlocked = isSlideUnlocked(index);
+            return (
+              <TouchableOpacity onPress={openSlide} key={index}>
+                <View
+                  style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+                  <View style={tw`flex`}>
+                    <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
+                      {chapter.chapter}
+                    </Text>
+                    <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                      15/15 Slides
+                    </Text>
+                  </View>
+                  <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+                </View>
+                <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
