@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {
   List,
@@ -33,7 +34,14 @@ const Course = () => {
     navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
   };
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <SafeAreaView>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   if (error) {

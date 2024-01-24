@@ -7,6 +7,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {DotsThreeOutlineVertical} from 'phosphor-react-native';
@@ -28,16 +29,16 @@ const SlideSample2 = () => {
       return () => StatusBar.setHidden(false);
     }, []),
   );
-  const data = chapter.slides;
+
   let chapter = courseData
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
-
+  console.log(error);
   // If the chapter is not found, handle accordingly
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found
   }
-
+  const data = chapter.slides;
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
 
@@ -56,17 +57,17 @@ const SlideSample2 = () => {
 
   if (isLoading) {
     return (
-      <View>
+      <SafeAreaView>
         <ActivityIndicator size="large" color="#707070" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (error) {
     return (
-      <View>
+      <SafeAreaView>
         <Text>Error: {error.message}</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
