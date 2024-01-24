@@ -35,7 +35,6 @@ const FullScreenMenu = ({isVisible, onClose}) => {
   let chapter = courseData
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
-  console.log(chapter);
   // If the chapter is not found, handle accordingly
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found

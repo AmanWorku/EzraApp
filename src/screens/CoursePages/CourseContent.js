@@ -100,7 +100,7 @@ const CourseContent = ({route}) => {
                     chapterTitle: chapter.chapter,
                     courseDescription: 'Short description of the course...',
                     chapterId: chapter._id,
-                    courseId: courseId,
+                    CId: courseId,
                   });
                   updateIndex(index);
                 }}
@@ -110,6 +110,7 @@ const CourseContent = ({route}) => {
                   <View style={tw`flex`}>
                     <Text style={tw`font-nokia-bold text-secondary-6 text-lg`}>
                       {chapter.chapter}
+                      {/* <Text>ID</Text> {courseId} */}
                     </Text>
                     <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
                       15/15 Slides
