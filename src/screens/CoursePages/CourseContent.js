@@ -8,12 +8,44 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import tw from './../../../tailwind';
+import {useGetCourseQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {ArrowSquareLeft, CheckCircle, Circle} from 'phosphor-react-native';
 
 const CourseContent = ({route}) => {
   const {courseId} = route.params;
   const navigation = useNavigation();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [unlockedIndex, setUnlockedIndex] = useState(0);
+  const {
+    data: courseData,
+    error,
+    isLoading,
+  } = useGetCourseQuery(courseId, {
+    skip: !courseId,
+  });
+  const data = courseData?.chapters || [];
+  const updateIndex = newIndex => {
+    if (newIndex < 0) {
+      newIndex = 0;
+    } else if (newIndex >= data.length) {
+      newIndex = data.length - 1;
+    }
+
+    if (newIndex > unlockedIndex) {
+      setUnlockedIndex(newIndex); // Update the unlocked index
+    }
+
+    setActiveIndex(newIndex);
+  };
+
+  // slide number
+  const currentDataNumber = activeIndex + 1;
+  const totalDataNumber = data.length;
+
+  const isSlideUnlocked = index => {
+    return index <= unlockedIndex; // Check if the slide is unlocked based on the unlocked index
+  };
   const backButtonPress = () => {
     navigation.navigate('DisplayCourse');
   };
