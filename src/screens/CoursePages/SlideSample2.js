@@ -10,7 +10,11 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {DotsThreeOutlineVertical} from 'phosphor-react-native';
+import {
+  CaretCircleLeft,
+  CaretCircleRight,
+  DotsThreeOutlineVertical,
+} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
@@ -53,7 +57,7 @@ const SlideSample2 = ({route}) => {
       setUnlockedIndex(newIndex);
     }
   };
-
+  const onFirstSlide = activeIndex === 0;
   const onLastSlide = activeIndex === data.length - 1;
 
   const handleButtonPress = () => {
@@ -68,6 +72,13 @@ const SlideSample2 = ({route}) => {
     const nextIndex = activeIndex + 1;
     if (nextIndex < data.length) {
       updateIndex(nextIndex);
+    }
+  };
+
+  const goToPreviousSlide = () => {
+    const previousIndex = activeIndex - 1;
+    if (previousIndex >= 0) {
+      updateIndex(previousIndex);
     }
   };
 
@@ -182,15 +193,30 @@ const SlideSample2 = ({route}) => {
             })}
           </ScrollView>
           <View style={tw`flex-none`}>
-            <View style={tw`border-b border-accent-6 my-2`} />
-            <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
-              onPress={handleButtonPress}>
-              <Text
-                style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
-              </Text>
-            </TouchableOpacity>
+            <View style={tw`flex-row justify-between px-4 my-2`}>
+              {!onFirstSlide && (
+                <TouchableOpacity
+                  style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10`}
+                  onPress={goToPreviousSlide}>
+                  <CaretCircleLeft size={18} weight="fill" color="white" />
+                  <Text
+                    style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
+                  onFirstSlide ? 'mx-auto' : ''
+                }`}
+                onPress={handleButtonPress}>
+                <Text
+                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                  {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
+                </Text>
+                <CaretCircleRight size={18} weight="fill" color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ImageBackground>
