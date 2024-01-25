@@ -17,13 +17,11 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
-const FullScreenMenu = ({isVisible, onClose}) => {
+const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
-  const route = useRoute();
-  const {courseId, chapterId} = route.params;
-  const {data: courseData, isLoading} = useGetCourseByIdQuery(courseId);
+  const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -36,11 +34,12 @@ const FullScreenMenu = ({isVisible, onClose}) => {
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
 
-  console.log(chapter._id);
+  console.log(chapter);
 
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found
   }
+
   const data = chapter.slides;
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
@@ -61,24 +60,24 @@ const FullScreenMenu = ({isVisible, onClose}) => {
     return null;
   }
 
-  // if (isLoading) {
-  //   return (
-  //     <SafeAreaView>
-  //       <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
-  //       <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-  //         Loading
-  //       </Text>
-  //     </SafeAreaView>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <SafeAreaView>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
+  }
 
-  // if (error) {
-  //   return (
-  //     <SafeAreaView>
-  //       <Text>Error: {error.message}</Text>
-  //     </SafeAreaView>
-  //   );
-  // }
+  if (error) {
+    return (
+      <SafeAreaView>
+        <Text>Error: {error.message}</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <View
@@ -112,112 +111,21 @@ const FullScreenMenu = ({isVisible, onClose}) => {
         </Text>
       </View>
       <ScrollView contentContainerStyle={tw`flex-grow justify-center`}>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>መግቢያ</Text>
-            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ዕዝራ የእግዚአብሔርን ሕግ በማጥናትና...
-            </Text>
-            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              Quiz - Choose
-            </Text>
-            <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ክፍል ሦስት- የጥሞና ጥናት
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ቃሉን በሕይወታችን የመለማመድ...
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ቃሉን በሕይወታችን አለመለማመድ
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              Quiz - Choose
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ቃሉ የሚናገረውን አድርጉ እንጂ ሰሚዎች
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ቃሉን በሕይወታችን እንዳንለማመድ
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>መጸለይ</Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <View
-            style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-            <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-              ማሰላሰል
-            </Text>
-            <Circle size={20} color={'#EA9215'} />
-          </View>
-          <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-        </TouchableOpacity>
+        {chapter.slides.map((slide, index) => (
+          <TouchableOpacity
+            key={slide._id}
+            onPress={() => isSlideUnlocked(index) && updateIndex(index)}
+            disabled={!isSlideUnlocked(index)}>
+            <View
+              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+              <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                {slide.slide}
+              </Text>
+              <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+            </View>
+            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
       <View style={tw`flex-none`}>
         <TouchableOpacity

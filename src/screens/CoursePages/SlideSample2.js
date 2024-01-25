@@ -79,7 +79,12 @@ const SlideSample2 = ({route}) => {
 
   return (
     <View style={tw`flex-1`}>
-      <FullScreenMenu isVisible={menuVisible} onClose={toggleMenu} />
+      <FullScreenMenu
+        isVisible={menuVisible}
+        onClose={toggleMenu}
+        chapterId={chapterId}
+        courseId={courseId}
+      />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
