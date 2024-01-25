@@ -17,7 +17,13 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
-const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
+const FullScreenMenu = ({
+  isVisible,
+  onClose,
+  courseId,
+  chapterId,
+  updateIndex,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
@@ -41,12 +47,10 @@ const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
 
-  const updateIndex = newIndex => {
-    setActiveIndex(
-      newIndex >= data.length ? data.length - 1 : Math.max(newIndex, 0),
-    );
-    if (newIndex > unlockedIndex) {
-      setUnlockedIndex(newIndex);
+  const handleSlideChange = newIndex => {
+    if (isSlideUnlocked(newIndex)) {
+      updateIndex(newIndex);
+      onClose(); // Close the menu after selecting the slide
     }
   };
 
@@ -113,7 +117,7 @@ const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
           return (
             <TouchableOpacity
               key={slide._id}
-              onPress={() => isSlideUnlocked(index) && updateIndex(index)}
+              onPress={() => isSlideUnlocked(index) && handleSlideChange(index)}
               disabled={!isSlideUnlocked(index)}>
               <View
                 style={tw`flex flex-row justify-between px-4 py-2 items-center`}>

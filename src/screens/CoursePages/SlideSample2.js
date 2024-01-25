@@ -39,7 +39,7 @@ const SlideSample2 = ({route}) => {
     : null;
 
   if (!chapter) {
-    chapter = {slides: []}; // Fallback for chapter if not found
+    chapter = {slides: []};
   }
   const data = chapter.slides;
   const currentDataNumber = activeIndex + 1;
@@ -51,6 +51,13 @@ const SlideSample2 = ({route}) => {
     );
     if (newIndex > unlockedIndex) {
       setUnlockedIndex(newIndex);
+    }
+  };
+
+  const goToNextSlide = () => {
+    const nextIndex = activeIndex + 1;
+    if (nextIndex < data.length) {
+      updateIndex(nextIndex);
     }
   };
 
@@ -84,6 +91,7 @@ const SlideSample2 = ({route}) => {
         onClose={toggleMenu}
         chapterId={chapterId}
         courseId={courseId}
+        updateIndex={updateIndex}
       />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
@@ -165,61 +173,12 @@ const SlideSample2 = ({route}) => {
                 );
               }
             })}
-            {/* <View style={tw`flex gap-4`}>
-              <Text
-                style={tw`font-nokia-bold text-2xl text-primary-1 text-center`}>
-                ቃሉን በሕይወታችን የመለማመድ አስፈላጊነት
-              </Text>
-              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
-                ማስተዋልን ይጨምራል
-              </Text>
-              <View
-                style={tw`w-95% border-2 border-accent-7 shadow-lg self-center`}>
-                <Image
-                  source={require('./../../assets/day1.jpeg')}
-                  style={tw`w-full h-54`}
-                  resizeMode="cover"
-                />
-              </View>
-              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
-                1. ፈቃዱን እንደሚገባ ለማስተዋል እንደሚገባ ለማስተዋል
-              </Text>
-              <Text
-                style={tw`font-nokia-bold text-lg text-primary-1 text-justify`}>
-                {'   '}ቃሉን በሕይወታችን እስክንለማመደው ድረስ እንደሚገባ ልናስተውለው አንችልም። የእግዚአብሔርን
-                ቃል በተግባር ላይ ማዋል በብርሃን ውስጥ ብርሃንን ለማየት የሚያስችለን ብቸኛው ጎዳና ነው። ጌታችን
-                አኢየሱስ ይዞት የመጣውን ድንቅ መገለጥ ለመረዳት የቻሉት በትህትና እርሱን ለመታዘዝ ዝቅ ያሉት እንጂ
-                በእውቀታቸው አንቱ የተባሉት ሊቃውንት አልነበሩም። “የሰማይና የምድር ጌታ አባት ሆይ፤ ይህን
-                ከጥበበኞችና ከዐዋቂዎች ሰውረህ ለሕፃናት ስለ ገለጥህላቸው አመሰግንሃለሁ፤ “ ማቴ 11፡ 25
-              </Text>
-              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
-                ማስተዋልን ይጨምራል
-              </Text>
-              <View
-                style={tw`w-95% border-2 border-accent-7 shadow-lg self-center`}>
-                <Image
-                  source={require('./../../assets/phoneandbible.jpeg')}
-                  style={tw`w-full h-54`}
-                  resizeMode="cover"
-                />
-              </View>
-              <Text style={tw`font-nokia-bold text-xl text-primary-1`}>
-                2. ፈቃዱን እንደሚገባ ለማስተዋል እንደሚገባ ለማስተዋል
-              </Text>
-              <Text
-                style={tw`font-nokia-bold text-lg text-primary-1 text-justify`}>
-                {'   '}ቃሉን በሕይወታችን እስክንለማመደው ድረስ እንደሚገባ ልናስተውለው አንችልም። የእግዚአብሔርን
-                ቃል በተግባር ላይ ማዋል በብርሃን ውስጥ ብርሃንን ለማየት የሚያስችለን ብቸኛው ጎዳና ነው። ጌታችን
-                አኢየሱስ ይዞት የመጣውን ድንቅ መገለጥ ለመረዳት የቻሉት በትህትና እርሱን ለመታዘዝ ዝቅ ያሉት እንጂ
-                በእውቀታቸው አንቱ የተባሉት ሊቃውንት አልነበሩም። “የሰማይና የምድር ጌታ አባት ሆይ፤ ይህን
-                ከጥበበኞችና ከዐዋቂዎች ሰውረህ ለሕፃናት ስለ ገለጥህላቸው አመሰግንሃለሁ፤ “ ማቴ 11፡ 25
-              </Text>
-            </View> */}
           </ScrollView>
           <View style={tw`flex-none`}>
             <View style={tw`border-b border-accent-6 my-2`} />
             <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
+              style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
+              onPress={goToNextSlide}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                 ቀጥል
