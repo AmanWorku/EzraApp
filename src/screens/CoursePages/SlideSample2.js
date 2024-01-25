@@ -8,6 +8,7 @@ import {
   StatusBar,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {
@@ -20,6 +21,7 @@ import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
+import Carousel from 'react-native-reanimated-carousel';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -28,6 +30,8 @@ const SlideSample2 = ({route}) => {
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const width = Dimensions.get('window').width;
+
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
@@ -172,6 +176,34 @@ const SlideSample2 = ({route}) => {
                             {'  '}
                             {element.value}
                           </Text>
+                        );
+                      } else if (element.type === 'slide') {
+                        return (
+                          <Text>{element.value}</Text>
+                          // <Carousel
+                          //   loop
+                          //   width={width}
+                          //   height={width / 2}
+                          //   autoPlay={true}
+                          //   data={element.value}
+                          //   scrollAnimationDuration={1000}
+                          //   onSnapToItem={index =>
+                          //     console.log('current index:', index)
+                          //   }
+                          //   renderItem={({index}) => (
+                          //     <View
+                          //       style={{
+                          //         flex: 1,
+                          //         borderWidth: 1,
+                          //         justifyContent: 'center',
+                          //       }}>
+                          //       <Text
+                          //         style={{textAlign: 'center', fontSize: 30}}>
+                          //         {index}
+                          //       </Text>
+                          //     </View>
+                          //   )}
+                          // />
                         );
                       } else if (element.type === 'img') {
                         return (
