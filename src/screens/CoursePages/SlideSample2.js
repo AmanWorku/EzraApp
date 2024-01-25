@@ -54,15 +54,21 @@ const SlideSample2 = ({route}) => {
     }
   };
 
+  const onLastSlide = activeIndex === data.length - 1;
+
+  const handleButtonPress = () => {
+    if (onLastSlide) {
+      navigation.navigate('CourseContent', {courseId: courseId});
+    } else {
+      goToNextSlide();
+    }
+  };
+
   const goToNextSlide = () => {
     const nextIndex = activeIndex + 1;
     if (nextIndex < data.length) {
       updateIndex(nextIndex);
     }
-  };
-
-  const isSlideUnlocked = index => {
-    return index <= unlockedIndex;
   };
 
   if (isLoading) {
@@ -178,10 +184,10 @@ const SlideSample2 = ({route}) => {
             <View style={tw`border-b border-accent-6 my-2`} />
             <TouchableOpacity
               style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
-              onPress={goToNextSlide}>
+              onPress={handleButtonPress}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                ቀጥል
+                {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
               </Text>
             </TouchableOpacity>
           </View>
