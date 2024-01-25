@@ -158,6 +158,7 @@ const SlideSample2 = ({route}) => {
                           <Text
                             key={element._id}
                             style={tw`font-nokia-bold text-sm text-primary-1 text-justify leading-tight`}>
+                            {'  '}
                             {element.value}
                           </Text>
                         );
