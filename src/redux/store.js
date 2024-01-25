@@ -11,6 +11,6 @@ const store = configureStore({
     getDefaultMiddleware().concat(api.middleware),
 });
 
-console.log(store.getState());
+// console.log(store.getState());
 
 export default store;

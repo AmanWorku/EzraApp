@@ -22,13 +22,11 @@ import {useNavigation} from '@react-navigation/native';
 
 const DisplayCourse = () => {
   const navigation = useNavigation();
-  const {width} = Dimensions.get('window'); // Get the width of the screen
-
-  // Define responsive image styles based on the width
+  const {width} = Dimensions.get('window');
   const imageStyle = {
-    width: width - 40, // For example, total horizontal padding might be 20 on each side
-    height: (width - 40) * 0.5625, // Maintain a 16:9 aspect ratio
-    resizeMode: 'contain', // Ensure the whole image is shown
+    width: width - 40,
+    height: (width - 40) * 0.5625,
+    resizeMode: 'contain',
   };
   const handleButtonPress = () => {
     navigation.navigate('CourseHome');

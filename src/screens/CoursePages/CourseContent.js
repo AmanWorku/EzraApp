@@ -66,11 +66,14 @@ const CourseContent = ({route}) => {
               />
             </TouchableOpacity>
           </ImageBackground>
-          <View style={tw`flex-1 bg-primary-7 flex-row gap-2 items-center`}>
-            <View style={tw`ml-6 p-1 bg-accent-6 rounded-1`}>
+          <View
+            style={tw`flex-1 bg-primary-7 flex-row gap-2 justify-center items-center`}>
+            <View style={tw`p-1 bg-accent-6 rounded-1`}>
               <Text style={tw`font-nokia-bold text-primary-1`}>10%</Text>
             </View>
-            <Text>Pass 100% of your lessons to complete this course</Text>
+            <Text style={tw`font-nokia-bold text-secondary-6 text-sm`}>
+              Pass 100% of your lessons to complete this course
+            </Text>
           </View>
         </View>
         <View style={tw`flex mx-auto w-[92%]`}>
@@ -85,7 +88,7 @@ const CourseContent = ({route}) => {
           </Text>
           <View style={tw`flex flex-row items-center`}>
             <View style={tw`border-b-4 border-accent-6`}>
-              <Text style={tw`py-2`}>
+              <Text style={tw`py-2 font-nokia-bold text-secondary-6`}>
                 ትምህርቶች {currentDataNumber}/{totalDataNumber}
               </Text>
             </View>

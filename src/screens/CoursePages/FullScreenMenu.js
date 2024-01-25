@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
-// Screen dimensions to cover the full screen
 const {width, height} = Dimensions.get('window');
 
 const FullScreenMenu = ({isVisible, onClose}) => {
@@ -24,7 +23,8 @@ const FullScreenMenu = ({isVisible, onClose}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const {courseId, chapterId} = route.params;
-  const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
+  const {data: courseData, isLoading} = useGetCourseByIdQuery(courseId);
+
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setHidden(true);
@@ -35,7 +35,9 @@ const FullScreenMenu = ({isVisible, onClose}) => {
   let chapter = courseData
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
-  // If the chapter is not found, handle accordingly
+
+  console.log(chapter._id);
+
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found
   }

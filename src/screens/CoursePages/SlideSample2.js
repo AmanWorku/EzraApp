@@ -23,9 +23,9 @@ const SlideSample2 = ({route}) => {
   const navigation = useNavigation();
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
-  const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
+  const [menuVisible, setMenuVisible] = React.useState(false);
   const toggleMenu = () => {
-    setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
+    setMenuVisible(!menuVisible);
   };
   useFocusEffect(
     React.useCallback(() => {
