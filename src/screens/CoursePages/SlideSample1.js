@@ -9,24 +9,22 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {DotsThreeOutlineVertical} from 'phosphor-react-native';
+import {XCircle} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
-import FullScreenMenu from './FullScreenMenu';
 
 const SlideSample1 = ({route}) => {
   const {chapterTitle, courseDescription, chapterId, CId} = route.params;
   const navigation = useNavigation();
-  const [menuVisible, setMenuVisible] = React.useState(false); // State to control menu visibility
-
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible); // Toggle the state to show/hide the menu
-  };
   const handleOpenCourse = () => {
     navigation.navigate('SlideSample2', {
       courseId: CId,
       chapterId: chapterId,
     });
+  };
+
+  const closeButton = () => {
+    navigation.navigate('CourseContent', {courseId: CId});
   };
   useFocusEffect(
     React.useCallback(() => {
@@ -36,7 +34,6 @@ const SlideSample1 = ({route}) => {
   );
   return (
     <View style={tw`flex-1`}>
-      <FullScreenMenu isVisible={menuVisible} onClose={toggleMenu} />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
@@ -60,8 +57,8 @@ const SlideSample1 = ({route}) => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   1/15
                 </Text>
-                <TouchableOpacity onPress={toggleMenu}>
-                  <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
+                <TouchableOpacity onPress={closeButton}>
+                  <XCircle weight="fill" color="#EA9215" />
                 </TouchableOpacity>
               </View>
             </View>

@@ -135,7 +135,7 @@ const SlideSample2 = ({route}) => {
                         return (
                           <Text
                             key={element._id}
-                            style={tw`font-nokia-bold text-primary-1 text-xl text-center`}>
+                            style={tw`font-nokia-bold text-primary-1 text-lg text-center `}>
                             {element.value}
                           </Text>
                         );
@@ -143,7 +143,7 @@ const SlideSample2 = ({route}) => {
                         return (
                           <Text
                             key={element._id}
-                            style={tw`font-nokia-bold text-primary-1 text-justify`}>
+                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify leading-tight`}>
                             {element.value}
                           </Text>
                         );

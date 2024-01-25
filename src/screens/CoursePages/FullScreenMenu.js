@@ -33,9 +33,6 @@ const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
   let chapter = courseData
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
-
-  console.log(chapter);
-
   if (!chapter) {
     chapter = {slides: []}; // Fallback for chapter if not found
   }
@@ -107,25 +104,32 @@ const FullScreenMenu = ({isVisible, onClose, courseId, chapterId}) => {
       <View style={tw`flex flex-row gap-2 mb-2`}>
         <ListBullets size={24} weight="fill" color="#EA9215" />
         <Text style={tw`font-nokia-bold text-primary-1 text-sm `}>
-          Slide 3/15
+          Slide {currentDataNumber}/{totalDataNumber}
         </Text>
       </View>
       <ScrollView contentContainerStyle={tw`flex-grow justify-center`}>
-        {chapter.slides.map((slide, index) => (
-          <TouchableOpacity
-            key={slide._id}
-            onPress={() => isSlideUnlocked(index) && updateIndex(index)}
-            disabled={!isSlideUnlocked(index)}>
-            <View
-              style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-              <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-                {slide.slide}
-              </Text>
-              <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-            </View>
-            <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-          </TouchableOpacity>
-        ))}
+        {chapter.slides.map((slide, index) => {
+          const unlocked = isSlideUnlocked(index);
+          return (
+            <TouchableOpacity
+              key={slide._id}
+              onPress={() => isSlideUnlocked(index) && updateIndex(index)}
+              disabled={!isSlideUnlocked(index)}>
+              <View
+                style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                  {slide.slide}
+                </Text>
+                {unlocked ? (
+                  <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+                ) : (
+                  <Circle size={20} color={'#EA9215'} />
+                )}
+              </View>
+              <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
       <View style={tw`flex-none`}>
         <TouchableOpacity
@@ -147,7 +151,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     justifyContent: 'flex-start',
-    // alignItems: 'flex-end',
     zIndex: 2,
   },
   closeButton: {
