@@ -180,11 +180,24 @@ const SlideSample2 = ({route}) => {
                         );
                       } else if (element.type === 'list') {
                         return (
-                          <FlatList key={element._id} data={element.value} />
+                          <FlatList
+                            key={element._id}
+                            data={element.value}
+                            renderItem={({item}) => (
+                              <Text
+                                style={tw`font-nokia-bold text-sm text-primary-1`}>
+                                {'\u2022 '}
+                                {item}
+                              </Text>
+                            )}
+                          />
                         );
                       } else if (element.type === 'slide') {
                         return (
-                          <Text>{element.value}</Text>
+                          <Text
+                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
+                            {'  '} {element.value}
+                          </Text>
                           // <Carousel
                           //   loop
                           //   width={width}
