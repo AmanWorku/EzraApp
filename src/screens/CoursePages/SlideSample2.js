@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {
@@ -176,6 +177,10 @@ const SlideSample2 = ({route}) => {
                             {'  '}
                             {element.value}
                           </Text>
+                        );
+                      } else if (element.type === 'list') {
+                        return (
+                          <FlatList key={element._id} data={element.value} />
                         );
                       } else if (element.type === 'slide') {
                         return (
