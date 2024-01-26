@@ -180,17 +180,19 @@ const SlideSample2 = ({route}) => {
                         );
                       } else if (element.type === 'list') {
                         return (
-                          <FlatList
-                            key={element._id}
-                            data={element.value}
-                            renderItem={({item}) => (
-                              <Text
-                                style={tw`font-nokia-bold text-sm text-primary-1`}>
-                                {'\u2022 '}
-                                {item}
-                              </Text>
-                            )}
-                          />
+                          <ScrollView nestedScrollEnabled>
+                            <FlatList
+                              key={element._id}
+                              data={element.value}
+                              renderItem={({item}) => (
+                                <Text
+                                  style={tw`font-nokia-bold text-sm text-primary-1`}>
+                                  {'\u2022 '}
+                                  {item}
+                                </Text>
+                              )}
+                            />
+                          </ScrollView>
                         );
                       } else if (element.type === 'slide') {
                         return (
