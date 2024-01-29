@@ -1,10 +1,15 @@
 import {View, Text} from 'react-native';
 import React from 'react';
+import tw from './../../tailwind';
 
 const Setting = () => {
   return (
-    <View>
-      <Text>Setting</Text>
+    <View style={tw`flex-1 items-center justify-center gap-2 bg-primary-1`}>
+      <Text style={tw`font-nokia-bold text-secondary-6 text-xl`}>Settings</Text>
+      <View style={tw`h-0.2 bg-accent-6 w-60%`} />
+      <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+        Page Under Construction
+      </Text>
     </View>
   );
 };
