@@ -10,7 +10,8 @@ const Welcome = ({navigation}) => {
         <Image source={require('../assets/Logo.png')} style={styles.image} />
       </View>
       <TouchableOpacity
-        style={tw`border border-accent-6 mb-4 px-4 py-1 rounded-4`}>
+        style={tw`border border-accent-6 mb-4 px-4 py-1 rounded-4`}
+        onPress={() => navigation.navigate('Signup')}>
         <Text style={tw`font-nokia-bold text-lg text-accent-6`}>
           Get Started
         </Text>
