@@ -9,6 +9,8 @@ import {
   ImageBackground,
 } from 'react-native';
 import React from 'react';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
 import {
   List,
   User,
@@ -19,6 +21,55 @@ import {
 import tw from './../../tailwind';
 
 const Devotion = () => {
+  const handleDownload = async () => {
+    try {
+      const url =
+        'https://img.freepik.com/free-photo/holy-bible-with-rays-light-coming-out-ai-generative_123827-23906.jpg';
+      const fileName = 'bible.jpg';
+
+      const downloadDest = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+      const options = {
+        fromUrl: url,
+        toFile: downloadDest,
+        background: true,
+        begin: res => {
+          console.log('Download has begun', res);
+        },
+        progress: res => {
+          let percentage = ((100 * res.bytesWritten) / res.contentLength) | 0;
+          console.log(`Progress ${percentage}%`);
+        },
+      };
+
+      const result = await RNFS.downloadFile(options).promise;
+
+      if (result.statusCode == 200) {
+        console.log('File downloaded to:', downloadDest);
+        // You can share or open the file here if necessary.
+      } else {
+        console.log('Download failed with status code:', result.statusCode);
+      }
+    } catch (error) {
+      console.error('Error during download:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const filePath = `${RNFS.DocumentDirectoryPath}/day18.png`; // Update the path as needed
+      const shareOptions = {
+        title: 'Share file',
+        message: 'Share file with:',
+        url: `file://${filePath}`,
+        type: 'image/png', // Updated MIME type for a .png image
+      };
+
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.error('Error during sharing:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -128,7 +179,8 @@ const Devotion = () => {
           />
           <View style={tw`flex flex-row gap-2 justify-center my-4`}>
             <TouchableOpacity
-              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
+              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
+              onPress={handleDownload}>
               <Text style={tw`font-nokia-bold text-primary-1`}> ምስሉን አውርድ</Text>
               <DownloadSimple
                 size={28}
@@ -137,7 +189,8 @@ const Devotion = () => {
               />
             </TouchableOpacity>
             <TouchableOpacity
-              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
+              style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
+              onPress={handleShare}>
               <Text style={tw`font-nokia-bold text-primary-1`}> ምስሉን አጋራ</Text>
               <ShareNetwork
                 size={28}

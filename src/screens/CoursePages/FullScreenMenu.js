@@ -40,7 +40,7 @@ const FullScreenMenu = ({
     ? courseData.chapters.find(chap => chap._id === chapterId)
     : null;
   if (!chapter) {
-    chapter = {slides: []}; // Fallback for chapter if not found
+    chapter = {slides: []};
   }
 
   const data = chapter.slides;
@@ -50,7 +50,7 @@ const FullScreenMenu = ({
   const handleSlideChange = newIndex => {
     if (isSlideUnlocked(newIndex)) {
       updateIndex(newIndex);
-      onClose(); // Close the menu after selecting the slide
+      onClose();
     }
   };
 
