@@ -11,7 +11,7 @@ const Welcome = ({navigation}) => {
       </View>
       <TouchableOpacity
         style={tw`border border-accent-6 mb-4 px-4 py-1 rounded-4`}
-        onPress={() => navigation.navigate('Signup')}>
+        onPress={() => navigation.navigate('Login')}>
         <Text style={tw`font-nokia-bold text-lg text-accent-6`}>
           Get Started
         </Text>
