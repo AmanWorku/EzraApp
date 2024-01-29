@@ -135,9 +135,12 @@ const FullScreenMenu = ({
           );
         })}
       </ScrollView>
-      <View style={tw`flex-none`}>
+      <View style={tw`flex-0.5`}>
         <TouchableOpacity
-          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}>
+          style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
+          onPress={() => {
+            navigation.navigate('CourseHome');
+          }}>
           <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
             Exit Lesson
           </Text>
