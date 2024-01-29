@@ -5,6 +5,7 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -19,7 +20,7 @@ const Signup = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
-      <View style={{flex: 1, marginHorizontal: 22}}>
+      <ScrollView style={{flex: 1, marginHorizontal: 22}}>
         <View style={{marginVertical: 22}}>
           <Text
             style={{
@@ -275,7 +276,7 @@ const Signup = ({navigation}) => {
             </Text>
           </Pressable>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

@@ -1,35 +1,25 @@
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import React from 'react';
-import Button from '../components/Button';
+import tw from './../../tailwind';
 
 const Welcome = ({navigation}) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.flexContainer}>
+    <SafeAreaView style={tw`flex-1 justify-center items-center bg-primary-1`}>
+      <View style={tw`flex-1 justify-center items-center`}>
         <Image source={require('../assets/Logo.png')} style={styles.image} />
       </View>
-      <View style={{marginBottom: 10}}>
-        <Button
-          title="Get Started"
-          onPress={() => navigation.navigate('Signup')}
-        />
-      </View>
+      <TouchableOpacity
+        style={tw`border border-accent-6 mb-4 px-4 py-1 rounded-4`}>
+        <Text style={tw`font-nokia-bold text-lg text-accent-6`}>
+          Get Started
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  flexContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   image: {
     resizeMode: 'contain',
     aspectRatio: 1,
