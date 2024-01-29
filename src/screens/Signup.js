@@ -12,14 +12,29 @@ import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const Signup = ({navigation}) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
+  const handleEmailChange = text => {
+    setEmail(text);
+  };
   const handlePasswordChange = text => {
     setPassword(text);
   };
+
   const handleConfirmPasswordChange = text => {
     setConfirmPassword(text);
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   return (
@@ -44,7 +59,9 @@ const Signup = ({navigation}) => {
               <TextInput
                 placeholder="Email address"
                 keyboardType="email-address"
-                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
+                value={email}
+                onChangeText={handleEmailChange}
+                style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
               />
             </View>
           </View>
@@ -55,14 +72,14 @@ const Signup = ({navigation}) => {
                 <Lock size={20} style={tw`text-secondary-5`} />
                 <TextInput
                   placeholder="Password"
-                  secureTextEntry={true}
+                  secureTextEntry={showPassword}
                   keyboardType="default"
                   value={password}
                   onChangeText={handlePasswordChange}
-                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
+                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={toggleShowPassword}>
                 <Eye size={20} style={tw`text-secondary-4`} />
               </TouchableOpacity>
             </View>
@@ -74,14 +91,14 @@ const Signup = ({navigation}) => {
                 <Lock size={20} style={tw`text-secondary-5`} />
                 <TextInput
                   placeholder="Confirm Password"
-                  secureTextEntry={true}
+                  secureTextEntry={showConfirmPassword}
                   keyboardType="default"
                   value={confirmPassword}
                   onChangeText={handleConfirmPasswordChange}
-                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
+                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={toggleShowConfirmPassword}>
                 <Eye size={20} style={tw`text-secondary-4`} />
               </TouchableOpacity>
             </View>
