@@ -12,12 +12,16 @@ import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const Signup = ({navigation}) => {
-  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handlePasswordChange = text => {
     setPassword(text);
   };
+  const handleConfirmPasswordChange = text => {
+    setConfirmPassword(text);
+  };
+
   return (
     <SafeAreaView style={tw`flex-1 bg-primary-1`}>
       <ScrollView
@@ -53,6 +57,8 @@ const Signup = ({navigation}) => {
                   placeholder="Password"
                   secureTextEntry={true}
                   keyboardType="default"
+                  value={password}
+                  onChangeText={handlePasswordChange}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
                 />
               </View>
@@ -70,6 +76,8 @@ const Signup = ({navigation}) => {
                   placeholder="Confirm Password"
                   secureTextEntry={true}
                   keyboardType="default"
+                  value={confirmPassword}
+                  onChangeText={handleConfirmPasswordChange}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
                 />
               </View>
