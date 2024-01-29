@@ -2,29 +2,34 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   TextInput,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
-const icon = <FontAwesome6 name={'comments'} />;
-
 const Signup = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [password, setPassword] = useState('');
+
+  const handlePasswordChange = text => {
+    setPassword(text);
+  };
   return (
     <SafeAreaView style={tw`flex-1 bg-primary-1`}>
       <ScrollView
         style={tw`flex mx-auto w-[92%]`}
         showsVerticalScrollIndicator={false}>
         <View style={tw`my-8`}>
-          <Text style={tw`font-nokia-bold text-6xl text-secondary-6 w-80%`}>
+          <Text style={tw`font-Lato-Black text-4xl text-secondary-6 w-80%`}>
             Create an account
+          </Text>
+          <Text style={tw`font-Lato-Regular text-sm text-secondary-6`}>
+            You will get to have your own profile and be able to track your
+            progress with the courses you take.
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
@@ -41,24 +46,36 @@ const Signup = ({navigation}) => {
           </View>
           <View style={tw`mb-2`}>
             <View
-              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
-              <Lock size={20} style={tw`text-secondary-5`} />
-              <TextInput
-                placeholder="Password"
-                keyboardType="email-address"
-                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
-              />
+              style={tw`flex flex-row items-center justify-between gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <View style={tw`flex flex-row items-center gap-2`}>
+                <Lock size={20} style={tw`text-secondary-5`} />
+                <TextInput
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  keyboardType="default"
+                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
+                />
+              </View>
+              <TouchableOpacity>
+                <Eye size={20} style={tw`text-secondary-4`} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={tw`mb-2`}>
             <View
-              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
-              <Lock size={20} style={tw`text-secondary-5`} />
-              <TextInput
-                placeholder="Confirm Password"
-                keyboardType="email-address"
-                style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
-              />
+              style={tw`flex flex-row items-center justify-between gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <View style={tw`flex flex-row items-center gap-2`}>
+                <Lock size={20} style={tw`text-secondary-5`} />
+                <TextInput
+                  placeholder="Confirm Password"
+                  secureTextEntry={true}
+                  keyboardType="default"
+                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm`}
+                />
+              </View>
+              <TouchableOpacity>
+                <Eye size={20} style={tw`text-secondary-4`} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
