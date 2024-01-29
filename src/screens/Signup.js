@@ -83,84 +83,34 @@ const Signup = ({navigation}) => {
           <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
+        <View style={tw`flex flex-row justify-center items-center gap-2`}>
           <TouchableOpacity
             onPress={() => console.log('Pressed')}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              height: 52,
-              borderWidth: 1,
-              borderColor: COLORS.grey,
-              marginRight: 4,
-              borderRadius: 10,
-            }}>
+            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
             <Image
               source={require('../assets/facebook.png')}
-              style={{
-                height: 36,
-                width: 36,
-                marginRight: 8,
-              }}
+              style={tw`h-6 w-6`}
               resizeMode="contain"
             />
-
-            <Text>Facebook</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             onPress={() => console.log('Pressed')}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              height: 52,
-              borderWidth: 1,
-              borderColor: COLORS.grey,
-              marginRight: 4,
-              borderRadius: 10,
-            }}>
+            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
             <Image
               source={require('../assets/google.png')}
-              style={{
-                height: 36,
-                width: 36,
-                marginRight: 8,
-              }}
+              style={tw`h-6 w-6`}
               resizeMode="contain"
             />
-
-            <Text>Google</Text>
           </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginVertical: 22,
-          }}>
-          <Text style={{fontSize: 16, color: COLORS.black}}>
-            Already have an account
+        <View style={tw`flex-row justify-center my-4`}>
+          <Text style={tw`font-Lato-Bold text-secondary-6 text-lg`}>
+            Already have an account{' '}
           </Text>
-          <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLORS.primary,
-                fontWeight: 'bold',
-                marginLeft: 6,
-              }}>
-              Login
-            </Text>
-          </Pressable>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={tw`font-Lato-Bold text-accent-6 text-lg`}>Login</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
