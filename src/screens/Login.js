@@ -5,238 +5,102 @@ import {
   Pressable,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import COLORS from '../constants/colors';
-import Button from '../components/Button';
-// import {Eye} from 'phosphor-react-native';
+import {Eye, Lock, UserCircle} from 'phosphor-react-native';
+import tw from './../../tailwind';
 
 const Login = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
-      <View style={{flex: 1, marginHorizontal: 22}}>
-        <View style={{marginVertical: 22}}>
-          <Text
-            style={{
-              fontSize: 22,
-              fontWeight: 'bold',
-              marginVertical: 12,
-              color: COLORS.black,
-            }}>
-            Hi Welcome Back ! 👋
+    <SafeAreaView style={tw`flex-1 bg-primary-1`}>
+      <ScrollView
+        style={tw`flex mx-auto w-[92%]`}
+        showsVerticalScrollIndicator={false}>
+        <View style={tw`my-8`}>
+          <Text style={tw`font-nokia-bold text-3xl text-secondary-6`}>
+            Welcome back!
           </Text>
-
-          <Text
-            style={{
-              fontSize: 16,
-              color: COLORS.black,
-            }}>
-            Hello again you have been missed!
+          <Text style={tw`font-nokia-bold text-sm text-secondary-4`}>
+            Fill your credentials.
           </Text>
         </View>
-
-        <View style={{marginBottom: 12}}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}>
-            Email address
-          </Text>
-
-          <View
-            style={{
-              width: '100%',
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22,
-            }}>
-            <TextInput
-              placeholder="Enter your email address"
-              placeholderTextColor={COLORS.black}
-              keyboardType="email-address"
-              style={{
-                width: '100%',
-              }}
-            />
+        <View style={tw`flex flex-col gap-4`}>
+          <View style={tw`mb-2`}>
+            <View
+              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <UserCircle size={20} style={tw`text-secondary-5`} />
+              <TextInput
+                placeholder="Email address"
+                keyboardType="email-address"
+                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
+              />
+            </View>
+          </View>
+          <View style={tw`mb-2`}>
+            <View
+              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <Lock size={20} style={tw`text-secondary-5`} />
+              <TextInput
+                placeholder="Password"
+                keyboardType="email-address"
+                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
+              />
+            </View>
           </View>
         </View>
+        <Text style={tw`py-2 font-Lato-Bold text-accent-6 text-right`}>
+          Forgot Password?
+        </Text>
+        <TouchableOpacity
+          style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
+          onPress={() => navigation.navigate('MainTab')}>
+          <Text style={tw`font-Lato-Black text-primary-1 `}>Sign In</Text>
+        </TouchableOpacity>
 
-        <View style={{marginBottom: 12}}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: 400,
-              marginVertical: 8,
-            }}>
-            Password
+        <View style={tw`flex-row my-4 items-center mx-8`}>
+          <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
+          <Text style={tw`font-Lato-Regular text-secondary-6`}>
+            OR continue with
           </Text>
-
-          <View
-            style={{
-              width: '100%',
-              height: 48,
-              borderColor: COLORS.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22,
-            }}>
-            <TextInput
-              placeholder="Enter your password"
-              placeholderTextColor={COLORS.black}
-              secureTextEntry={isPasswordShown}
-              style={{
-                width: '100%',
-              }}
-            />
-
-            <TouchableOpacity
-              onPress={() => setIsPasswordShown(!isPasswordShown)}
-              style={{
-                position: 'absolute',
-                right: 12,
-              }}>
-              {/* {isPasswordShown == true ? (
-                <Eye size={24} color={COLORS.black} />
-              ) : (
-                <Eye size={24} color={COLORS.black} />
-              )} */}
-            </TouchableOpacity>
-          </View>
+          <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            marginVertical: 6,
-          }}>
-          <Text>Remember Me</Text>
-        </View>
-
-        <Button
-          title="Login"
-          filled
-          style={{
-            marginTop: 18,
-            marginBottom: 4,
-          }}
-        />
-
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginVertical: 20,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              backgroundColor: COLORS.grey,
-              marginHorizontal: 10,
-            }}
-          />
-          <Text style={{fontSize: 14}}>Or Login with</Text>
-          <View
-            style={{
-              flex: 1,
-              height: 1,
-              backgroundColor: COLORS.grey,
-              marginHorizontal: 10,
-            }}
-          />
-        </View>
-
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
+        <View style={tw`flex flex-row justify-center items-center gap-2`}>
           <TouchableOpacity
             onPress={() => console.log('Pressed')}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              height: 52,
-              borderWidth: 1,
-              borderColor: COLORS.grey,
-              marginRight: 4,
-              borderRadius: 10,
-            }}>
+            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
             <Image
               source={require('../assets/facebook.png')}
-              style={{
-                height: 36,
-                width: 36,
-                marginRight: 8,
-              }}
+              style={tw`h-6 w-6`}
               resizeMode="contain"
             />
-
-            <Text>Facebook</Text>
           </TouchableOpacity>
-
           <TouchableOpacity
             onPress={() => console.log('Pressed')}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexDirection: 'row',
-              height: 52,
-              borderWidth: 1,
-              borderColor: COLORS.grey,
-              marginRight: 4,
-              borderRadius: 10,
-            }}>
+            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
             <Image
               source={require('../assets/google.png')}
-              style={{
-                height: 36,
-                width: 36,
-                marginRight: 8,
-              }}
+              style={tw`h-6 w-6`}
               resizeMode="contain"
             />
-
-            <Text>Google</Text>
           </TouchableOpacity>
         </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginVertical: 22,
-          }}>
-          <Text style={{fontSize: 16, color: COLORS.black}}>
-            Don't have an account ?{' '}
+        <View style={tw`flex-row justify-center my-4`}>
+          <Text style={tw`font-Lato-Bold text-secondary-6 text-lg`}>
+            Don't have an account{' '}
           </Text>
-          <Pressable onPress={() => navigation.navigate('Signup')}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLORS.primary,
-                fontWeight: 'bold',
-                marginLeft: 6,
-              }}>
-              Register
+          <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+            <Text style={tw`font-Lato-Bold text-accent-6 text-lg`}>
+              Sign Up
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

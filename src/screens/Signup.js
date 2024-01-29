@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import COLORS from '../constants/colors';
-import Button from '../components/Button';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
