@@ -35,13 +35,13 @@ const Devotion = () => {
             style={tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`}
           />
         </View>
-        <View style={tw`flex flex-row mt-6 gap-4`}>
+        <View style={tw`flex flex-row mt-6 justify-between`}>
           <View style={tw`w-70%`}>
             <Text
               style={tw`font-nokia-bold text-secondary-6 text-4xl leading-tight`}>
               ያከብረኛል
             </Text>
-            <View style={tw`border-b border-accent-6 mb-1`}></View>
+            <View style={tw`border-b border-accent-6 mb-1`} />
             <Text style={tw`font-nokia-bold text-secondary-6 text-sm`}>
               የዕለቱ የመጽሐፍ ቅዱስ ንባብ ክፍል -
             </Text>
@@ -50,13 +50,15 @@ const Devotion = () => {
               መዝ 51:16-23
             </Text>
           </View>
-          <View style={tw`border border-accent-6 p-2 rounded-4 h-24`}>
-            <View style={tw`bg-secondary-6 p-2 rounded-3 h-19.5`}>
+          <View
+            style={tw`flex items-center justify-center border border-accent-6 p-2 rounded-4 w-20 h-20`}>
+            <View
+              style={tw`flex justify-center gap-[-1] bg-secondary-6 rounded-2 w-16 h-16`}>
               <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
                 ታህሳስ
               </Text>
               <Text
-                style={tw`font-nokia-bold text-primary-1 text-4xl leading-tight mt-[-8]`}>
+                style={tw`font-nokia-bold text-primary-1 text-4xl leading-tight text-center`}>
                 18
               </Text>
             </View>
@@ -145,7 +147,7 @@ const Devotion = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={tw`border-b border-primary-7 mt-4 mb-4`}></View>
+        <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
         <View style={tw`flex flex-row justify-between items-center`}>
           <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
             Discover Devotionals
