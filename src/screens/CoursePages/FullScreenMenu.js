@@ -89,7 +89,7 @@ const FullScreenMenu = ({
           tw` flex flex-row justify-between items-center`,
         ]}>
         <Text style={tw`font-nokia-bold text-primary-1 text-xl`}>
-          {chapter.title}
+          {chapter.chapter}
         </Text>
         <TouchableOpacity onPress={onClose} style={tw``}>
           <XCircle

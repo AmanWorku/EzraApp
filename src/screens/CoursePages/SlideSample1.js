@@ -54,9 +54,6 @@ const SlideSample1 = ({route}) => {
                 </Text>
               </View>
               <View style={tw`flex flex-row items-center gap-1`}>
-                <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
-                  1/15
-                </Text>
                 <TouchableOpacity onPress={closeButton}>
                   <XCircle weight="fill" color="#EA9215" />
                 </TouchableOpacity>
