@@ -14,7 +14,18 @@ import tw from './../../tailwind';
 
 const Login = ({navigation}) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
+  const handleEmailChange = text => {
+    setEmail(text);
+  };
+  const handlePasswordChange = text => {
+    setPassword(text);
+  };
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
   return (
     <SafeAreaView style={tw`flex-1 bg-primary-1`}>
       <ScrollView
@@ -36,19 +47,29 @@ const Login = ({navigation}) => {
               <TextInput
                 placeholder="Email address"
                 keyboardType="email-address"
+                value={email}
+                onChangeText={handleEmailChange}
                 style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
               />
             </View>
           </View>
           <View style={tw`mb-2`}>
             <View
-              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
-              <Lock size={20} style={tw`text-secondary-5`} />
-              <TextInput
-                placeholder="Password"
-                keyboardType="email-address"
-                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
-              />
+              style={tw`flex flex-row items-center justify-between gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <View style={tw`flex flex-row items-center gap-2`}>
+                <Lock size={20} style={tw`text-secondary-5`} />
+                <TextInput
+                  placeholder="Password"
+                  secureTextEntry={showPassword}
+                  keyboardType="default"
+                  value={password}
+                  onChangeText={handlePasswordChange}
+                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
+                />
+              </View>
+              <TouchableOpacity onPress={toggleShowPassword}>
+                <Eye size={20} style={tw`text-secondary-4`} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
