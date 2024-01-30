@@ -10,15 +10,21 @@ import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Eye, Lock, UserCircle, EnvelopeSimple} from 'phosphor-react-native';
 import tw from './../../tailwind';
+import {useDispatch} from 'react-redux';
+import {useSignupMutation} from '../redux/api-slices/apiSlice';
+import {signup as signupUser} from '../redux/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Signup = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
-  const [lastname, setLastName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+  const [signupMutation, {isLoading, error}] = useSignupMutation();
+  const dispatch = useDispatch();
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -26,6 +32,26 @@ const Signup = ({navigation}) => {
 
   const toggleShowConfirmPassword = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    try {
+      const result = await signupMutation({
+        firstName,
+        lastName,
+        email,
+        password,
+      }).unwrap();
+      AsyncStorage.setItem('user', JSON.stringify(result));
+
+      dispatch(signupUser(result));
+      console.log(result);
+      navigation.navigate('Home');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -50,8 +76,8 @@ const Signup = ({navigation}) => {
               <TextInput
                 placeholder="First Name"
                 keyboardType="default"
-                value={email}
-                onChangeText={e => setFirstName(e.target.value)}
+                value={firstName}
+                onChangeText={setFirstName}
                 style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
               />
             </View>
@@ -61,8 +87,8 @@ const Signup = ({navigation}) => {
               <TextInput
                 placeholder="Last Name"
                 keyboardType="default"
-                value={email}
-                onChangeText={e => setLastName(e.target.value)}
+                value={lastName}
+                onChangeText={setLastName}
                 style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
               />
             </View>
@@ -75,7 +101,7 @@ const Signup = ({navigation}) => {
                 placeholder="Email address"
                 keyboardType="email-address"
                 value={email}
-                onChangeText={e => setEmail(e.target.value)}
+                onChangeText={setEmail}
                 style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
               />
             </View>
@@ -90,7 +116,7 @@ const Signup = ({navigation}) => {
                   secureTextEntry={showPassword}
                   keyboardType="default"
                   value={password}
-                  onChangeText={e => setPassword(e.target.value)}
+                  onChangeText={setPassword}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
@@ -109,7 +135,7 @@ const Signup = ({navigation}) => {
                   secureTextEntry={showConfirmPassword}
                   keyboardType="default"
                   value={confirmPassword}
-                  onChangeText={e => setConfirmPassword(e.target.value)}
+                  onChangeText={setConfirmPassword}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
@@ -124,7 +150,7 @@ const Signup = ({navigation}) => {
         </Text>
         <TouchableOpacity
           style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
-          onPress={() => navigation.navigate('MainTab')}>
+          onPress={handleSubmit}>
           <Text style={tw`font-Lato-Black text-primary-1 `}>
             Create Account
           </Text>
@@ -149,7 +175,7 @@ const Signup = ({navigation}) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log('Pressed')}
+            onPress={handleSubmit}
             style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
             <Image
               source={require('../assets/google.png')}
