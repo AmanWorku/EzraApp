@@ -54,6 +54,11 @@ const Login = ({navigation}) => {
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
+          {error && (
+            <Text style={tw`text-red-500 mb-2`}>
+              Invalid email or password. Please try again.
+            </Text>
+          )}
           <View style={tw`mb-2`}>
             <View
               style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
