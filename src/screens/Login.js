@@ -12,11 +12,34 @@ import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useDispatch} from 'react-redux';
 import {useLoginMutation} from '../redux/api-slices/apiSlice';
+import {login as loginUser} from '../redux/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
+  const [login, {isLoading, error}] = useLoginMutation();
+  const dispatch = useDispatch();
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      const result = await login({email, password}).unwrap(); // call the mutation
+      if (result) {
+        AsyncStorage.setItem('user', JSON.stringify(result));
+        dispatch(loginUser(result));
+
+        if (result.role === 'Admin') {
+          navigation.navigate('MainTab');
+        } else {
+          navigation.navigate('MainTab');
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -73,7 +96,7 @@ const Login = ({navigation}) => {
         </Text>
         <TouchableOpacity
           style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
-          onPress={() => navigation.navigate('MainTab')}>
+          onPress={handleSubmit}>
           <Text style={tw`font-Lato-Black text-primary-1 `}>Sign In</Text>
         </TouchableOpacity>
 
