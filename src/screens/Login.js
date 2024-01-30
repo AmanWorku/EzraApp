@@ -10,6 +10,8 @@ import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
+import {useDispatch} from 'react-redux';
+import {useLoginMutation} from '../redux/api-slices/apiSlice';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
