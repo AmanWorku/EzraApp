@@ -8,26 +8,17 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Eye, Lock, UserCircle} from 'phosphor-react-native';
+import {Eye, Lock, UserCircle, EnvelopeSimple} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const Signup = ({navigation}) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastname, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-
-  const handleEmailChange = text => {
-    setEmail(text);
-  };
-  const handlePasswordChange = text => {
-    setPassword(text);
-  };
-
-  const handleConfirmPasswordChange = text => {
-    setConfirmPassword(text);
-  };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -52,15 +43,39 @@ const Signup = ({navigation}) => {
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
+          <View style={tw`flex flex-row mb-2 justify-between`}>
+            <View
+              style={tw`flex flex-row items-center gap-2 w-48% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <UserCircle size={20} style={tw`text-secondary-5`} />
+              <TextInput
+                placeholder="First Name"
+                keyboardType="default"
+                value={email}
+                onChangeText={e => setFirstName(e.target.value)}
+                style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
+              />
+            </View>
+            <View
+              style={tw`flex flex-row items-center gap-2 w-48% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              <UserCircle size={20} style={tw`text-secondary-5`} />
+              <TextInput
+                placeholder="Last Name"
+                keyboardType="default"
+                value={email}
+                onChangeText={e => setLastName(e.target.value)}
+                style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
+              />
+            </View>
+          </View>
           <View style={tw`mb-2`}>
             <View
               style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
-              <UserCircle size={20} style={tw`text-secondary-5`} />
+              <EnvelopeSimple size={20} style={tw`text-secondary-5`} />
               <TextInput
                 placeholder="Email address"
                 keyboardType="email-address"
                 value={email}
-                onChangeText={handleEmailChange}
+                onChangeText={e => setEmail(e.target.value)}
                 style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
               />
             </View>
@@ -75,7 +90,7 @@ const Signup = ({navigation}) => {
                   secureTextEntry={showPassword}
                   keyboardType="default"
                   value={password}
-                  onChangeText={handlePasswordChange}
+                  onChangeText={e => setPassword(e.target.value)}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
@@ -94,7 +109,7 @@ const Signup = ({navigation}) => {
                   secureTextEntry={showConfirmPassword}
                   keyboardType="default"
                   value={confirmPassword}
-                  onChangeText={handleConfirmPasswordChange}
+                  onChangeText={e => setConfirmPassword(e.target.value)}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
