@@ -13,16 +13,10 @@ import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const Login = ({navigation}) => {
-  const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
-  const handleEmailChange = text => {
-    setEmail(text);
-  };
-  const handlePasswordChange = text => {
-    setPassword(text);
-  };
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -48,7 +42,7 @@ const Login = ({navigation}) => {
                 placeholder="Email address"
                 keyboardType="email-address"
                 value={email}
-                onChangeText={handleEmailChange}
+                onChangeText={e => setEmail(e.target.value)}
                 style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
               />
             </View>
@@ -63,7 +57,7 @@ const Login = ({navigation}) => {
                   secureTextEntry={showPassword}
                   keyboardType="default"
                   value={password}
-                  onChangeText={handlePasswordChange}
+                  onChangeText={e => setPassword(e.target.value)}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
