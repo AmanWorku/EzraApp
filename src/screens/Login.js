@@ -25,19 +25,15 @@ const Login = ({navigation}) => {
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      const result = await login({email, password}).unwrap(); // call the mutation
+      const result = await login({email, password}).unwrap();
+      console.log('Login Result:', result);
       if (result) {
-        AsyncStorage.setItem('user', JSON.stringify(result));
+        await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
-
-        if (result.role === 'Admin') {
-          navigation.navigate('MainTab');
-        } else {
-          navigation.navigate('MainTab');
-        }
+        navigation.navigate('MainTab');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Login Error:', err);
     }
   };
 
@@ -66,7 +62,7 @@ const Login = ({navigation}) => {
                 placeholder="Email address"
                 keyboardType="email-address"
                 value={email}
-                onChangeText={e => setEmail(e.target.value)}
+                onChangeText={setEmail}
                 style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
               />
             </View>
@@ -81,7 +77,7 @@ const Login = ({navigation}) => {
                   secureTextEntry={showPassword}
                   keyboardType="default"
                   value={password}
-                  onChangeText={e => setPassword(e.target.value)}
+                  onChangeText={setPassword}
                   style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
                 />
               </View>
