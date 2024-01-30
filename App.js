@@ -13,6 +13,7 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import {Provider} from 'react-redux';
 import store from './src/redux/store';
+import React from 'react';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

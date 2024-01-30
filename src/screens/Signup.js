@@ -14,6 +14,7 @@ import {useDispatch} from 'react-redux';
 import {useSignupMutation} from '../redux/api-slices/apiSlice';
 import {signup as signupUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ActivityIndicator} from 'react-native';
 
 const Signup = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -150,10 +151,15 @@ const Signup = ({navigation}) => {
         </Text>
         <TouchableOpacity
           style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
-          onPress={handleSubmit}>
-          <Text style={tw`font-Lato-Black text-primary-1 `}>
-            Create Account
-          </Text>
+          onPress={handleSubmit}
+          disabled={isLoading}>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Text style={tw`font-Lato-Black text-primary-1`}>
+              Create Account
+            </Text>
+          )}
         </TouchableOpacity>
 
         <View style={tw`flex-row my-4 items-center mx-8`}>
