@@ -1,11 +1,13 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://ezra-seminary-api.onrender.com',
-    prepareHeaders: headers => {
-      const user = JSON.parse(localStorage.getItem('user'));
+    prepareHeaders: async headers => {
+      const userString = await AsyncStorage.getItem('user');
+      const user = userString ? JSON.parse(userString) : null;
       const token = user ? user.token : '';
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
