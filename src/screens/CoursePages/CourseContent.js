@@ -78,13 +78,12 @@ const CourseContent = ({route}) => {
         </View>
         <View style={tw`flex mx-auto w-[92%]`}>
           <Text style={tw`font-nokia-bold text-secondary-6 text-2xl mt-2`}>
-            ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
+            {courseData?.title}
           </Text>
           <Text
             style={tw`font-nokia-bold text-secondary-6 text-justify text-lg leading-tight my-3`}>
             {'    '}
-            መጽሃፍ ቅዱስን በተለያየ መንገድ ማጥናት ይቻላል። ነገር ግን ፍሪያማ ከሆኑት መንገዶች መካከል የሚከተሉት
-            ወሳኝ ነጥቦችን ይይዛሉ። ከእነዚህም... More
+            {courseData?.description}
           </Text>
           <View style={tw`flex flex-row items-center`}>
             <View style={tw`border-b-4 border-accent-6`}>
