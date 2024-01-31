@@ -47,7 +47,7 @@ const MainTabNavigator = () => {
         },
         headerShown: false,
         tabBarActiveTintColor: '#EA9215',
-        tabBarInactiveTintColor: darkMode ? '#F3F3F3' : '#3A4750',
+        tabBarInactiveTintColor: darkMode ? '#D3D3D3' : '#3A4750',
         tabBarStyle: tabBarStyle,
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
