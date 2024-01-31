@@ -11,14 +11,20 @@ import {
 } from 'phosphor-react-native';
 import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import store from './src/redux/store';
 import React from 'react';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function MainTabNavigator() {
+const MainTabNavigator = () => {
+  const darkMode = useSelector(state => state.ui.darkMode);
+
+  const tabBarStyle = {
+    backgroundColor: darkMode ? '#293239' : '#F3F3F3',
+  };
+
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -41,16 +47,17 @@ function MainTabNavigator() {
         },
         headerShown: false,
         tabBarActiveTintColor: '#EA9215',
-        tabBarInactiveTintColor: '#3A4750',
+        tabBarInactiveTintColor: darkMode ? '#F3F3F3' : '#3A4750',
+        tabBarStyle: tabBarStyle,
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
-      <Tab.Screen name="SSL" component={SSL} />
+      <Tab.Screen name="SSL" component={Devotion} />
       <Tab.Screen name="Devotional" component={Devotion} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>
   );
-}
+};
 
 export default function App() {
   return (
