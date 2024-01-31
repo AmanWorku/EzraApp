@@ -1,6 +1,8 @@
 import {View, Text} from 'react-native';
 import React from 'react';
 import tw from './../../tailwind';
+import {useSelector, useDispatch} from 'react-redux';
+import {toggleDarkMode} from '../redux/uiSlice';
 
 const Setting = () => {
   return (
