@@ -31,20 +31,16 @@ const CourseContent = ({route}) => {
     } else if (newIndex >= data.length) {
       newIndex = data.length - 1;
     }
-
     if (newIndex > unlockedIndex) {
-      setUnlockedIndex(newIndex); // Update the unlocked index
+      setUnlockedIndex(newIndex);
     }
-
     setActiveIndex(newIndex);
   };
-
-  // slide number
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
 
   const isSlideUnlocked = index => {
-    return index <= unlockedIndex; // Check if the slide is unlocked based on the unlocked index
+    return index <= unlockedIndex;
   };
   const backButtonPress = () => {
     navigation.navigate('CourseHome');
