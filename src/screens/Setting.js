@@ -6,7 +6,7 @@ import {toggleDarkMode} from '../redux/uiSlice';
 
 const Setting = () => {
   const dispatch = useDispatch();
-  const darkModeEnabled = useSelector(state => state.ui.darkMode);
+  const darkMode = useSelector(state => state.ui.darkMode);
 
   const handleToggle = () => {
     dispatch(toggleDarkMode());
@@ -16,14 +16,20 @@ const Setting = () => {
     <View
       style={[
         tw`flex-1 items-center justify-center gap-2 bg-primary-1`,
-        darkModeEnabled ? tw`bg-secondary-9` : tw``,
+        darkMode ? tw`bg-secondary-9` : null,
       ]}>
-      <Text style={tw`font-nokia-bold text-secondary-6 text-xl`}>Settings</Text>
+      <Text
+        style={[
+          tw`font-nokia-bold text-secondary-6 text-xl`,
+          darkMode ? tw`text-primary-1` : null,
+        ]}>
+        Settings
+      </Text>
       <View style={tw`h-0.2 bg-accent-6 w-60%`} />
       <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
         Page Under Construction
       </Text>
-      <Switch onValueChange={handleToggle} value={darkModeEnabled} />
+      <Switch onValueChange={handleToggle} value={darkMode} />
     </View>
   );
 };
