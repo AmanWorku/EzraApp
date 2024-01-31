@@ -27,19 +27,6 @@ module.exports = {
       '6xl': ['48px', {lineHeight: '56px', letterSpacing: '0'}],
       '7xl': ['56px', {lineHeight: '64px', letterSpacing: '-0.02'}],
     },
-    // fontSize: {
-    //   xs1: ['12px', {lineHeight: '20px', letterSpacing: '0'}],
-    //   xs: ['14px', {lineHeight: '22px', letterSpacing: '0'}],
-    //   sm: ['16px', {lineHeight: '24px', letterSpacing: '0'}],
-    //   lg: ['18px', {lineHeight: '28px', letterSpacing: '0'}],
-    //   xl: ['20px', {lineHeight: '30px', letterSpacing: '0'}],
-    //   '2xl': ['24px', {lineHeight: '36px', letterSpacing: '0'}],
-    //   '3xl': ['32px', {lineHeight: '48px', letterSpacing: '0'}],
-    //   '4xl': ['48px', {lineHeight: '64px', letterSpacing: '0'}],
-    //   '5xl': ['64px', {lineHeight: '80px', letterSpacing: '0'}],
-    //   '6xl': ['80px', {lineHeight: '94px', letterSpacing: '0'}],
-    //   '7xl': ['96px', {lineHeight: '110px', letterSpacing: '-0.02em'}],
-    // },
     extend: {
       truncate: {
         lines: {
