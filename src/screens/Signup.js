@@ -97,6 +97,13 @@ const Signup = ({navigation}) => {
             progress with the courses you take.
           </Text>
         </View>
+        {errorMessage.length > 0 && (
+          <View style={tw`mb-4`}>
+            <Text style={tw`text-red-500 font-Lato-Regular`}>
+              {errorMessage}
+            </Text>
+          </View>
+        )}
         <View style={tw`flex flex-col gap-4`}>
           <View style={tw`flex flex-row mb-2 justify-between`}>
             <View
