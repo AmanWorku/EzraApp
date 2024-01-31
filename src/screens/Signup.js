@@ -25,6 +25,7 @@ const Signup = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(true);
   const [showConfirmPassword, setShowConfirmPassword] = useState(true);
   const [signupMutation, {isLoading, error}] = useSignupMutation();
+  const [errorMessage, setErrorMessage] = useState('');
   const dispatch = useDispatch();
 
   const toggleShowPassword = () => {
@@ -37,6 +38,28 @@ const Signup = ({navigation}) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
+    setErrorMessage('');
+
+    // Validate the input before sending the request
+    if (!firstName.trim() || !lastName.trim()) {
+      setErrorMessage('Please fill in your first and last names.');
+      return;
+    }
+
+    if (!email.includes('@')) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if (password.length < 6) {
+      setErrorMessage('Password should be at least 6 characters.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match.');
+      return;
+    }
 
     try {
       const result = await signupMutation({
@@ -51,6 +74,11 @@ const Signup = ({navigation}) => {
       console.log(result);
       navigation.navigate('Home');
     } catch (err) {
+      if (err.status === 422) {
+        setErrorMessage('This email is already taken.');
+      } else {
+        setErrorMessage('An error occurred during sign up. Please try again.');
+      }
       console.error(err);
     }
   };
