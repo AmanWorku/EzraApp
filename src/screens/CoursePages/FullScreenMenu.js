@@ -29,6 +29,7 @@ const FullScreenMenu = ({
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
+  const darkMode = useSelector(state => state.ui.darkMode);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -83,7 +84,11 @@ const FullScreenMenu = ({
 
   return (
     <View
-      style={[styles.menuContainer, tw`flex-1 bg-opacity-95 bg-accent-11 p-4`]}>
+      style={[
+        styles.menuContainer,
+        tw`flex-1 bg-opacity-95 bg-accent-11 p-4`,
+        darkMode ? tw`bg-secondary-10 bg-opacity-97` : null,
+      ]}>
       <View
         style={[
           styles.closeButton,
