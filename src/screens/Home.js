@@ -6,10 +6,8 @@ import {
   TouchableOpacity,
   Text,
   TextInput,
-  useColorScheme,
   View,
   ImageBackground,
-  StyleSheet,
 } from 'react-native';
 import {
   List,
@@ -247,89 +245,45 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={tw`flex flex-row flex-wrap h-88 gap-4 mt-4`}>
-            <View
-              style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
-              <ImageBackground
-                source={require('./../assets/bible.png')}
-                style={tw`overflow-hidden p-2`}>
-                <ArrowSquareUpRight
-                  size={32}
-                  weight="fill"
-                  style={tw`text-secondary-1 self-end`}
-                  color={'#FDFDFD'}
-                />
-                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                  ታህሳስ 18
-                </Text>
-              </ImageBackground>
-            </View>
-            <View
-              style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
-              <ImageBackground
-                source={require('./../assets/day22.png')}
-                style={tw`overflow-hidden p-2`}>
-                <ArrowSquareUpRight
-                  size={32}
-                  weight="fill"
-                  style={tw`text-secondary-1 self-end`}
-                  color={'#FDFDFD'}
-                />
-                <Text style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                  ታህሳስ 17
-                </Text>
-              </ImageBackground>
-            </View>
-            <View
-              style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
-              <ImageBackground
-                source={require('./../assets/day4.jpeg')}
-                style={tw`overflow-hidden p-2`}>
-                <View>
-                  <ArrowSquareUpRight
-                    size={32}
-                    weight="fill"
-                    style={tw`text-secondary-1 self-end`}
-                    color={'#FDFDFD'}
-                  />
-                  <Text
-                    style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                    ታህሳስ 16
-                  </Text>
-                </View>
-              </ImageBackground>
-            </View>
-            <View
-              style={tw`w-[47.5%] h-[45%] flex flex-col gap-8 rounded-2 overflow-hidden`}>
-              <ImageBackground
-                source={require('./../assets/day1.jpeg')}
-                style={tw`overflow-hidden p-2`}>
-                <View>
-                  <ArrowSquareUpRight
-                    size={32}
-                    weight="fill"
-                    style={tw`text-secondary-1 self-end`}
-                    color={'#FDFDFD'}
-                  />
-                  <Text
-                    style={tw`font-nokia-bold mt-22 text-primary-1 text-lg`}>
-                    ታህሳስ 15
-                  </Text>
-                </View>
-              </ImageBackground>
-            </View>
+          <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
+            {[
+              {day: 'ታህሳስ 18', image: require('./../assets/bible.png')},
+              {day: 'ታህሳስ 17', image: require('./../assets/day22.png')},
+              {day: 'ታህሳስ 16', image: require('./../assets/day4.jpeg')},
+              {day: 'ታህሳስ 15', image: require('./../assets/day1.jpeg')},
+            ].map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
+                <ImageBackground
+                  source={item.image}
+                  style={tw`w-full h-full justify-end `}
+                  imageStyle={tw`rounded-lg`}>
+                  {/* Overlay view */}
+                  <View
+                    style={[
+                      tw`absolute inset-0 bg-accent-10 bg-opacity-60 rounded-lg`,
+                      darkMode ? tw`bg-accent-11 bg-opacity-70` : null,
+                    ]}>
+                    <ArrowSquareUpRight
+                      size={32}
+                      weight="fill"
+                      style={tw`text-white self-end m-2`}
+                      color="#F8F8F8"
+                    />
+                    <Text
+                      style={tw`font-nokia-bold text-white text-lg m-2 absolute bottom-0 left-0`}>
+                      {item.day}
+                    </Text>
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
       </SafeAreaView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 255, 255, 0.5)', // Change this to the color and opacity you want
-  },
-});
 
 export default Home;
