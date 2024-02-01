@@ -12,10 +12,12 @@ import tw from './../../../tailwind';
 import {XCircle} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 const SlideSample1 = ({route}) => {
   const {chapterTitle, courseDescription, chapterId, CId} = route.params;
   const navigation = useNavigation();
+  const darkMode = useSelector(state => state.ui.darkMode);
   const handleOpenCourse = () => {
     navigation.navigate('SlideSample2', {
       courseId: CId,
@@ -37,7 +39,12 @@ const SlideSample1 = ({route}) => {
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
-        <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-80`} />
+        <View
+          style={[
+            tw`absolute inset-0 bg-accent-9 bg-opacity-80`,
+            darkMode ? tw`bg-secondary-9 bg-opacity-85` : null,
+          ]}
+        />
         <View style={tw`flex-grow justify-between pt-8 px-2`}>
           <View>
             <View style={tw`flex flex-row items-center justify-between`}>
