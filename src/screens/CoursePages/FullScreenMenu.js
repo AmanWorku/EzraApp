@@ -15,6 +15,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
+import {useSelector} from 'react-redux';
 const {width, height} = Dimensions.get('window');
 
 const FullScreenMenu = ({

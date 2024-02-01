@@ -22,6 +22,7 @@ import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
+import {useSelector} from 'react-redux';
 import Carousel from 'react-native-reanimated-carousel';
 
 const SlideSample2 = ({route}) => {
@@ -31,6 +32,7 @@ const SlideSample2 = ({route}) => {
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   const [menuVisible, setMenuVisible] = React.useState(false);
+  const darkMode = useSelector(state => state.ui.darkMode);
   const width = Dimensions.get('window').width;
 
   const toggleMenu = () => {
@@ -118,7 +120,12 @@ const SlideSample2 = ({route}) => {
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
         style={tw`flex-1 p-2`}>
-        <View style={tw`absolute inset-0 bg-accent-9 bg-opacity-80`} />
+        <View
+          style={[
+            tw`absolute inset-0 bg-accent-9 bg-opacity-80`,
+            darkMode ? tw`bg-secondary-9 bg-opacity-85` : null,
+          ]}
+        />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
             <View style={tw`flex flex-row items-center justify-between`}>
