@@ -89,7 +89,8 @@ const Login = ({navigation}) => {
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
-                style={tw`placeholder:text-secondary-5 font-nokia-bold text-sm`}
+                style={tw`font-nokia-bold text-sm`}
+                placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
               />
             </View>
           </View>
@@ -113,7 +114,8 @@ const Login = ({navigation}) => {
                   keyboardType="default"
                   value={password}
                   onChangeText={setPassword}
-                  style={tw`placeholder:text-secondary-3 font-nokia-bold text-sm text-secondary-6`}
+                  style={tw`font-nokia-bold text-sm text-secondary-6`}
+                  placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
                 />
               </View>
               <TouchableOpacity onPress={toggleShowPassword}>
