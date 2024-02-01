@@ -67,7 +67,12 @@ const Course = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
           }>
           <View style={tw`flex flex-row justify-between my-4 text-secondary-6`}>
             <List

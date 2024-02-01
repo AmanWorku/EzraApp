@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import tw from './../../../tailwind';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/native';
@@ -19,14 +19,24 @@ const CourseContent = ({route}) => {
   const navigation = useNavigation();
   const [activeIndex, setActiveIndex] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
   const {
     data: courseData,
     error,
     isLoading,
+    refetch,
   } = useGetCourseByIdQuery(courseId, {
     skip: !courseId,
   });
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
   const data = courseData?.chapters || [];
   const updateIndex = newIndex => {
     if (newIndex < 0) {
@@ -52,7 +62,16 @@ const CourseContent = ({route}) => {
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
           <View style={tw`flex-1 h-70`}>
             <ImageBackground
               source={require('./../../assets/bible2.jpeg')}
