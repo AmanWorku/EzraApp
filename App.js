@@ -52,7 +52,7 @@ const MainTabNavigator = () => {
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
-      <Tab.Screen name="SSL" component={Devotion} />
+      <Tab.Screen name="SSL" component={SSL} />
       <Tab.Screen name="Devotional" component={Devotion} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>

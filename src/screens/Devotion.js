@@ -104,7 +104,11 @@ const Devotion = () => {
           <View>
             <TextInput
               placeholder="Search devotionals..."
-              style={tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`}
+              style={[
+                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}
+              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
             />
           </View>
           <View style={tw`flex flex-row mt-6 justify-between`}>
