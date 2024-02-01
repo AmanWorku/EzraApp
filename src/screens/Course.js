@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {
   List,
@@ -20,8 +21,18 @@ import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 const Course = () => {
-  const {data: courses, error, isLoading} = useGetCoursesQuery();
+  const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
   const handleSearch = e => {
     setSearchTerm(e.target.value);
   };
@@ -50,7 +61,11 @@ const Course = () => {
 
   return (
     <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        }>
         <View style={tw`flex flex-row justify-between my-4 text-secondary-6`}>
           <List size={32} weight="bold" style={tw`text-secondary-6`} />
           <Text style={tw`font-nokia-bold text-xl text-secondary-6`}>
@@ -81,7 +96,7 @@ const Course = () => {
           courses.map((course, index) => {
             return (
               <View
-                style={tw`border border-accent-6 mt-4 rounded-4 p-2`}
+                style={tw`border border-accent-6 my-2 rounded-4 p-2`}
                 key={index}>
                 <View style={tw`h-48`}>
                   <Image

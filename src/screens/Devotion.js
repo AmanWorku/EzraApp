@@ -265,7 +265,11 @@ const Devotion = () => {
           </View>
           <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
           <View style={tw`flex flex-row justify-between items-center`}>
-            <Text style={tw`font-nokia-bold text-secondary-4 text-lg`}>
+            <Text
+              style={[
+                tw`font-nokia-bold text-secondary-4 text-lg`,
+                darkMode ? tw`text-primary-3` : null,
+              ]}>
               Discover Devotionals
             </Text>
             <TouchableOpacity
