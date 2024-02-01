@@ -257,8 +257,7 @@ const Home = () => {
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
                 <ImageBackground
                   source={item.image}
-                  style={tw`w-full h-full justify-end `}
-                  imageStyle={tw`rounded-lg`}>
+                  style={tw`w-full h-full justify-end `}>
                   {/* Overlay view */}
                   <View
                     style={[
