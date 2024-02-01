@@ -2,12 +2,25 @@ import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import React from 'react';
 import tw from './../../tailwind';
+import {useSelector} from 'react-redux';
 
 const Welcome = ({navigation}) => {
+  const darkMode = useSelector(state => state.ui.darkMode);
   return (
-    <SafeAreaView style={tw`flex-1 justify-center items-center bg-primary-1`}>
+    <SafeAreaView
+      style={[
+        tw`flex-1 justify-center items-center bg-primary-1`,
+        darkMode ? tw`bg-secondary-9` : null,
+      ]}>
       <View style={tw`flex-1 justify-center items-center`}>
-        <Image source={require('../assets/Logo.png')} style={styles.image} />
+        <Image
+          source={
+            darkMode
+              ? require('../assets/DarkLogo.png')
+              : require('../assets/Logo.png')
+          }
+          style={styles.image}
+        />
       </View>
       <TouchableOpacity
         style={tw`border border-accent-6 mb-4 px-4 py-1 rounded-4`}

@@ -15,6 +15,7 @@ import {useLoginMutation} from '../redux/api-slices/apiSlice';
 import {login as loginUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
+import {useSelector} from 'react-redux';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -22,6 +23,7 @@ const Login = ({navigation}) => {
   const [showPassword, setShowPassword] = useState(true);
   const [login, {isLoading, error}] = useLoginMutation();
   const dispatch = useDispatch();
+  const darkMode = useSelector(state => state.ui.darkMode);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -42,15 +44,24 @@ const Login = ({navigation}) => {
     setShowPassword(!showPassword);
   };
   return (
-    <SafeAreaView style={tw`flex-1 bg-primary-1`}>
+    <SafeAreaView
+      style={[tw`flex-1 bg-primary-1`, darkMode ? tw`bg-secondary-9` : null]}>
       <ScrollView
         style={tw`flex mx-auto w-[92%]`}
         showsVerticalScrollIndicator={false}>
         <View style={tw`my-8`}>
-          <Text style={tw`font-nokia-bold text-3xl text-secondary-6`}>
+          <Text
+            style={[
+              tw`font-nokia-bold text-3xl text-secondary-6`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
             Welcome back!
           </Text>
-          <Text style={tw`font-nokia-bold text-sm text-secondary-4`}>
+          <Text
+            style={[
+              tw`font-nokia-bold text-sm text-secondary-4`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
             Fill your credentials.
           </Text>
         </View>
@@ -62,8 +73,17 @@ const Login = ({navigation}) => {
           )}
           <View style={tw`mb-2`}>
             <View
-              style={tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
-              <UserCircle size={20} style={tw`text-secondary-5`} />
+              style={[
+                tw`flex flex-row items-center gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`,
+                darkMode ? tw`bg-secondary-6` : null,
+              ]}>
+              <UserCircle
+                size={20}
+                style={[
+                  tw`text-secondary-5`,
+                  darkMode ? tw`text-primary-3` : null,
+                ]}
+              />
               <TextInput
                 placeholder="Email address"
                 keyboardType="email-address"
@@ -75,9 +95,18 @@ const Login = ({navigation}) => {
           </View>
           <View style={tw`mb-2`}>
             <View
-              style={tw`flex flex-row items-center justify-between gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`}>
+              style={[
+                tw`flex flex-row items-center justify-between gap-2 w-100% h-12 bg-primary-4 border border-secondary-3 rounded-2 px-4`,
+                darkMode ? tw`bg-secondary-6` : null,
+              ]}>
               <View style={tw`flex flex-row items-center gap-2`}>
-                <Lock size={20} style={tw`text-secondary-5`} />
+                <Lock
+                  size={20}
+                  style={[
+                    tw`text-secondary-5`,
+                    darkMode ? tw`text-primary-3` : null,
+                  ]}
+                />
                 <TextInput
                   placeholder="Password"
                   secureTextEntry={showPassword}
@@ -88,7 +117,13 @@ const Login = ({navigation}) => {
                 />
               </View>
               <TouchableOpacity onPress={toggleShowPassword}>
-                <Eye size={20} style={tw`text-secondary-4`} />
+                <Eye
+                  size={20}
+                  style={[
+                    tw`text-secondary-4`,
+                    darkMode ? tw`text-primary-3` : null,
+                  ]}
+                />
               </TouchableOpacity>
             </View>
           </View>
@@ -109,7 +144,11 @@ const Login = ({navigation}) => {
 
         <View style={tw`flex-row my-4 items-center mx-8`}>
           <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
-          <Text style={tw`font-Lato-Regular text-secondary-6`}>
+          <Text
+            style={[
+              tw`font-Lato-Regular text-secondary-6`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
             OR continue with
           </Text>
           <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
@@ -137,7 +176,11 @@ const Login = ({navigation}) => {
         </View>
 
         <View style={tw`flex-row justify-center my-4`}>
-          <Text style={tw`font-Lato-Bold text-secondary-6 text-lg`}>
+          <Text
+            style={[
+              tw`font-Lato-Bold text-secondary-6 text-lg`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
             Don't have an account{' '}
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
