@@ -118,7 +118,7 @@ const Login = ({navigation}) => {
                   value={password}
                   onChangeText={setPassword}
                   style={[
-                    tw`font-nokia-bold text-sm text-secondary-6 w-100%`,
+                    tw`font-nokia-bold text-sm text-secondary-6 w-80%`,
                     darkMode ? tw`text-primary-3` : null,
                   ]}
                   placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
