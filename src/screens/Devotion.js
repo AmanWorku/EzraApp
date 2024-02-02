@@ -270,10 +270,15 @@ const Devotion = () => {
                       style={tw`text-white self-end m-2`}
                       color="#F8F8F8"
                     />
-                    <Text
-                      style={tw`font-nokia-bold text-white text-lg m-2 absolute bottom-0 left-0`}>
-                      {item.month} {item.day}
-                    </Text>
+                    <View style={tw`flex absolute bottom-0 left-0 my-2`}>
+                      <Text style={tw`font-nokia-bold text-white text-lg mx-2`}>
+                        {item.title}
+                      </Text>
+                      <Text
+                        style={tw`font-nokia-bold text-white text-sm mx-2 text-accent-2`}>
+                        {item.month} {item.day}
+                      </Text>
+                    </View>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
