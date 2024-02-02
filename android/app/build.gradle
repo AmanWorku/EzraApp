@@ -89,6 +89,21 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+    storeFile file('ezraseminary.keystore')
+    
+    // Check if running in interactive mode
+    if (project.hasProperty("interactive")) {
+        storePassword = new String(System.console().readPassword("\nKeystore password:"))
+        keyAlias = System.console().readLine("\nAlias: ")
+        keyPassword = new String(System.console().readPassword("\nAlias password: "))
+    } else {
+        // If not running in interactive mode, set fixed values or retrieve from a secure source
+        storePassword = "ezraseminary"
+        keyAlias = "ezraseminary"
+        keyPassword = "ezraseminary"
+    }
+}
     }
     buildTypes {
         debug {
@@ -98,6 +113,7 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
