@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -8,7 +9,6 @@ import {
   ImageBackground,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
 import {useSelector} from 'react-redux';
 import {List, User, ArrowSquareUpRight} from 'phosphor-react-native';
 import tw from './../../../tailwind';
@@ -17,7 +17,10 @@ import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
 const AllDevotionals = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+  const {data: originalDevotionals = [], isFetching} = useGetDevotionsQuery();
+  const [devotionals, setDevotionals] = useState(originalDevotionals);
+  const [searchTerm, setSearchTerm] = useState('');
+
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
@@ -28,6 +31,16 @@ const AllDevotionals = ({navigation}) => {
       </SafeAreaView>
     );
   }
+
+  const handleSearch = term => {
+    setSearchTerm(term);
+    const filteredDevotionals = originalDevotionals.filter(devotion =>
+      `${devotion.title} ${devotion.month} ${devotion.day}`
+        .toLowerCase()
+        .includes(term.toLowerCase()),
+    );
+    setDevotionals(filteredDevotionals);
+  };
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -66,6 +79,8 @@ const AllDevotionals = ({navigation}) => {
                 darkMode ? tw`text-primary-1` : null,
               ]}
               placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
+              value={searchTerm}
+              onChangeText={handleSearch}
             />
           </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
