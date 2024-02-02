@@ -20,9 +20,15 @@ import {
   ShareNetwork,
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
+import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
+  const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+  if (isFetching) {
+    return <Text>Loading...</Text>;
+  }
+  const lastDevotional = devotionals[devotionals.length - 1] || {};
   const handleDownload = async () => {
     try {
       const url =
@@ -118,7 +124,7 @@ const Devotion = () => {
                   tw`font-nokia-bold text-secondary-6 text-4xl leading-tight`,
                   darkMode ? tw`text-primary-1` : null,
                 ]}>
-                ያከብረኛል
+                {lastDevotional.title}
               </Text>
               <View style={tw`border-b border-accent-6 mb-1`} />
               <Text
@@ -130,7 +136,7 @@ const Devotion = () => {
               </Text>
               <Text
                 style={tw`font-nokia-bold text-accent-6 text-xl leading-tight`}>
-                መዝ 51:16-23
+                {lastDevotional.chapter}
               </Text>
             </View>
             <View
@@ -138,11 +144,11 @@ const Devotion = () => {
               <View
                 style={tw`flex justify-center gap-[-1] bg-secondary-6 rounded-2 w-16 h-16`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
-                  ታህሳስ
+                  {lastDevotional.month}
                 </Text>
                 <Text
                   style={tw`font-nokia-bold text-primary-1 text-4xl leading-tight text-center`}>
-                  18
+                  {lastDevotional.day}
                 </Text>
               </View>
             </View>
@@ -157,7 +163,7 @@ const Devotion = () => {
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
               ]}>
-              "የምስጋናን መሥዋዕት የሚሠዋ ያከብረኛል፤" መዝሙር 51:23
+              {lastDevotional.verse}
             </Text>
           </View>
           <View style={tw`mt-2`}>
@@ -183,38 +189,6 @@ const Devotion = () => {
               እንዲሄዱ መደበ። “መዘመርና ማወደስ እንደ ጀመሩም፣ እግዚአብሔር ይሁዳን በወረሩት በአሞን፣ በሞዓብና
               በሴይር ተራራ ሰዎች ላይ ድብቅ ጦር አመጣባቸው፤ ተሸነፉም።” 2 ዜና 20:22
             </Text>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              {'  '}
-              ጳውሎስና ሲላስ እጅግ ከደረሰባቸው ከባድ ድብደባና የእስር እንግልት የተነሳ እጅግ በከባድ ስይቃ ውስጥ
-              ሆነው ሳለ የሆነውን ቅዱስ ቃሉ እንዲህ ይለናል፦ “እኩለ ሌሊት አካባቢ ጳውሎስና ሲላስ እየጸለዩና
-              እየዘመሩ እግዚአብሔርን ሲያመሰግኑ ነበር፤ ሌሎቹ እስረኞችም ያዳምጧቸው ነበር። ድንገትም የወህኒ ቤቱን
-              መሠረት የሚያናውጥ ታላቅ የመሬት መንቀጥቀጥ ሆነ፤ ወዲያውም የወህኒ ቤቱ በሮች ተከፈቱ፤ የሁሉም እስራት
-              ተፈታ።” የሐዋ 16፡ 25፣ 26
-            </Text>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              {'  '}
-              በእርግጥም የእግዚአብሔርን መልካምነትና ለዘላለም ጸንቶ የሚኖረውን የእርሱን ፍቅር በማሰብ በምስጋና
-              ውስጣችን ሲሞላ በጠላታችን ላይ ድል የምንቀዳጅበትን መለኮታዊ ኃይል እንለማመዳለን።
-            </Text>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              {'  '}
-              እጅግ ከባድ በሆነ የሕይወት እኩለ ሌሊት ውስጥ ሆነንም ቢሆን እግዚአብሔርን ስናመሰግን፣ የተዘጋብን በር
-              ሲከፈት እስራታችንም ሲበጠስ እናየዋለን። ተስፋን የሰጠን እርሱ የታመነ ነውና የተስፋውን ቃል በእምነት
-              አጥብቀን ስንይዝ አንደበታችን በምስጋና ይሞላል። ጉልበታችን ይታደሳል። ለእግዚአብሔር ብዙ ክብር የሚያመጣ
-              ሕይወት እንኖራለን።
-            </Text>
           </View>
           <View
             style={[
@@ -230,7 +204,9 @@ const Devotion = () => {
           <View
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
-              source={require('./../assets/day18.png')}
+              source={{
+                uri: `https://ezra-seminary-api.onrender.com/images/${lastDevotional.image}`,
+              }}
               style={tw`w-full h-96`}
               resizeMode="cover"
             />
