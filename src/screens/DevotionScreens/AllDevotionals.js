@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {List, User, ArrowSquareUpRight} from 'phosphor-react-native';
+import {ArrowSquareLeft, User, ArrowSquareUpRight} from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
 
@@ -43,18 +43,13 @@ const AllDevotionals = ({navigation}) => {
   };
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
+    <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} style={tw`h-100%`}>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
+            </TouchableOpacity>
             <Text
               style={[
                 tw`font-nokia-bold text-xl text-secondary-6`,

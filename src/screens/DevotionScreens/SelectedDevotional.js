@@ -42,8 +42,7 @@ const SelectedDevotional = ({route}) => {
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={tw`flex flex-row justify-between mt-4 mb-4`}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('AllDevotionals')}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
             <Text
