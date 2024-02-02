@@ -11,10 +11,10 @@ import {
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {List, User, ArrowSquareUpRight} from 'phosphor-react-native';
-import tw from './../../tailwind';
-import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import tw from './../../../tailwind';
+import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
 
-const Devotion = () => {
+const AllDevotionals = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
   if (isFetching) {
@@ -97,4 +97,4 @@ const Devotion = () => {
   );
 };
 
-export default Devotion;
+export default AllDevotionals;

@@ -1,7 +1,7 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Login, Signup, Welcome, Setting, SSL, Devotion} from './src/screens';
+import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import {
   House,
   Student,
@@ -11,6 +11,7 @@ import {
 } from 'phosphor-react-native';
 import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
+import DevotionalStack from './src/navigation/DevotionalStack';
 import {Provider, useSelector} from 'react-redux';
 import store from './src/redux/store';
 import React from 'react';
@@ -53,7 +54,7 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
       <Tab.Screen name="SSL" component={SSL} />
-      <Tab.Screen name="Devotional" component={Devotion} />
+      <Tab.Screen name="Devotional" component={DevotionalStack} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>
   );
