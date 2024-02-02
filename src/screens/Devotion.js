@@ -167,28 +167,19 @@ const Devotion = () => {
             </Text>
           </View>
           <View style={tw`mt-2`}>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              {'  '}
-              አምላካችን እግዚአብሔር ላደረገልን ዘርዝረንና ቆጥረን ስለማንጨርሰው እጅግ የበዛ መልካምነቱ ምስጋና እጅግ
-              በጣም ያንስበታል። ግን ከዚያ ሌላ የምንሰጠው ምንም ስለሌለ ከልባችን የመነጨ እውነተኛ ምሥጋና ለእርሱ
-              ልንሰዋ ይገባል። እርሱም የጠየቀን ይህንኑ ነው። "የምስጋናን መሥዋዕት የሚሠዋ ያከብረኛል፤" መዝሙር
-              50:23
-            </Text>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              {'  '}
-              በምሥጋና ደግሞ ታላቅ ድል አለ። ንጉስ ኢዮሳፋጥ እጅግ አስፈሪ በሆነ የጠላት ጦር በተከበበ ጊዜ
-              “እግዚአብሔርን አመስግኑ፣ ፍቅሩ ለዘላለም ጸንቶ ይኖራልና” የሚሉ መዘምራን ከሠራዊቱ ፊት ቀድመው
-              እንዲሄዱ መደበ። “መዘመርና ማወደስ እንደ ጀመሩም፣ እግዚአብሔር ይሁዳን በወረሩት በአሞን፣ በሞዓብና
-              በሴይር ተራራ ሰዎች ላይ ድብቅ ጦር አመጣባቸው፤ ተሸነፉም።” 2 ዜና 20:22
-            </Text>
+            {lastDevotional.body.map((paragraph, paragraphIndex) => {
+              return (
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ]}
+                  key={paragraphIndex}>
+                  {'  '}
+                  {paragraph}
+                </Text>
+              );
+            })}
           </View>
           <View
             style={[
@@ -197,8 +188,7 @@ const Devotion = () => {
             ]}>
             <Text
               style={tw`font-nokia-bold text-accent-6 text-sm leading-tight text-center`}>
-              አባት ሆይ፣ በእርግጥም አንተን ማመስገን መልካም እንደሆነ ተረድተን በምስጋና የተሞላ ሕይወት እንድንኖርና
-              ማጉረምረም ከእኛ እንዲርቅ በጸጋህ እርዳን። አሜን።
+              {lastDevotional.prayer}
             </Text>
           </View>
           <View
