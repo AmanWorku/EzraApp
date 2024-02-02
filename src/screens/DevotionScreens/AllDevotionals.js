@@ -38,7 +38,7 @@ const AllDevotionals = () => {
                 tw`font-nokia-bold text-xl text-secondary-6`,
                 darkMode ? tw`text-primary-1` : null,
               ]}>
-              Devotional
+              All Devotionals
             </Text>
             <User
               size={32}
