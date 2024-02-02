@@ -134,7 +134,10 @@ const Signup = ({navigation}) => {
                 keyboardType="default"
                 value={firstName}
                 onChangeText={setFirstName}
-                style={tw`font-nokia-bold text-sm text-secondary-6`}
+                style={[
+                  tw`font-nokia-bold text-sm text-secondary-6 w-100%`,
+                  darkMode ? tw`text-primary-3` : null,
+                ]}
                 placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
               />
             </View>
@@ -155,7 +158,10 @@ const Signup = ({navigation}) => {
                 keyboardType="default"
                 value={lastName}
                 onChangeText={setLastName}
-                style={tw`font-nokia-bold text-sm text-secondary-6`}
+                style={[
+                  tw`font-nokia-bold text-sm text-secondary-6 w-100%`,
+                  darkMode ? tw`text-primary-3` : null,
+                ]}
                 placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
               />
             </View>
@@ -178,7 +184,10 @@ const Signup = ({navigation}) => {
                 keyboardType="email-address"
                 value={email}
                 onChangeText={setEmail}
-                style={tw`font-nokia-bold text-sm text-secondary-6`}
+                style={[
+                  tw`font-nokia-bold text-sm text-secondary-6 w-80%`,
+                  darkMode ? tw`text-primary-3` : null,
+                ]}
                 placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
               />
             </View>
@@ -203,7 +212,10 @@ const Signup = ({navigation}) => {
                   keyboardType="default"
                   value={password}
                   onChangeText={setPassword}
-                  style={tw`font-nokia-bold text-sm text-secondary-6`}
+                  style={[
+                    tw`font-nokia-bold text-sm text-secondary-6 w-80%`,
+                    darkMode ? tw`text-primary-3` : null,
+                  ]}
                   placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
                 />
               </View>
@@ -238,7 +250,10 @@ const Signup = ({navigation}) => {
                   keyboardType="default"
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
-                  style={tw`font-nokia-bold text-sm text-secondary-6`}
+                  style={[
+                    tw`font-nokia-bold text-sm text-secondary-6 w-80%`,
+                    darkMode ? tw`text-primary-3` : null,
+                  ]}
                   placeholderTextColor={darkMode ? '#AAAAAA' : '#AAB0B4'}
                 />
               </View>
