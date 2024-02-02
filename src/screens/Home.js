@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
   ImageBackground,
+  RefreshControl,
 } from 'react-native';
 import {
   List,
@@ -21,16 +22,35 @@ import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 
 const Home = () => {
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
-  const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+  const {data: devotionals = [], isFetching, refetch} = useGetDevotionsQuery();
+  const lastDevotional = devotionals[devotionals.length - 1] || {};
   const handleButtonPress = () => {
     navigation.navigate('CourseContent');
   };
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
           <View style={tw`flex flex-row justify-between my-4`}>
             <List
               size={32}
@@ -87,7 +107,9 @@ const Home = () => {
                   የዕለቱ ጥቅስ
                 </Text>
               </View>
-              <TouchableOpacity style={tw`bg-accent-6 px-4 py-1 rounded-full`}>
+              <TouchableOpacity
+                style={tw`bg-accent-6 px-4 py-1 rounded-full`}
+                onPress={() => navigation.navigate('Devotional')}>
                 <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
                   Open
                 </Text>
@@ -100,15 +122,7 @@ const Home = () => {
                   tw`font-nokia-bold text-lg text-secondary-6`,
                   darkMode ? tw`text-primary-2` : null,
                 ]}>
-                “የሌላውን ሕይወት መቤዠት የሚችል ሰው፣ ወይም ለእግዚአብሔር ወጆ የሚከፍልለት ማንም የለም። የነፍስ
-                ቤዛ ውድ ነውና፤”
-              </Text>
-              <Text
-                style={[
-                  tw`font-nokia-light text-lg text-secondary-6`,
-                  darkMode ? tw`text-primary-2` : null,
-                ]}>
-                መዝሙር 49:7፣8
+                {lastDevotional.verse}
               </Text>
             </View>
           </View>

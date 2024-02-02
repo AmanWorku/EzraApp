@@ -40,7 +40,6 @@ export const apiSlice = createApi({
       query: () => ({
         url: '/devotion/show',
       }),
-      providesTags: [{type: 'Devotions', id: 'LIST'}],
     }),
     getCourses: builder.query({
       query: () => 'course/getall',
