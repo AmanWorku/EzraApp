@@ -252,7 +252,12 @@ const Devotion = () => {
             {devotionals.slice(-4).map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
+                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
+                onPress={() =>
+                  navigation.navigate('SelectedDevotional', {
+                    devotionalId: item._id,
+                  })
+                }>
                 <ImageBackground
                   source={{
                     uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,

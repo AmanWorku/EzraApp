@@ -9,6 +9,7 @@ import {
   View,
   ImageBackground,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import {
   List,
@@ -38,6 +39,16 @@ const Home = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+  if (isFetching) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
+  }
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
@@ -265,7 +276,12 @@ const Home = () => {
             {devotionals.slice(-4).map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
+                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
+                onPress={() =>
+                  navigation.navigate('SelectedDevotional', {
+                    devotionalId: item._id,
+                  })
+                }>
                 <ImageBackground
                   source={{
                     uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,

@@ -6,20 +6,27 @@ import {
   TextInput,
   TouchableOpacity,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {List, User, ArrowSquareUpRight} from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
-import {useNavigation} from '@react-navigation/native';
 
 const AllDevotionals = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
 
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
   if (isFetching) {
-    return <Text>Loading...</Text>;
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (
