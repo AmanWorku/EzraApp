@@ -51,7 +51,7 @@ const Devotion = () => {
 
       const result = await RNFS.downloadFile(options).promise;
 
-      if (result.statusCode == 200) {
+      if (result.statusCode === 200) {
         console.log('File downloaded to:', downloadDest);
         // You can share or open the file here if necessary.
       } else {
@@ -246,20 +246,16 @@ const Devotion = () => {
             </TouchableOpacity>
           </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            {[
-              {day: 'ታህሳስ 18', image: require('./../assets/bible.png')},
-              {day: 'ታህሳስ 17', image: require('./../assets/day22.png')},
-              {day: 'ታህሳስ 16', image: require('./../assets/day4.jpeg')},
-              {day: 'ታህሳስ 15', image: require('./../assets/day1.jpeg')},
-            ].map((item, index) => (
+            {devotionals.slice(-4).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
                 <ImageBackground
-                  source={item.image}
+                  source={{
+                    uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
+                  }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>
-                  {/* Overlay view */}
                   <View
                     style={[
                       tw`absolute inset-0 bg-accent-10 bg-opacity-60 rounded-lg`,
@@ -273,7 +269,7 @@ const Devotion = () => {
                     />
                     <Text
                       style={tw`font-nokia-bold text-white text-lg m-2 absolute bottom-0 left-0`}>
-                      {item.day}
+                      {item.month} {item.day}
                     </Text>
                   </View>
                 </ImageBackground>
