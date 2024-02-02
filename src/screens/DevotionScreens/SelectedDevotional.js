@@ -3,39 +3,41 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
-  TextInput,
   Image,
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {List, User, DownloadSimple, ShareNetwork} from 'phosphor-react-native';
-import tw from './../../tailwind';
-import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import {
+  User,
+  DownloadSimple,
+  ShareNetwork,
+  ArrowSquareLeft,
+} from 'phosphor-react-native';
+import tw from './../../../tailwind';
+import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
 
-const SelectedDevotional = () => {
+const SelectedDevotional = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
+  const {devotionalId} = route.params;
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+
   if (isFetching) {
     return <Text>Loading...</Text>;
   }
-  const lastDevotional = devotionals[devotionals.length - 1] || {};
+  const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={tw`flex flex-row justify-between my-4`}>
-            <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+          <View style={tw`flex flex-row justify-between mt-4 mb-4`}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('AllDevotionals')}>
+              <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
+            </TouchableOpacity>
             <Text
               style={[
                 tw`font-nokia-bold text-xl text-secondary-6`,
@@ -52,16 +54,6 @@ const SelectedDevotional = () => {
               ]}
             />
           </View>
-          <View>
-            <TextInput
-              placeholder="Search devotionals..."
-              style={[
-                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-            />
-          </View>
           <View style={tw`flex flex-row mt-6 justify-between`}>
             <View style={tw`w-70%`}>
               <Text
@@ -69,7 +61,7 @@ const SelectedDevotional = () => {
                   tw`font-nokia-bold text-secondary-6 text-4xl leading-tight`,
                   darkMode ? tw`text-primary-1` : null,
                 ]}>
-                {lastDevotional.title}
+                {devotional.title}
               </Text>
               <View style={tw`border-b border-accent-6 mb-1`} />
               <Text
@@ -81,7 +73,7 @@ const SelectedDevotional = () => {
               </Text>
               <Text
                 style={tw`font-nokia-bold text-accent-6 text-xl leading-tight`}>
-                {lastDevotional.chapter}
+                {devotional.chapter}
               </Text>
             </View>
             <View
@@ -89,11 +81,11 @@ const SelectedDevotional = () => {
               <View
                 style={tw`flex justify-center gap-[-1] bg-secondary-6 rounded-2 w-16 h-16`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
-                  {lastDevotional.month}
+                  {devotional.month}
                 </Text>
                 <Text
                   style={tw`font-nokia-bold text-primary-1 text-4xl leading-tight text-center`}>
-                  {lastDevotional.day}
+                  {devotional.day}
                 </Text>
               </View>
             </View>
@@ -108,11 +100,11 @@ const SelectedDevotional = () => {
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
               ]}>
-              {lastDevotional.verse}
+              {devotional.verse}
             </Text>
           </View>
           <View style={tw`mt-2`}>
-            {lastDevotional.body.map((paragraph, paragraphIndex) => {
+            {devotional.body.map((paragraph, paragraphIndex) => {
               return (
                 <Text
                   style={[
@@ -133,14 +125,14 @@ const SelectedDevotional = () => {
             ]}>
             <Text
               style={tw`font-nokia-bold text-accent-6 text-sm leading-tight text-center`}>
-              {lastDevotional.prayer}
+              {devotional.prayer}
             </Text>
           </View>
           <View
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary-api.onrender.com/images/${lastDevotional.image}`,
+                uri: `https://ezra-seminary-api.onrender.com/images/${devotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -171,23 +163,6 @@ const SelectedDevotional = () => {
                 />
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
-          <View style={tw`flex flex-row justify-between items-center`}>
-            <Text
-              style={[
-                tw`font-nokia-bold text-secondary-4 text-lg`,
-                darkMode ? tw`text-primary-3` : null,
-              ]}>
-              Discover Devotionals
-            </Text>
-            <TouchableOpacity
-              style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('AllDevotionals')}>
-              <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                All Devotionals
-              </Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </SafeAreaView>

@@ -12,9 +12,11 @@ import {useSelector} from 'react-redux';
 import {List, User, ArrowSquareUpRight} from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
+import {useNavigation} from '@react-navigation/native';
 
-const AllDevotionals = () => {
+const AllDevotionals = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
+
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
   if (isFetching) {
     return <Text>Loading...</Text>;
@@ -63,7 +65,12 @@ const AllDevotionals = () => {
             {devotionals.map((item, index) => (
               <TouchableOpacity
                 key={index}
-                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}>
+                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
+                onPress={() =>
+                  navigation.navigate('SelectedDevotional', {
+                    devotionalId: item._id,
+                  })
+                }>
                 <ImageBackground
                   source={{
                     uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
