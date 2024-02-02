@@ -25,42 +25,42 @@ const AllDevotionals = () => {
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
         <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={tw`flex flex-row justify-between my-4`}>
+            <List
+              size={32}
+              weight="bold"
+              style={[
+                tw`text-secondary-6`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}
+            />
+            <Text
+              style={[
+                tw`font-nokia-bold text-xl text-secondary-6`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}>
+              Devotional
+            </Text>
+            <User
+              size={32}
+              weight="bold"
+              style={[
+                tw`text-secondary-6`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}
+            />
+          </View>
+          <View>
+            <TextInput
+              placeholder="Search devotionals..."
+              style={[
+                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}
+              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
+            />
+          </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            <View style={tw`flex flex-row justify-between my-4`}>
-              <List
-                size={32}
-                weight="bold"
-                style={[
-                  tw`text-secondary-6`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}
-              />
-              <Text
-                style={[
-                  tw`font-nokia-bold text-xl text-secondary-6`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}>
-                Devotional
-              </Text>
-              <User
-                size={32}
-                weight="bold"
-                style={[
-                  tw`text-secondary-6`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}
-              />
-            </View>
-            <View>
-              <TextInput
-                placeholder="Search devotionals..."
-                style={[
-                  tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}
-                placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-              />
-            </View>
             {devotionals.map((item, index) => (
               <TouchableOpacity
                 key={index}
@@ -82,10 +82,15 @@ const AllDevotionals = () => {
                       style={tw`text-white self-end m-2`}
                       color="#F8F8F8"
                     />
-                    <Text
-                      style={tw`font-nokia-bold text-white text-lg m-2 absolute bottom-0 left-0`}>
-                      {item.month} {item.day}
-                    </Text>
+                    <View style={tw`flex absolute bottom-0 left-0 my-2`}>
+                      <Text style={tw`font-nokia-bold text-white text-lg mx-2`}>
+                        {item.title}
+                      </Text>
+                      <Text
+                        style={tw`font-nokia-bold text-white text-sm mx-2 text-accent-2`}>
+                        {item.month} {item.day}
+                      </Text>
+                    </View>
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
