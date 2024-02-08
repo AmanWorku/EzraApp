@@ -17,6 +17,7 @@ import {
   Star,
   ArrowSquareLeft,
 } from 'phosphor-react-native';
+import DateConverter from './DateConverter';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -121,14 +122,34 @@ const SSLQuarter = ({route}) => {
             </View>
           </ImageBackground>
         </View>
-        <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-          <Text>
-            {sslQuarter.lessons?.map(item => (
-              <View key={item.id}>
-                <Text>{item.title}</Text>
+        <SafeAreaView style={tw`flex`}>
+          {sslQuarter.lessons?.map((item, index) => (
+            <TouchableOpacity
+              key={item.id}
+              style={tw`flex flex-row items-center gap-6 border-t border-secondary-3 w-full py-3 px-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-3xl text-secondary-3`,
+                  darkMode ? tw`text-primary-7` : null,
+                ]}>
+                {index + 1}
+              </Text>
+              <View style={tw`flex flex-col`}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-xl leading-tight text-secondary-6`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ]}>
+                  {item.title}
+                </Text>
+                <View style={tw`flex flex-row`}>
+                  <DateConverter gregorianDate={item.start_date} />
+                  <Text style={tw`font-nokia-bold text-secondary-3`}> - </Text>
+                  <DateConverter gregorianDate={item.end_date} />
+                </View>
               </View>
-            ))}
-          </Text>
+            </TouchableOpacity>
+          ))}
         </SafeAreaView>
       </ScrollView>
     </View>

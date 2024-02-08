@@ -1,9 +1,12 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import {EthDateTime} from 'ethiopian-calendar-date-converter';
-import {View} from 'react-native';
-import {Text} from 'react-native-svg';
+import {Text, View} from 'react-native';
+import tw from './../../../tailwind';
+import {useSelector} from 'react-redux';
 
 const DateConverter = ({gregorianDate}) => {
+  const darkMode = useSelector(state => state.ui.darkMode);
   const [day, month, year] = gregorianDate.split('/').map(Number);
 
   if (isNaN(day) || isNaN(month) || isNaN(year)) {
@@ -31,11 +34,13 @@ const DateConverter = ({gregorianDate}) => {
   const ethiopianMonthName = ethiopianMonthNames[ethDateTime.month - 1];
 
   return (
-    <View>
-      <Text>
-        {ethiopianMonthName} {ethDateTime.date}
-      </Text>
-    </View>
+    <Text
+      style={[
+        tw`font-nokia-bold text-sm text-secondary-4`,
+        darkMode ? tw`text-primary-7` : null,
+      ]}>
+      {ethiopianMonthName} {ethDateTime.date}
+    </Text>
   );
 };
 
