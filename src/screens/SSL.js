@@ -12,7 +12,11 @@ const SSL = () => {
         <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
           Explore quarterly lessons
         </Text>
-        <Text style={tw`font-nokia-bold text-secondary-6 text-xl`}>
+        <Text
+          style={[
+            tw`font-nokia-bold text-secondary-6 text-xl`,
+            darkMode ? tw`text-primary-1` : null,
+          ]}>
           Lessons of previous quarters
         </Text>
         <SSLHome />

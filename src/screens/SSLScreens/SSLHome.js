@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import Link from '@react-navigation/native';
 import {
   List,
   User,
@@ -19,12 +18,13 @@ import {
   ArrowSquareRight,
 } from 'phosphor-react-native';
 import tw from './../../../tailwind';
-import {useGetCoursesQuery} from '../../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {useGetSSLsQuery} from '../../services/SabbathSchoolApi';
+
 const SSLHome = () => {
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
+  const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -70,27 +70,46 @@ const SSLHome = () => {
               tintColor="#EA9215"
             />
           }>
-          {ssl.map((item, index) => (
-            <Link
-              key={index}
-              to={item.id}
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 8,
-                borderWidth: 1,
-                borderColor: '#e2e8f0',
-                padding: 8,
-                margin: 4,
-                flex: 1,
-              }}>
-              <Image source={{uri: item.cover}} />
-              <View>
-                <Text>{item.human_date}</Text>
-                <Text>{item.title}</Text>
-                <Text numberOfLines={2}>{item.description}</Text>
+          <View style={tw`flex flex-col`}>
+            {ssl.map((item, index) => (
+              <View
+                key={index}
+                style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-58`}>
+                <Image
+                  source={{uri: item.cover}}
+                  style={({aspectRatio: 1}, tw`flex-1 w-42% rounded-2`)}
+                />
+                <View style={tw`flex-1 gap-2 justify-between`}>
+                  <View>
+                    <Text style={tw`font-nokia-bold text-sm text-accent-6`}>
+                      {item.human_date}
+                    </Text>
+                    <Text
+                      style={[
+                        tw`font-nokia-bold text-xl text-secondary-6`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      {item.title}
+                    </Text>
+                    <Text
+                      numberOfLines={5}
+                      style={[
+                        tw`font-nokia-bold text-sm text-secondary-6 text-justify mt-2`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      {item.description}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}>
+                    <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
+                      ኮርሱን ክፈት
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </Link>
-          ))}
+            ))}
+          </View>
         </ScrollView>
       </SafeAreaView>
     </View>
