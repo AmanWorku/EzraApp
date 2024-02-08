@@ -64,14 +64,13 @@ const SSLQuarter = ({route}) => {
   if (error) {
     return <Text>Error: {error.message}</Text>;
   }
+  const handleButtonPress = (ssl, weekId) => {
+    navigation.navigate('SSLWeek', {ssl, weekId});
+  };
 
   const gradientColor = darkMode
     ? sslQuarter.quarterly.color_primary_dark
     : sslQuarter.quarterly.color_primary;
-
-  const handleButtonPress = (ssl, weekId) => {
-    navigation.navigate('SSLWeek', {ssl, weekId});
-  };
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>

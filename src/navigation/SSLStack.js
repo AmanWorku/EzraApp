@@ -2,6 +2,7 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SSLQuarter from './../screens/SSLScreens/SSLQuarter';
 import SSL from '../screens/SSL';
+import SSLWeek from '../screens/SSLScreens/SSLWeek';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,11 @@ const SSLStack = () => {
       <Stack.Screen
         name="SSLQuarter"
         component={SSLQuarter}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SSLWeek"
+        component={SSLWeek}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
