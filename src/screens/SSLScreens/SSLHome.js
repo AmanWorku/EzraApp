@@ -57,7 +57,6 @@ const SSLHome = () => {
   }
 
   const handleSSLOpen = sslId => {
-    console.log(sslId);
     navigation.navigate('SSLQuarter', {sslId});
   };
 

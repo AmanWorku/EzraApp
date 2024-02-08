@@ -83,19 +83,19 @@ const SSLQuarter = ({route}) => {
         <View style={tw`flex-1 h-130`}>
           <ImageBackground
             source={{uri: sslQuarter.quarterly.splash}}
-            style={tw`flex-5 justify-between py-12 px-8`}>
+            style={tw`flex-5 justify-between py-6 px-4`}>
             <LinearGradient
-              colors={[gradientColor, `${gradientColor}20`]}
+              colors={[gradientColor, `${gradientColor}30`]}
               style={tw`absolute inset-0`}
               start={{x: 0.5, y: 1}}
-              end={{x: 0.5, y: 0.5}}
+              end={{x: 0.5, y: 0.2}}
             />
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <ArrowSquareLeft
                 size={36}
                 weight="fill"
                 color={'#EA9215'}
-                style={tw`mt-4`}
+                style={tw`mt-8`}
               />
             </TouchableOpacity>
             <View>
@@ -109,17 +109,24 @@ const SSLQuarter = ({route}) => {
               </Text>
               <TouchableOpacity
                 style={tw`border border-primary-3 rounded-full px-4 py-2 self-center mt-4`}>
-                <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
+                <Text style={tw`font-nokia-bold text-primary-1`}>
                   የዛሬን ክፍል ክፈት
                 </Text>
               </TouchableOpacity>
+              <Text
+                style={tw` mt-4 font-nokia-bold text-sm text-primary-1 text-justify`}
+                numberOfLines={3}>
+                {sslQuarter.quarterly.description}
+              </Text>
             </View>
           </ImageBackground>
         </View>
         <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
           <Text>
             {sslQuarter.lessons?.map(item => (
-              <Text>{item.title}</Text>
+              <View key={item.id}>
+                <Text>{item.title}</Text>
+              </View>
             ))}
           </Text>
         </SafeAreaView>
