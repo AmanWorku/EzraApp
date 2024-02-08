@@ -12,6 +12,7 @@ import {
 import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
+import SSLStack from './src/navigation/SSLStack';
 import {Provider, useSelector} from 'react-redux';
 import store from './src/redux/store';
 import React from 'react';
@@ -53,7 +54,7 @@ const MainTabNavigator = () => {
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
-      <Tab.Screen name="SSL" component={SSL} />
+      <Tab.Screen name="SSL" component={SSLStack} />
       <Tab.Screen name="Devotional" component={DevotionalStack} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>

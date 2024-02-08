@@ -40,7 +40,6 @@ const SSLHome = () => {
   //   const handleSearch = e => {
   //     setSearchTerm(e.target.value);
   //   };
-  if (error) return <div>Error: {error.message}</div>;
 
   if (isLoading) {
     return (
@@ -56,6 +55,11 @@ const SSLHome = () => {
   if (error) {
     return <Text>Error: {error.message}</Text>;
   }
+
+  const handleSSLOpen = sslId => {
+    console.log(sslId);
+    navigation.navigate('SSLQuarter', {sslId});
+  };
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -73,7 +77,7 @@ const SSLHome = () => {
           <View style={tw`flex flex-col`}>
             {ssl.map((item, index) => (
               <View
-                key={index}
+                key={item.id}
                 style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-64`}>
                 <Image
                   source={{uri: item.cover}}
@@ -103,9 +107,7 @@ const SSLHome = () => {
                   </View>
                   <TouchableOpacity
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
-                    onPress={navigation.navigate('SSLQuarter', {
-                      sslId: item.id,
-                    })}>
+                    onPress={() => handleSSLOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
                       ኮርሱን ክፈት
                     </Text>
