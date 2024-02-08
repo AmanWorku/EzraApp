@@ -3645,6 +3645,11 @@ etag@~1.8.1:
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
+ethiopian-calendar-date-converter@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.npmjs.org/ethiopian-calendar-date-converter/-/ethiopian-calendar-date-converter-2.1.3.tgz"
+  integrity sha512-wNHRKVXTyhCNBBJsC089ZreQOBBDQh6HpltmFQANZf/lUqR8RKYeqwNTqLnCNMs1yPN9bj9fwi4HJAgN7jt7tA==
+
 event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/event-target-shim/-/event-target-shim-5.0.1.tgz"
