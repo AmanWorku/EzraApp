@@ -3,22 +3,33 @@ import React from 'react';
 import tw from './../../tailwind';
 import {useSelector} from 'react-redux';
 import SSLHome from './SSLScreens/SSLHome';
+import {List, User} from 'phosphor-react-native';
 
 const SSL = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex flex-col mx-auto w-[92%]`}>
-        <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-          Explore quarterly lessons
-        </Text>
-        <Text
-          style={[
-            tw`font-nokia-bold text-secondary-6 text-xl`,
-            darkMode ? tw`text-primary-1` : null,
-          ]}>
-          Lessons of previous quarters
-        </Text>
+        <View style={tw`flex flex-row justify-between my-4`}>
+          <List
+            size={32}
+            weight="bold"
+            style={[tw`text-secondary-6`, darkMode ? tw`text-primary-1` : null]}
+          />
+          <Text
+            style={[
+              tw`font-nokia-bold text-xl text-secondary-6`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
+            Sabbath School
+          </Text>
+          <User
+            size={32}
+            weight="bold"
+            style={[tw`text-secondary-6`, darkMode ? tw`text-primary-1` : null]}
+          />
+        </View>
+
         <SSLHome />
       </SafeAreaView>
     </View>

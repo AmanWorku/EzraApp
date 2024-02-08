@@ -5,7 +5,7 @@ import {
   ScrollView,
   SafeAreaView,
   TextInput,
-  Image,
+  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
@@ -15,7 +15,7 @@ import {
   User,
   CaretCircleDown,
   Star,
-  ArrowSquareRight,
+  ArrowSquareLeft,
 } from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -66,25 +66,52 @@ const SSLQuarter = ({route}) => {
   }
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
-      <SafeAreaView style={tw`flex`}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={['#EA9215']}
-              tintColor="#EA9215"
-            />
-          }>
+    <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={['#EA9215']}
+            tintColor="#EA9215"
+          />
+        }>
+        <View style={tw`flex-1 h-130`}>
+          <ImageBackground
+            source={{uri: sslQuarter.quarterly.splash}}
+            style={tw`flex-5 justify-between py-12 px-8`}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <ArrowSquareLeft
+                size={36}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`mt-4`}
+              />
+            </TouchableOpacity>
+            <View>
+              <Text
+                style={tw`font-nokia-bold text-3xl text-primary-1 text-center`}>
+                {sslQuarter.quarterly.title}
+              </Text>
+              <Text
+                style={tw`font-nokia-bold text-sm text-primary-3 text-center`}>
+                {sslQuarter.quarterly.human_date}
+              </Text>
+              <TouchableOpacity>
+                <Text>የዛሬን ክፍል ክፈት</Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </View>
+        <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
           <Text>
             {sslQuarter.lessons?.map(item => (
               <Text>{item.title}</Text>
             ))}
           </Text>
-        </ScrollView>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </View>
   );
 };
