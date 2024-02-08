@@ -4,6 +4,7 @@ import devotionsReducer from './devotionsSlice';
 import authReducer from './authSlice';
 import uiReducer from './uiSlice';
 import {apiSlice} from './api-slices/apiSlice';
+import {SSLapi} from '../services/SabbathSchoolApi';
 
 const store = configureStore({
   reducer: {
@@ -11,10 +12,11 @@ const store = configureStore({
     course: courseReducer,
     devotions: devotionsReducer,
     auth: authReducer,
+    [SSLapi.reducerPath]: SSLapi.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
+    getDefaultMiddleware().concat(SSLapi.middleware, apiSlice.middleware),
 });
 
 // console.log(store.getState());
