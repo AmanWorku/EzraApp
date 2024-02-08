@@ -21,7 +21,7 @@ import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {useGetSSLOfQuarterQuery} from '../../services/SabbathSchoolApi';
-
+import LinearGradient from 'react-native-linear-gradient';
 const SSLQuarter = ({route}) => {
   const {sslId} = route.params;
   const {
@@ -29,9 +29,7 @@ const SSLQuarter = ({route}) => {
     error,
     isLoading,
     refetch,
-  } = useGetSSLOfQuarterQuery(sslId, {
-    skip: !sslId,
-  });
+  } = useGetSSLOfQuarterQuery(sslId);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -48,6 +46,7 @@ const SSLQuarter = ({route}) => {
   //   const handleSearch = e => {
   //     setSearchTerm(e.target.value);
   //   };
+
   if (error) return <Text>Error: {error.message}</Text>;
 
   if (isLoading) {
@@ -65,6 +64,10 @@ const SSLQuarter = ({route}) => {
     return <Text>Error: {error.message}</Text>;
   }
 
+  const gradientColor = darkMode
+    ? sslQuarter.quarterly.color_primary_dark
+    : sslQuarter.quarterly.color_primary;
+
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
       <ScrollView
@@ -81,6 +84,12 @@ const SSLQuarter = ({route}) => {
           <ImageBackground
             source={{uri: sslQuarter.quarterly.splash}}
             style={tw`flex-5 justify-between py-12 px-8`}>
+            <LinearGradient
+              colors={[gradientColor, `${gradientColor}20`]}
+              style={tw`absolute inset-0`}
+              start={{x: 0.5, y: 1}}
+              end={{x: 0.5, y: 0.5}}
+            />
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <ArrowSquareLeft
                 size={36}
@@ -98,8 +107,11 @@ const SSLQuarter = ({route}) => {
                 style={tw`font-nokia-bold text-sm text-primary-3 text-center`}>
                 {sslQuarter.quarterly.human_date}
               </Text>
-              <TouchableOpacity>
-                <Text>የዛሬን ክፍል ክፈት</Text>
+              <TouchableOpacity
+                style={tw`border border-primary-3 rounded-full px-4 py-2 self-center mt-4`}>
+                <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
+                  የዛሬን ክፍል ክፈት
+                </Text>
               </TouchableOpacity>
             </View>
           </ImageBackground>
