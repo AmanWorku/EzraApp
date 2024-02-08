@@ -2,6 +2,7 @@ import {View, Text, SafeAreaView} from 'react-native';
 import React from 'react';
 import tw from './../../tailwind';
 import {useSelector} from 'react-redux';
+import SSLHome from './SSLScreens/SSLHome';
 
 const SSL = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -31,6 +32,7 @@ const SSL = () => {
         <Text style={tw`font-nokia-bold text-secondary-6 text-xl`}>
           Lessons of previous quarters
         </Text>
+        <SSLHome />
       </SafeAreaView>
     </View>
   );
