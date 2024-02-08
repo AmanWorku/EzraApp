@@ -20,10 +20,15 @@ import {
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {useGetSSLsQuery} from '../../services/SabbathSchoolApi';
+import {useGetSSLOfQuarterQuery} from '../../services/SabbathSchoolApi';
 
-const SSLHome = () => {
-  const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
+const SSLQuarter = () => {
+  const {
+    data: sslQuarter,
+    error,
+    isLoading,
+    refetch,
+  } = useGetSSLOfQuarterQuery();
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -71,7 +76,7 @@ const SSLHome = () => {
             />
           }>
           <View style={tw`flex flex-col`}>
-            {ssl.map((item, index) => (
+            {sslQuarter.map((item, index) => (
               <View
                 key={index}
                 style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-64`}>
@@ -120,4 +125,4 @@ const SSLHome = () => {
   );
 };
 
-export default SSLHome;
+export default SSLQuarter;
