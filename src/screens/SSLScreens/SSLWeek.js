@@ -21,16 +21,20 @@ import DateConverter from './DateConverter';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {useGetSSLOfQuarterQuery} from '../../services/SabbathSchoolApi';
+import {
+  useGetSSLOfQuarterQuery,
+  useGetSSLOfDayQuery,
+  useGetSSLOfDayLessonQuery,
+} from '../../services/SabbathSchoolApi';
 import LinearGradient from 'react-native-linear-gradient';
-const SSLQuarter = ({route}) => {
-  const {sslId} = route.params;
+const SSLWeek = ({route}) => {
+  const {ssl, weekId} = route.params;
   const {
     data: sslQuarter,
     error,
     isLoading,
     refetch,
-  } = useGetSSLOfQuarterQuery(sslId);
+  } = useGetSSLOfDayQuery(ssl, weekId);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -161,4 +165,4 @@ const SSLQuarter = ({route}) => {
   );
 };
 
-export default SSLQuarter;
+export default SSLWeek;
