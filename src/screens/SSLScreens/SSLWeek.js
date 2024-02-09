@@ -4,6 +4,7 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
+  StyleSheet,
   TextInput,
   ImageBackground,
   TouchableOpacity,
@@ -25,6 +26,7 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
+import HTML from 'react-native-render-html';
 import LinearGradient from 'react-native-linear-gradient';
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -53,6 +55,49 @@ const SSLWeek = ({route}) => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
+  const {title, content} = sslWeek;
+
+  const htmlContent = `<div class="wrapper">${content}</div>`; // Wrap content with a class for styling
+  const tagsStyles = {
+    wrapper: {
+      padding: 10,
+    },
+    blockquote: {
+      borderLeftWidth: 4,
+      borderLeftColor: '#EA9215',
+      paddingLeft: 10,
+      marginVertical: 20,
+    },
+    'blockquote p': {
+      fontSize: 22,
+      textIndent: 0,
+    },
+    p: {
+      textIndent: 20,
+    },
+    a: {
+      textDecorationLine: 'underline',
+    },
+    'a:hover': {
+      color: '#a46712',
+      cursor: 'pointer',
+    },
+    em: {
+      marginTop: 20,
+    },
+    code: {
+      fontFamily: 'Nokia Pure Headline Bold', // Not all fonts are supported in React Native
+      paddingTop: 4,
+      color: '#ce8013',
+    },
+    'p > em': {
+      fontStyle: 'normal',
+    },
+    strong: {
+      fontSize: 24,
+    },
+  };
 
   if (isLoading) {
     return (
@@ -150,6 +195,12 @@ const SSLWeek = ({route}) => {
               </View>
             </TouchableOpacity>
           ))}
+          <ScrollView>
+            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>
+              {title}
+            </Text>
+            <HTML source={{html: htmlContent}} tagsStyles={tagsStyles} />
+          </ScrollView>
         </SafeAreaView>
       </ScrollView>
     </View>

@@ -17,9 +17,6 @@ export const SSLapi = createApi({
     }),
     getSSLOfDayLesson: builder.query({
       query: ({path, id, day}) => {
-        console.log('Path:', path);
-        console.log('ID:', id);
-        console.log('Day:', day);
         return `am/quarterlies/${path}/lessons/${id}/days/${day}/read/index.json`;
       },
     }),
