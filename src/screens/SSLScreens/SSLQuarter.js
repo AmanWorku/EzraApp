@@ -34,6 +34,7 @@ const SSLQuarter = ({route}) => {
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const textStyle = 'font-nokia-bold text-sm text-secondary-4';
 
   const onRefresh = useCallback(async () => {
     try {
@@ -143,9 +144,15 @@ const SSLQuarter = ({route}) => {
                   {item.title}
                 </Text>
                 <View style={tw`flex flex-row`}>
-                  <DateConverter gregorianDate={item.start_date} />
+                  <DateConverter
+                    gregorianDate={item.start_date}
+                    textStyle={textStyle}
+                  />
                   <Text style={tw`font-nokia-bold text-secondary-3`}> - </Text>
-                  <DateConverter gregorianDate={item.end_date} />
+                  <DateConverter
+                    gregorianDate={item.end_date}
+                    textStyle={textStyle}
+                  />
                 </View>
               </View>
             </TouchableOpacity>

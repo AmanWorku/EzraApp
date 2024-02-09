@@ -5,7 +5,7 @@ import {Text, View} from 'react-native';
 import tw from './../../../tailwind';
 import {useSelector} from 'react-redux';
 
-const DateConverter = ({gregorianDate}) => {
+const DateConverter = ({gregorianDate, textStyle}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [day, month, year] = gregorianDate.split('/').map(Number);
 
@@ -34,11 +34,7 @@ const DateConverter = ({gregorianDate}) => {
   const ethiopianMonthName = ethiopianMonthNames[ethDateTime.month - 1];
 
   return (
-    <Text
-      style={[
-        tw`font-nokia-bold text-sm text-secondary-4`,
-        darkMode ? tw`text-primary-7` : null,
-      ]}>
+    <Text style={tw`${textStyle}`}>
       {ethiopianMonthName} {ethDateTime.date}
     </Text>
   );

@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import DateConverter from './DateConverter';
 import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
@@ -24,8 +25,8 @@ import LinearGradient from 'react-native-linear-gradient';
 const SSLWeek = ({route}) => {
   const {width} = useWindowDimensions();
   const {ssl, weekId} = route.params;
-  const [selectedVerse, setSelectedVerse] = useState(null);
   const [check, setCheck] = useState('01');
+  const daysOfWeek = ['ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ', 'አርብ'];
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
@@ -86,26 +87,39 @@ const SSLWeek = ({route}) => {
   }
 
   const {content} = sslWeek;
+  const sanitizedContent = content.replace(/\n/g, '');
 
   const styles = StyleSheet.create({
     h3: darkMode
-      ? tw`font-nokia-bold text-primary-1 text-xl`
-      : tw`font-nokia-bold text-secondary-6`,
+      ? tw`font-nokia-bold text-primary-1 text-2xl`
+      : tw`font-nokia-bold text-secondary-6 text-2xl`,
     p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify`
-      : tw`text-secondary-6 font-nokia-bold text-justify`,
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
     blockquote: darkMode
-      ? tw`border-l-4 border-orange-500 pl-4 my-5 text-primary-1`
-      : tw`border-l-4 border-orange-500 pl-4 my-5 text-secondary-6`,
+      ? tw`border-l-4 border-orange-500 p-4 text-primary-1 font-nokia-bold text-xl`
+      : tw`border-l-4 border-orange-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
+    'blockquote.p': tw`font-nokia-bold text-4xl`,
     em: tw`mt-4`,
     code: {
       ...tw`font-nokia-bold`,
-      color: '#CE8013',
+      color: '#EA9215',
     },
     strong: tw`text-xl`,
+    a: tw`text-accent-7`,
   });
+  const renderNode = (node, index, siblings, parent, defaultRenderer) => {
+    if (node.name === 'blockquote') {
+      return (
+        <View style={tw`border-l-4 border-accent-6`} key={index}>
+          {defaultRenderer(node.children, parent)}
+        </View>
+      );
+    }
+  };
 
   const gradientColor = '#000000';
+  const dateStyle = 'font-nokia-bold text-lg text-primary-6';
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -130,13 +144,27 @@ const SSLWeek = ({route}) => {
                 start={{x: 0.5, y: 1}}
                 end={{x: 0.5, y: 0.2}}
               />
-              <Text
-                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 absolute bottom-0 p-4`}>
-                {sslWeek.title}
-              </Text>
+              <View style={tw`absolute bottom-0 p-4`}>
+                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                  {daysOfWeek[(check % 7) - 1]}፣&nbsp;&nbsp;
+                  <DateConverter
+                    gregorianDate={sslWeek.date}
+                    style={tw`text-2xl`}
+                    textStyle={dateStyle}
+                  />
+                </Text>
+                <Text
+                  style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 `}>
+                  {sslWeek.title}
+                </Text>
+              </View>
             </ImageBackground>
-            <View style={tw`flex px-4`}>
-              <HTMLView value={content} stylesheet={styles} />
+            <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
+              <HTMLView
+                value={sanitizedContent}
+                stylesheet={styles}
+                addLineBreaks={false}
+              />
               <View style={tw`flex flex-row justify-between`}>
                 {check !== '01' && (
                   <TouchableOpacity
