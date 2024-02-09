@@ -22,19 +22,25 @@ import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {
-  useGetSSLOfQuarterQuery,
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
 import LinearGradient from 'react-native-linear-gradient';
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
+  const check = '01';
+  const {data: sslQuarter} = useGetSSLOfDayQuery(ssl, weekId);
   const {
-    data: sslQuarter,
-    error,
+    data: sslWeek,
     isLoading,
+    error,
     refetch,
-  } = useGetSSLOfDayQuery(ssl, weekId);
+  } = useGetSSLOfDayLessonQuery({
+    path: ssl,
+    id: weekId,
+    day: check,
+  });
+
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -48,12 +54,6 @@ const SSLWeek = ({route}) => {
     }
   }, [refetch]);
 
-  //   const handleSearch = e => {
-  //     setSearchTerm(e.target.value);
-  //   };
-
-  if (error) return <Text>Error: {error.message}</Text>;
-
   if (isLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -66,16 +66,8 @@ const SSLWeek = ({route}) => {
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return <Text style={tw`text-red-500 mt-12`}>Error: {error.message}</Text>;
   }
-
-  const gradientColor = darkMode
-    ? sslQuarter.quarterly.color_primary_dark
-    : sslQuarter.quarterly.color_primary;
-
-  const handleButtonPress = (ssl, weekId) => {
-    navigation.navigate('SSLWeek', {ssl, weekId});
-  };
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -90,8 +82,8 @@ const SSLWeek = ({route}) => {
           />
         }>
         <View style={tw`flex-1 h-130`}>
-          <ImageBackground
-            source={{uri: sslQuarter.quarterly.splash}}
+          {/* <ImageBackground
+            source={{uri: sslWeek.quarterly.splash}}
             style={tw`flex-5 justify-between py-6 px-4`}>
             <LinearGradient
               colors={[gradientColor, `${gradientColor}30`]}
@@ -110,11 +102,11 @@ const SSLWeek = ({route}) => {
             <View>
               <Text
                 style={tw`font-nokia-bold text-3xl text-primary-1 text-center`}>
-                {sslQuarter.quarterly.title}
+                {sslWeek.quarterly.title}
               </Text>
               <Text
                 style={tw`font-nokia-bold text-sm text-primary-3 text-center`}>
-                {sslQuarter.quarterly.human_date}
+                {sslWeek.quarterly.human_date}
               </Text>
               <TouchableOpacity
                 style={tw`border border-primary-3 rounded-full px-4 py-2 self-center mt-4`}>
@@ -125,17 +117,16 @@ const SSLWeek = ({route}) => {
               <Text
                 style={tw` mt-4 font-nokia-bold text-sm text-primary-1 text-justify`}
                 numberOfLines={3}>
-                {sslQuarter.quarterly.description}
+                {sslWeek.quarterly.description}
               </Text>
             </View>
-          </ImageBackground>
+          </ImageBackground> */}
         </View>
         <SafeAreaView style={tw`flex`}>
-          {sslQuarter.lessons?.map((item, index) => (
+          {sslWeek.days?.map((item, index) => (
             <TouchableOpacity
               key={item.id}
-              style={tw`flex flex-row items-center gap-6 border-t border-secondary-3 w-full py-3 px-6`}
-              onPress={() => handleButtonPress(sslId, item.id)}>
+              style={tw`flex flex-row items-center gap-6 border-t border-secondary-3 w-full py-3 px-6`}>
               <Text
                 style={[
                   tw`font-nokia-bold text-3xl text-secondary-3`,
@@ -152,9 +143,9 @@ const SSLWeek = ({route}) => {
                   {item.title}
                 </Text>
                 <View style={tw`flex flex-row`}>
-                  <DateConverter gregorianDate={item.start_date} />
+                  {/* <DateConverter gregorianDate={item.start_date} />
                   <Text style={tw`font-nokia-bold text-secondary-3`}> - </Text>
-                  <DateConverter gregorianDate={item.end_date} />
+                  <DateConverter gregorianDate={item.end_date} /> */}
                 </View>
               </View>
             </TouchableOpacity>
