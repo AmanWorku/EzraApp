@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Modal,
   useWindowDimensions,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
@@ -51,8 +50,15 @@ const SSLWeek = ({route}) => {
   }, [refetch]);
 
   const onNextButtonClick = () => {
-    const nextCheck = parseInt(check) + 1; // Increment check by 1
-    setCheck(nextCheck.toString()); // Update the state with the new check value
+    const nextCheck = parseInt(check, 10) + 1;
+    const paddedNextCheck = nextCheck.toString().padStart(2, '0');
+    setCheck(paddedNextCheck);
+  };
+
+  const onPreviousButtonClick = () => {
+    const previousCheck = parseInt(check, 10) - 1;
+    const paddedPreviousCheck = previousCheck.toString().padStart(2, '0');
+    setCheck(paddedPreviousCheck);
   };
 
   if (isLoading) {
@@ -91,7 +97,7 @@ const SSLWeek = ({route}) => {
   });
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
+    <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-full` : null}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -102,22 +108,41 @@ const SSLWeek = ({route}) => {
             tintColor="#EA9215"
           />
         }>
-        <SafeAreaView style={tw`flex`}>
+        <View style={tw`flex`}>
           <ScrollView>
             <View style={tw`flex px-4`}>
+              <Text style={tw`font-nokia-bold text-2xl text-secondary-6`}>
+                {sslWeek.title}
+              </Text>
               <HTMLView value={content} stylesheet={styles} />
-              <TouchableOpacity
-                style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18 flex self-end`}
-                onPress={onNextButtonClick}>
-                <Text style={tw`text-accent-6 font-nokia-bold text-xl `}>
-                  Next
-                </Text>
-              </TouchableOpacity>
+              <View style={tw`flex flex-row justify-between`}>
+                {check !== '01' && (
+                  <TouchableOpacity
+                    style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`}
+                    onPress={onPreviousButtonClick}>
+                    <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                      Back
+                    </Text>
+                  </TouchableOpacity>
+                )}
+                {check !== '07' && (
+                  <TouchableOpacity
+                    style={[
+                      tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`,
+                      check === '01' && tw`self-end`, // Align to the right if check is '01'
+                    ]}
+                    onPress={onNextButtonClick}>
+                    <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                      Next
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </ScrollView>
-        </SafeAreaView>
+        </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
