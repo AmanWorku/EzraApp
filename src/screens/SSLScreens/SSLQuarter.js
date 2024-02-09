@@ -44,10 +44,6 @@ const SSLQuarter = ({route}) => {
     }
   }, [refetch]);
 
-  //   const handleSearch = e => {
-  //     setSearchTerm(e.target.value);
-  //   };
-
   if (error) return <Text>Error: {error.message}</Text>;
 
   if (isLoading) {

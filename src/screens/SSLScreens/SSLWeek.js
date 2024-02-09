@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   useWindowDimensions,
+  ImageBackground,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -18,13 +19,17 @@ import {
 } from '../../services/SabbathSchoolApi';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SSLWeek = ({route}) => {
   const {width} = useWindowDimensions();
   const {ssl, weekId} = route.params;
   const [selectedVerse, setSelectedVerse] = useState(null);
-  const [check, setCheck] = useState('01'); // State to hold the check value
-  const {data: sslQuarter} = useGetSSLOfDayQuery(ssl, weekId);
+  const [check, setCheck] = useState('01');
+  const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
+    path: ssl,
+    id: weekId,
+  });
   const {
     data: sslWeek,
     isLoading,
@@ -36,7 +41,6 @@ const SSLWeek = ({route}) => {
     day: check,
   });
 
-  const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -75,6 +79,11 @@ const SSLWeek = ({route}) => {
   if (error) {
     return <Text style={tw`text-red-500 mt-12`}>Error: {error.message}</Text>;
   }
+  if (quarterError) {
+    return (
+      <Text style={tw`text-red-500 mt-12`}>Error: {quarterError.message}</Text>
+    );
+  }
 
   const {content} = sslWeek;
 
@@ -88,16 +97,18 @@ const SSLWeek = ({route}) => {
     blockquote: darkMode
       ? tw`border-l-4 border-orange-500 pl-4 my-5 text-primary-1`
       : tw`border-l-4 border-orange-500 pl-4 my-5 text-secondary-6`,
-    em: tw`mt-4`, // Margin top 4
+    em: tw`mt-4`,
     code: {
       ...tw`font-nokia-bold`,
-      color: '#CE8013', // Custom code color
+      color: '#CE8013',
     },
-    strong: tw`text-xl`, // Extra large font size
+    strong: tw`text-xl`,
   });
 
+  const gradientColor = '#000000';
+
   return (
-    <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-full` : null}>
+    <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -110,10 +121,21 @@ const SSLWeek = ({route}) => {
         }>
         <View style={tw`flex`}>
           <ScrollView>
-            <View style={tw`flex px-4`}>
-              <Text style={tw`font-nokia-bold text-2xl text-secondary-6`}>
+            <ImageBackground
+              source={{uri: sslQuarter.lesson.cover}}
+              style={tw`flex-5 flex-col justify-between py-6 px-4 h-80`}>
+              <LinearGradient
+                colors={[gradientColor, `${gradientColor}20`]}
+                style={tw`absolute inset-0`}
+                start={{x: 0.5, y: 1}}
+                end={{x: 0.5, y: 0.2}}
+              />
+              <Text
+                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 absolute bottom-0 p-4`}>
                 {sslWeek.title}
               </Text>
+            </ImageBackground>
+            <View style={tw`flex px-4`}>
               <HTMLView value={content} stylesheet={styles} />
               <View style={tw`flex flex-row justify-between`}>
                 {check !== '01' && (
@@ -142,7 +164,7 @@ const SSLWeek = ({route}) => {
           </ScrollView>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
