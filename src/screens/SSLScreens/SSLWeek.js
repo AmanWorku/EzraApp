@@ -5,32 +5,26 @@ import {
   ScrollView,
   SafeAreaView,
   StyleSheet,
-  TextInput,
-  ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Modal,
+  useWindowDimensions,
 } from 'react-native';
-import {
-  List,
-  User,
-  CaretCircleDown,
-  Star,
-  ArrowSquareLeft,
-} from 'phosphor-react-native';
-import DateConverter from './DateConverter';
-import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
-import HTML from 'react-native-render-html';
-import LinearGradient from 'react-native-linear-gradient';
+import HTMLView from 'react-native-htmlview';
+import tw from './../../../tailwind';
+
 const SSLWeek = ({route}) => {
+  const {width} = useWindowDimensions();
   const {ssl, weekId} = route.params;
-  const check = '01';
+  const [selectedVerse, setSelectedVerse] = useState(null);
+  const [check, setCheck] = useState('01'); // State to hold the check value
   const {data: sslQuarter} = useGetSSLOfDayQuery(ssl, weekId);
   const {
     data: sslWeek,
@@ -56,47 +50,9 @@ const SSLWeek = ({route}) => {
     }
   }, [refetch]);
 
-  const {title, content} = sslWeek;
-
-  const htmlContent = `<div class="wrapper">${content}</div>`; // Wrap content with a class for styling
-  const tagsStyles = {
-    wrapper: {
-      padding: 10,
-    },
-    blockquote: {
-      borderLeftWidth: 4,
-      borderLeftColor: '#EA9215',
-      paddingLeft: 10,
-      marginVertical: 20,
-    },
-    'blockquote p': {
-      fontSize: 22,
-      textIndent: 0,
-    },
-    p: {
-      textIndent: 20,
-    },
-    a: {
-      textDecorationLine: 'underline',
-    },
-    'a:hover': {
-      color: '#a46712',
-      cursor: 'pointer',
-    },
-    em: {
-      marginTop: 20,
-    },
-    code: {
-      fontFamily: 'Nokia Pure Headline Bold', // Not all fonts are supported in React Native
-      paddingTop: 4,
-      color: '#ce8013',
-    },
-    'p > em': {
-      fontStyle: 'normal',
-    },
-    strong: {
-      fontSize: 24,
-    },
+  const onNextButtonClick = () => {
+    const nextCheck = parseInt(check) + 1; // Increment check by 1
+    setCheck(nextCheck.toString()); // Update the state with the new check value
   };
 
   if (isLoading) {
@@ -114,6 +70,26 @@ const SSLWeek = ({route}) => {
     return <Text style={tw`text-red-500 mt-12`}>Error: {error.message}</Text>;
   }
 
+  const {content} = sslWeek;
+
+  const styles = StyleSheet.create({
+    h3: darkMode
+      ? tw`font-nokia-bold text-primary-1 text-xl`
+      : tw`font-nokia-bold text-secondary-6`,
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify`
+      : tw`text-secondary-6 font-nokia-bold text-justify`,
+    blockquote: darkMode
+      ? tw`border-l-4 border-orange-500 pl-4 my-5 text-primary-1`
+      : tw`border-l-4 border-orange-500 pl-4 my-5 text-secondary-6`,
+    em: tw`mt-4`, // Margin top 4
+    code: {
+      ...tw`font-nokia-bold`,
+      color: '#CE8013', // Custom code color
+    },
+    strong: tw`text-xl`, // Extra large font size
+  });
+
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
       <ScrollView
@@ -126,80 +102,18 @@ const SSLWeek = ({route}) => {
             tintColor="#EA9215"
           />
         }>
-        <View style={tw`flex-1 h-130`}>
-          {/* <ImageBackground
-            source={{uri: sslWeek.quarterly.splash}}
-            style={tw`flex-5 justify-between py-6 px-4`}>
-            <LinearGradient
-              colors={[gradientColor, `${gradientColor}30`]}
-              style={tw`absolute inset-0`}
-              start={{x: 0.5, y: 1}}
-              end={{x: 0.5, y: 0.2}}
-            />
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-              <ArrowSquareLeft
-                size={36}
-                weight="fill"
-                color={'#EA9215'}
-                style={tw`mt-8`}
-              />
-            </TouchableOpacity>
-            <View>
-              <Text
-                style={tw`font-nokia-bold text-3xl text-primary-1 text-center`}>
-                {sslWeek.quarterly.title}
-              </Text>
-              <Text
-                style={tw`font-nokia-bold text-sm text-primary-3 text-center`}>
-                {sslWeek.quarterly.human_date}
-              </Text>
+        <SafeAreaView style={tw`flex`}>
+          <ScrollView>
+            <View style={tw`flex px-4`}>
+              <HTMLView value={content} stylesheet={styles} />
               <TouchableOpacity
-                style={tw`border border-primary-3 rounded-full px-4 py-2 self-center mt-4`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  ትምህርቱን ክፈት
+                style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18 flex self-end`}
+                onPress={onNextButtonClick}>
+                <Text style={tw`text-accent-6 font-nokia-bold text-xl `}>
+                  Next
                 </Text>
               </TouchableOpacity>
-              <Text
-                style={tw` mt-4 font-nokia-bold text-sm text-primary-1 text-justify`}
-                numberOfLines={3}>
-                {sslWeek.quarterly.description}
-              </Text>
             </View>
-          </ImageBackground> */}
-        </View>
-        <SafeAreaView style={tw`flex`}>
-          {sslWeek.days?.map((item, index) => (
-            <TouchableOpacity
-              key={item.id}
-              style={tw`flex flex-row items-center gap-6 border-t border-secondary-3 w-full py-3 px-6`}>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-3xl text-secondary-3`,
-                  darkMode ? tw`text-primary-7` : null,
-                ]}>
-                {index + 1}
-              </Text>
-              <View style={tw`flex flex-col`}>
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-xl leading-tight text-secondary-6`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ]}>
-                  {item.title}
-                </Text>
-                <View style={tw`flex flex-row`}>
-                  {/* <DateConverter gregorianDate={item.start_date} />
-                  <Text style={tw`font-nokia-bold text-secondary-3`}> - </Text>
-                  <DateConverter gregorianDate={item.end_date} /> */}
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
-          <ScrollView>
-            <Text style={{fontSize: 24, fontWeight: 'bold', marginBottom: 10}}>
-              {title}
-            </Text>
-            <HTML source={{html: htmlContent}} tagsStyles={tagsStyles} />
           </ScrollView>
         </SafeAreaView>
       </ScrollView>
