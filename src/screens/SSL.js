@@ -29,7 +29,6 @@ const SSL = () => {
             style={[tw`text-secondary-6`, darkMode ? tw`text-primary-1` : null]}
           />
         </View>
-
         <SSLHome />
       </SafeAreaView>
     </View>

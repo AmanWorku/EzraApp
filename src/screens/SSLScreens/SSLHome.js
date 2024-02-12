@@ -21,6 +21,7 @@ import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {useGetSSLsQuery} from '../../services/SabbathSchoolApi';
+import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
@@ -73,6 +74,7 @@ const SSLHome = () => {
               tintColor="#EA9215"
             />
           }>
+          <CurrentSSL />
           <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
             Explore quarterly lessons
           </Text>
