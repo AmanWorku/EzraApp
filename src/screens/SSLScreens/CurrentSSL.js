@@ -100,7 +100,11 @@ const CurrentSSL = () => {
         <Text style={tw`font-nokia-bold text-accent-6`}>
           {quarterDetails.quarterly.title}
         </Text>
-        <Text style={tw`font-nokia-bold text-secondary-6 text-2xl`}>
+        <Text
+          style={[
+            tw`font-nokia-bold text-secondary-6 text-2xl`,
+            darkMode ? tw`text-primary-1` : null,
+          ]}>
           {lessonDetails.lesson.title}
         </Text>
         <Text style={tw`font-nokia-bold text-accent-6`}>
@@ -108,7 +112,11 @@ const CurrentSSL = () => {
         </Text>
       </View>
       <View style={tw`border-b border-accent-6 mb-1`} />
-      <Text style={tw`font-nokia-bold text-secondary-6 text-justify `}>
+      <Text
+        style={[
+          tw`font-nokia-bold text-secondary-6 text-justify`,
+          darkMode ? tw`text-primary-1` : null,
+        ]}>
         {'   '}
         {quarterDetails.quarterly.description}
       </Text>
@@ -120,7 +128,11 @@ const CurrentSSL = () => {
         </TouchableOpacity>
         <TouchableOpacity
           style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}>
-          <Text style={tw`font-nokia-bold text-secondary-6 items-center`}>
+          <Text
+            style={[
+              tw`font-nokia-bold text-secondary-6 items-center`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
             Watch on YouTube
           </Text>
           <YoutubeLogo size={20} weight="fill" color="#EA9215" />
