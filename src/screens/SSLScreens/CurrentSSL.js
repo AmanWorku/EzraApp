@@ -7,8 +7,15 @@ import {
   useGetSSLOfQuarterQuery,
 } from './../../services/SabbathSchoolApi';
 import DateConverter from './DateConverter';
-import {View, Text, ImageBackground, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import tw from './../../../tailwind';
+import LinearGradient from 'react-native-linear-gradient';
 function CurrentSSL() {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week] = useCalculateLessonIndex(currentDate);
@@ -32,7 +39,8 @@ function CurrentSSL() {
   }, [lessonDetails]);
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  const textStyle = 'font-nokia-bold text-primary-3';
+  const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
+  const gradientColor = '#222222';
 
   if (lessonIsLoading || quarterIsLoading) {
     return <Text>Loading...</Text>;
@@ -47,38 +55,62 @@ function CurrentSSL() {
     return <Text>Missing data...</Text>;
   }
   return (
-    <View style={tw`mb-3`}>
+    <View style={tw`mb-3 rounded-2 overflow-hidden`}>
       <ImageBackground
         source={{
           uri: backgroundImage,
         }}
-        style={tw`w-full h-44 justify-end`}
-        imageStyle={tw`rounded-4`}>
-        <View
-          style={[
-            tw`absolute inset-0 bg-accent-10 bg-opacity-60 rounded-lg`,
-            darkMode ? tw`bg-accent-11 bg-opacity-70` : null,
-          ]}>
+        style={tw`w-full h-44 justify-end`}>
+        <LinearGradient
+          colors={[gradientColor, `${gradientColor}20`]}
+          style={tw`absolute inset-0`}
+          start={{x: 0.5, y: 1}}
+          end={{x: 0.5, y: 0.2}}
+        />
+        <View style={[tw`absolute inset-0 rounded-lg`]}>
           <View style={tw`flex absolute bottom-0 left-0 p-4`}>
-            <View>
-              <Text style={tw`font-nokia-bold text-primary-1 text-2xl`}>
-                {quarterDetails.quarterly.title}
-              </Text>
-            </View>
-            <View style={tw`flex flex-row`}>
+            <Text style={tw`font-nokia-bold text-primary-6`}>
+              የዚህ ሳምንት ትምህርት
+            </Text>
+            <View style={tw`flex flex-row items-center`}>
               <DateConverter
-                gregorianDate={quarterDetails.quarterly.start_date}
+                gregorianDate={lessonDetails.lesson.start_date}
                 textStyle={textStyle}
               />
               <Text style={tw`font-nokia-bold text-primary-3`}> - </Text>
               <DateConverter
-                gregorianDate={quarterDetails.quarterly.end_date}
+                gregorianDate={lessonDetails.lesson.end_date}
                 textStyle={textStyle}
               />
             </View>
           </View>
         </View>
       </ImageBackground>
+
+      <View style={tw`my-2`}>
+        <Text style={tw`font-nokia-bold text-accent-6`}>
+          {quarterDetails.quarterly.title}
+        </Text>
+        <Text style={tw`font-nokia-bold text-secondary-6 text-2xl`}>
+          {lessonDetails.lesson.title}
+        </Text>
+        <Text style={tw`font-nokia-bold text-accent-6`}>
+          {quarterDetails.quarterly.human_date}
+        </Text>
+      </View>
+      <View style={tw`border-b border-accent-6 mb-1`} />
+      <Text style={tw`font-nokia-bold text-secondary-6 text-justify `}>
+        {'   '}
+        {quarterDetails.quarterly.description}
+      </Text>
+      <View style={tw`flex flex-row mx-auto gap-2`}>
+        <TouchableOpacity style={tw``}>
+          <Text>ትምህርቱን ክፈት</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text>Watch on YouTube</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
