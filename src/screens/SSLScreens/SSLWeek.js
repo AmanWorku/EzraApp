@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
+  const scrollRef = useRef();
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
@@ -41,6 +42,10 @@ const SSLWeek = ({route}) => {
     id: weekId,
     day: check,
   });
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({y: 0, animated: true});
+  }, [check]);
 
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -129,6 +134,7 @@ const SSLWeek = ({route}) => {
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
       <ScrollView
         showsVerticalScrollIndicator={false}
+        ref={scrollRef}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
