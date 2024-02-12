@@ -23,7 +23,6 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
 import {useSelector} from 'react-redux';
-import Carousel from 'react-native-reanimated-carousel';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
