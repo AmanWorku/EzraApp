@@ -44,6 +44,7 @@ function CurrentSSL() {
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
   const handleOpenButtonPress = () => {
+    console.log('Open button pressed');
     navigation.navigate('SSLWeek', {
       ssl: quarter,
       weekId: week,
@@ -112,12 +113,13 @@ function CurrentSSL() {
         {quarterDetails.quarterly.description}
       </Text>
       <View style={tw`flex flex-row mx-auto gap-2 items-center mt-2`}>
-        <TouchableOpacity style={tw`bg-accent-6 px-3 py-1 rounded-full`}>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-3 py-1 rounded-full`}
+          onPress={handleOpenButtonPress}>
           <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
-          onPress={handleOpenButtonPress}>
+          style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}>
           <Text style={tw`font-nokia-bold text-secondary-6 items-center`}>
             Watch on YouTube
           </Text>
