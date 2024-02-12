@@ -12,9 +12,12 @@ import {
 import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
+import SSLStack from './src/navigation/SSLStack';
 import {Provider, useSelector} from 'react-redux';
 import store from './src/redux/store';
 import React from 'react';
+import {StatusBar} from 'react-native';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -25,6 +28,10 @@ const MainTabNavigator = () => {
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
   };
+
+  StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);
+  StatusBar.setBarStyle(darkMode ? 'light-content' : 'dark-content', true);
+  changeNavigationBarColor(darkMode ? '#293239' : '#F1F1F1', !darkMode, true);
 
   return (
     <Tab.Navigator
@@ -53,7 +60,7 @@ const MainTabNavigator = () => {
       })}>
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
-      <Tab.Screen name="SSL" component={SSL} />
+      <Tab.Screen name="SSL" component={SSLStack} />
       <Tab.Screen name="Devotional" component={DevotionalStack} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>
