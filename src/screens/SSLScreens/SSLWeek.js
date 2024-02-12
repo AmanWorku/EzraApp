@@ -9,8 +9,10 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
+  StatusBar,
 } from 'react-native';
 import {useSelector} from 'react-redux';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import DateConverter from './DateConverter';
 import {
   useGetSSLOfDayQuery,
