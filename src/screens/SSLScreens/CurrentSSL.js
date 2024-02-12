@@ -6,6 +6,7 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
 } from './../../services/SabbathSchoolApi';
+import {useNavigation} from '@react-navigation/native';
 import DateConverter from './DateConverter';
 import {
   View,
@@ -16,11 +17,12 @@ import {
 } from 'react-native';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
+import {YoutubeLogo} from 'phosphor-react-native';
 function CurrentSSL() {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
-
+  const navigation = useNavigation();
   const {
     data: lessonDetails,
     error: lessonError,
@@ -41,6 +43,12 @@ function CurrentSSL() {
 
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
+  const handleOpenButtonPress = () => {
+    navigation.navigate('SSLWeek', {
+      ssl: quarter,
+      weekId: week,
+    });
+  };
 
   if (lessonIsLoading || quarterIsLoading) {
     return <Text>Loading...</Text>;
@@ -103,12 +111,17 @@ function CurrentSSL() {
         {'   '}
         {quarterDetails.quarterly.description}
       </Text>
-      <View style={tw`flex flex-row mx-auto gap-2`}>
-        <TouchableOpacity style={tw``}>
-          <Text>ትምህርቱን ክፈት</Text>
+      <View style={tw`flex flex-row mx-auto gap-2 items-center mt-2`}>
+        <TouchableOpacity style={tw`bg-accent-6 px-3 py-1 rounded-full`}>
+          <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>Watch on YouTube</Text>
+        <TouchableOpacity
+          style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
+          onPress={handleOpenButtonPress}>
+          <Text style={tw`font-nokia-bold text-secondary-6 items-center`}>
+            Watch on YouTube
+          </Text>
+          <YoutubeLogo size={20} weight="fill" color="#EA9215" />
         </TouchableOpacity>
       </View>
     </View>
