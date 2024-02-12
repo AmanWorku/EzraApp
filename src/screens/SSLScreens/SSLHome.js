@@ -4,19 +4,11 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
-  TextInput,
   Image,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {
-  List,
-  User,
-  CaretCircleDown,
-  Star,
-  ArrowSquareRight,
-} from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -37,10 +29,6 @@ const SSLHome = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-
-  //   const handleSearch = e => {
-  //     setSearchTerm(e.target.value);
-  //   };
 
   if (isLoading) {
     return (
@@ -75,7 +63,7 @@ const SSLHome = () => {
             />
           }>
           <CurrentSSL />
-          <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
             Explore quarterly lessons
           </Text>
           <Text
@@ -85,6 +73,7 @@ const SSLHome = () => {
             ]}>
             Lessons of previous quarters
           </Text>
+          <View style={tw`border-b border-accent-6 my-1`} />
           <View style={tw`flex flex-col`}>
             {ssl.map((item, index) => (
               <View
@@ -113,6 +102,7 @@ const SSLHome = () => {
                         tw`font-nokia-bold text-sm text-secondary-6 text-justify mt-2`,
                         darkMode ? tw`text-primary-1` : null,
                       ]}>
+                      {'  '}
                       {item.description}
                     </Text>
                   </View>

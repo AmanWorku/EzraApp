@@ -4,19 +4,12 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
-  TextInput,
   ImageBackground,
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {
-  List,
-  User,
-  CaretCircleDown,
-  Star,
-  ArrowSquareLeft,
-} from 'phosphor-react-native';
+import {ArrowSquareLeft} from 'phosphor-react-native';
 import DateConverter from './DateConverter';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -45,7 +38,9 @@ const SSLQuarter = ({route}) => {
     }
   }, [refetch]);
 
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   if (isLoading) {
     return (

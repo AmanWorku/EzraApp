@@ -8,10 +8,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  useWindowDimensions,
   ImageBackground,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
 import {
@@ -23,7 +21,6 @@ import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 
 const SSLWeek = ({route}) => {
-  const {width} = useWindowDimensions();
   const {ssl, weekId} = route.params;
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
