@@ -16,12 +16,15 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
+import {useNavigation} from '@react-navigation/native';
+import {ArrowSquareLeft} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
+  const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
@@ -115,6 +118,10 @@ const SSLWeek = ({route}) => {
     }
   };
 
+  const handleBackButtonPress = () => {
+    navigation.goBack();
+  };
+
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
 
@@ -131,62 +138,65 @@ const SSLWeek = ({route}) => {
           />
         }>
         <View style={tw`flex`}>
-          <ScrollView>
-            <ImageBackground
-              source={{uri: sslQuarter.lesson.cover}}
-              style={tw`flex-5 flex-col justify-between py-6 px-4 h-80`}>
-              <LinearGradient
-                colors={[gradientColor, `${gradientColor}20`]}
-                style={tw`absolute inset-0`}
-                start={{x: 0.5, y: 1}}
-                end={{x: 0.5, y: 0.2}}
-              />
-              <View style={tw`absolute bottom-0 p-4`}>
-                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                  {daysOfWeek[check % 7]}፣&nbsp;&nbsp;
-                  <DateConverter
-                    gregorianDate={sslWeek.date}
-                    style={tw`text-2xl`}
-                    textStyle={dateStyle}
-                  />
-                </Text>
-                <Text
-                  style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 `}>
-                  {sslWeek.title}
-                </Text>
-              </View>
-            </ImageBackground>
-            <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
-              <HTMLView
-                value={sanitizedContent}
-                stylesheet={styles}
-                addLineBreaks={false}
-              />
-              <View style={tw`flex flex-row justify-between`}>
-                {check !== '01' && (
-                  <TouchableOpacity
-                    style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`}
-                    onPress={onPreviousButtonClick}>
-                    <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
-                      Back
-                    </Text>
-                  </TouchableOpacity>
-                )}
-                {check !== '07' && (
-                  <TouchableOpacity
-                    style={[
-                      tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`,
-                      check === '01' && tw`self-end`, // Align to the right if check is '01'
-                    ]}
-                    onPress={onNextButtonClick}>
-                    <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
-                      Next
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
+          <ImageBackground
+            source={{uri: sslQuarter.lesson.cover}}
+            style={tw`flex-5 flex-col justify-between py-6 px-4 h-80`}>
+            <TouchableOpacity
+              onPress={handleBackButtonPress}
+              style={{zIndex: 1, marginTop: 12}}>
+              <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
+            </TouchableOpacity>
+            <LinearGradient
+              colors={[gradientColor, `${gradientColor}20`]}
+              style={tw`absolute inset-0`}
+              start={{x: 0.5, y: 1}}
+              end={{x: 0.5, y: 0.2}}
+            />
+            <View style={tw`absolute bottom-0 p-4`}>
+              <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                {daysOfWeek[check % 7]}፣&nbsp;&nbsp;
+                <DateConverter
+                  gregorianDate={sslWeek.date}
+                  style={tw`text-2xl`}
+                  textStyle={dateStyle}
+                />
+              </Text>
+              <Text
+                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 `}>
+                {sslWeek.title}
+              </Text>
             </View>
-          </ScrollView>
+          </ImageBackground>
+          <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
+            <HTMLView
+              value={sanitizedContent}
+              stylesheet={styles}
+              addLineBreaks={false}
+            />
+            <View style={tw`flex flex-row justify-between`}>
+              {check !== '01' && (
+                <TouchableOpacity
+                  style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`}
+                  onPress={onPreviousButtonClick}>
+                  <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                    Back
+                  </Text>
+                </TouchableOpacity>
+              )}
+              {check !== '07' && (
+                <TouchableOpacity
+                  style={[
+                    tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`,
+                    check === '01' && tw`self-end`, // Align to the right if check is '01'
+                  ]}
+                  onPress={onNextButtonClick}>
+                  <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                    Next
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
         </View>
       </ScrollView>
     </View>

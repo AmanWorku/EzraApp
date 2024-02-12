@@ -18,7 +18,8 @@ import {
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
-function CurrentSSL() {
+
+const CurrentSSL = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
@@ -44,7 +45,6 @@ function CurrentSSL() {
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
   const handleOpenButtonPress = () => {
-    console.log('Open button pressed');
     navigation.navigate('SSLWeek', {
       ssl: quarter,
       weekId: week,
@@ -128,6 +128,6 @@ function CurrentSSL() {
       </View>
     </View>
   );
-}
+};
 
 export default CurrentSSL;
