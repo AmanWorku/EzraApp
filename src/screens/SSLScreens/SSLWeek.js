@@ -26,7 +26,7 @@ const SSLWeek = ({route}) => {
   const {width} = useWindowDimensions();
   const {ssl, weekId} = route.params;
   const [check, setCheck] = useState('01');
-  const daysOfWeek = ['ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ', 'አርብ'];
+  const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
@@ -146,7 +146,7 @@ const SSLWeek = ({route}) => {
               />
               <View style={tw`absolute bottom-0 p-4`}>
                 <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                  {daysOfWeek[(check % 7) - 1]}፣&nbsp;&nbsp;
+                  {daysOfWeek[check % 7]}፣&nbsp;&nbsp;
                   <DateConverter
                     gregorianDate={sslWeek.date}
                     style={tw`text-2xl`}
