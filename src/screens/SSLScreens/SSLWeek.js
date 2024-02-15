@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
-  StatusBar,
+  Modal,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -44,6 +44,19 @@ const SSLWeek = ({route}) => {
     id: weekId,
     day: check,
   });
+  const [verseModalVisible, setVerseModalVisible] = useState(false);
+  const [selectedVerse, setSelectedVerse] = useState('');
+
+  const showModal = verseKey => {
+    console.log('Showing Modal with Verse: ', verseKey);
+    setSelectedVerse(verseKey); // Now this should set the actual verse text
+    setVerseModalVisible(true);
+  };
+
+  const hideModal = () => {
+    console.log('Hiding Modal');
+    setVerseModalVisible(false);
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
@@ -116,11 +129,38 @@ const SSLWeek = ({route}) => {
     a: tw`text-accent-7`,
   });
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
+    // console.log('Node:', node);
+
+    // Check if the node is a text node
+    if (node.type === 'text') {
+      return <Text key={index}>{node.data}</Text>;
+    }
+
+    // Handle other types of nodes
     if (node.name === 'blockquote') {
       return (
         <View style={tw`border-l-4 border-accent-6`} key={index}>
           {defaultRenderer(node.children, parent)}
         </View>
+      );
+    }
+    if (node.name === 'a' && node.attribs && node.attribs.class === 'verse') {
+      // Extract the verse data from the 'verse' attribute instead of 'href'
+      const verseKey = node.attribs.verse ? node.attribs.verse : '';
+      console.log('Verse key:', verseKey);
+
+      return (
+        <TouchableOpacity key={index} onPress={() => showModal(verseKey)}>
+          {defaultRenderer(node.children, node)}
+        </TouchableOpacity>
+      );
+    }
+    if (node.name === 'code') {
+      // Render code element
+      return (
+        <Text style={tw`text-blue-500`} key={index}>
+          {defaultRenderer(node.children, node)}
+        </Text>
       );
     }
   };
@@ -175,10 +215,27 @@ const SSLWeek = ({route}) => {
               </Text>
             </View>
           </ImageBackground>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={verseModalVisible}
+            onRequestClose={hideModal}>
+            <SafeAreaView style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>{selectedVerse}</Text>
+                <TouchableOpacity
+                  style={styles.hideModalButton}
+                  onPress={hideModal}>
+                  <Text style={styles.textStyle}>Hide</Text>
+                </TouchableOpacity>
+              </View>
+            </SafeAreaView>
+          </Modal>
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
             <HTMLView
               value={sanitizedContent}
               stylesheet={styles}
+              renderNode={renderNode}
               addLineBreaks={false}
             />
             <View style={tw`flex flex-row justify-between`}>
@@ -210,5 +267,50 @@ const SSLWeek = ({route}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  // ... other styles remain unchanged
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  hideModalButton: {
+    position: 'absolute',
+    bottom: 10, // Adjust this value to position the button
+    alignSelf: 'center', // Center the button horizontally
+    backgroundColor: '#2196F3',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20, // Adjust padding to make the button visible
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});
 
 export default SSLWeek;
