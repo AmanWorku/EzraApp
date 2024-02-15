@@ -12,7 +12,6 @@ import {
   Modal,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import DateConverter from './DateConverter';
 import {
   useGetSSLOfDayQuery,
@@ -48,13 +47,17 @@ const SSLWeek = ({route}) => {
   const [selectedVerse, setSelectedVerse] = useState('');
 
   const showModal = verseKey => {
-    console.log('Showing Modal with Verse: ', verseKey);
-    setSelectedVerse(verseKey); // Now this should set the actual verse text
-    setVerseModalVisible(true);
+    const verseContent = sslWeek.bible[0].verses[verseKey];
+
+    if (verseContent) {
+      setSelectedVerse(verseContent);
+      setVerseModalVisible(true);
+    } else {
+      console.error(`No verse found for key: ${verseKey}`);
+    }
   };
 
   const hideModal = () => {
-    console.log('Hiding Modal');
     setVerseModalVisible(false);
   };
 
@@ -109,34 +112,10 @@ const SSLWeek = ({route}) => {
   const {content} = sslWeek;
   const sanitizedContent = content.replace(/\n/g, '');
 
-  const styles = StyleSheet.create({
-    h3: darkMode
-      ? tw`font-nokia-bold text-primary-1 text-2xl`
-      : tw`font-nokia-bold text-secondary-6 text-2xl`,
-    p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
-    blockquote: darkMode
-      ? tw`border-l-4 border-orange-500 p-4 text-primary-1 font-nokia-bold text-xl`
-      : tw`border-l-4 border-orange-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
-    'blockquote.p': tw`font-nokia-bold text-4xl`,
-    em: tw`mt-4`,
-    code: {
-      ...tw`font-nokia-bold`,
-      color: '#EA9215',
-    },
-    strong: tw`text-xl`,
-    a: tw`text-accent-7`,
-  });
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
-    // console.log('Node:', node);
-
-    // Check if the node is a text node
     if (node.type === 'text') {
       return <Text key={index}>{node.data}</Text>;
     }
-
-    // Handle other types of nodes
     if (node.name === 'blockquote') {
       return (
         <View style={tw`border-l-4 border-accent-6`} key={index}>
@@ -145,10 +124,7 @@ const SSLWeek = ({route}) => {
       );
     }
     if (node.name === 'a' && node.attribs && node.attribs.class === 'verse') {
-      // Extract the verse data from the 'verse' attribute instead of 'href'
       const verseKey = node.attribs.verse ? node.attribs.verse : '';
-      console.log('Verse key:', verseKey);
-
       return (
         <TouchableOpacity key={index} onPress={() => showModal(verseKey)}>
           {defaultRenderer(node.children, node)}
@@ -156,7 +132,6 @@ const SSLWeek = ({route}) => {
       );
     }
     if (node.name === 'code') {
-      // Render code element
       return (
         <Text style={tw`text-blue-500`} key={index}>
           {defaultRenderer(node.children, node)}
@@ -171,6 +146,31 @@ const SSLWeek = ({route}) => {
 
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
+
+  const styles = StyleSheet.create({
+    h3: darkMode
+      ? tw`font-nokia-bold text-primary-1 text-2xl`
+      : tw`font-nokia-bold text-secondary-6 text-2xl`,
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
+    blockquote: darkMode
+      ? tw`border-l-4 border-red-500 p-4 text-primary-1 font-nokia-bold text-xl`
+      : tw`border-l-4 border-red-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
+    em: tw`mt-4`,
+    code: {
+      ...tw`font-nokia-bold`,
+      color: '#EA9215',
+    },
+    strong: tw`text-xl`,
+    a: tw`text-accent-7`,
+  });
+
+  const stylesSecond = StyleSheet.create({
+    h2: darkMode
+      ? tw`font-nokia-bold text-primary-1 text-2xl`
+      : tw`font-nokia-bold text-secondary-6 text-3xl`,
+  });
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -220,17 +220,22 @@ const SSLWeek = ({route}) => {
             transparent={true}
             visible={verseModalVisible}
             onRequestClose={hideModal}>
-            <SafeAreaView style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>{selectedVerse}</Text>
-                <TouchableOpacity
-                  style={styles.hideModalButton}
-                  onPress={hideModal}>
-                  <Text style={styles.textStyle}>Hide</Text>
+            <ScrollView
+              contentContainerStyle={tw`flex justify-center items-center bg-secondary-9 bg-opacity-40`}
+              style={{height: '70%'}}>
+              <View
+                style={tw`mx-4 mt-12 bg-white rounded-lg p-6 items-center shadow-opacity-25 rounded-xl border border-accent-6`}>
+                <TouchableOpacity style={tw``} onPress={hideModal}>
+                  <Text style={tw`text-gray-400 text-lg font-nokia-bold`}>
+                    Close
+                  </Text>
                 </TouchableOpacity>
+                {/* Pass styles object to stylesheet prop */}
+                <HTMLView value={selectedVerse} stylesheet={stylesSecond} />
               </View>
-            </SafeAreaView>
+            </ScrollView>
           </Modal>
+
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
             <HTMLView
               value={sanitizedContent}
@@ -267,50 +272,5 @@ const SSLWeek = ({route}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  // ... other styles remain unchanged
-
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  hideModalButton: {
-    position: 'absolute',
-    bottom: 10, // Adjust this value to position the button
-    alignSelf: 'center', // Center the button horizontally
-    backgroundColor: '#2196F3',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20, // Adjust padding to make the button visible
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-});
 
 export default SSLWeek;
