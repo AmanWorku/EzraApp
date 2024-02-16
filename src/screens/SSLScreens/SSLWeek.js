@@ -114,26 +114,34 @@ const SSLWeek = ({route}) => {
 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
     if (node.type === 'text') {
-      return <Text key={index}>{node.data}</Text>;
+      return (
+        <Text key={index} style={tw`font-nokia-bold`}>
+          {node.data}
+        </Text>
+      );
     }
     if (node.name === 'blockquote') {
       return (
-        <View style={tw`border-l-4 border-accent-6`} key={index}>
-          {defaultRenderer(node.children, parent)}
+        <View key={index}>
+          <Text style={tw`border-l-4 border-accent-6 font-nokia-bold pl-3`}>
+            {defaultRenderer(node.children, parent)}
+          </Text>
         </View>
       );
     }
-    if (node.name === 'a' && node.attribs && node.attribs.class === 'verse') {
+    if (node.name === 'a') {
       const verseKey = node.attribs.verse ? node.attribs.verse : '';
       return (
         <TouchableOpacity key={index} onPress={() => showModal(verseKey)}>
-          {defaultRenderer(node.children, node)}
+          <Text style={tw`text-accent-7 underline`}>
+            {defaultRenderer(node.children, node)}
+          </Text>
         </TouchableOpacity>
       );
     }
     if (node.name === 'code') {
       return (
-        <Text style={tw`text-blue-500`} key={index}>
+        <Text style={tw`text-accent-6`} key={index}>
           {defaultRenderer(node.children, node)}
         </Text>
       );
@@ -152,24 +160,16 @@ const SSLWeek = ({route}) => {
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl`,
     p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
-    blockquote: darkMode
-      ? tw`border-l-4 border-red-500 p-4 text-primary-1 font-nokia-bold text-xl`
-      : tw`border-l-4 border-red-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
-    em: tw`mt-4`,
-    code: {
-      ...tw`font-nokia-bold`,
-      color: '#EA9215',
-    },
-    strong: tw`text-xl`,
-    a: tw`text-accent-7`,
+      ? tw`text-primary-1 font-nokia-bold text-justify py-1`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-1`,
   });
 
   const stylesSecond = StyleSheet.create({
+    text: tw`flex flex-row font-nokia-bold`,
     h2: darkMode
       ? tw`font-nokia-bold text-primary-1 text-2xl`
-      : tw`font-nokia-bold text-secondary-6 text-3xl`,
+      : tw`font-nokia-bold text-secondary-6 text-2xl leading-tighter -mb-8`,
+    sup: tw`font-nokia-bold`,
   });
 
   return (
@@ -230,7 +230,6 @@ const SSLWeek = ({route}) => {
                     Close
                   </Text>
                 </TouchableOpacity>
-                {/* Pass styles object to stylesheet prop */}
                 <HTMLView value={selectedVerse} stylesheet={stylesSecond} />
               </View>
             </ScrollView>
