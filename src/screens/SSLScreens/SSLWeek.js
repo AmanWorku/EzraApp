@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
-  Modal,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -22,7 +21,6 @@ import {ArrowSquareLeft} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
-import {RenderHTML, defaultRenderer} from 'react-native-render-html';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -44,23 +42,6 @@ const SSLWeek = ({route}) => {
     id: weekId,
     day: check,
   });
-  const [verseModalVisible, setVerseModalVisible] = useState(false);
-  const [selectedVerse, setSelectedVerse] = useState('');
-
-  const showModal = verseKey => {
-    const verseContent = sslWeek.bible[0].verses[verseKey];
-
-    if (verseContent) {
-      setSelectedVerse(verseContent);
-      setVerseModalVisible(true);
-    } else {
-      console.error(`No verse found for key: ${verseKey}`);
-    }
-  };
-
-  const hideModal = () => {
-    setVerseModalVisible(false);
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
@@ -113,56 +94,67 @@ const SSLWeek = ({route}) => {
   const {content} = sslWeek;
   const sanitizedContent = content.replace(/\n/g, '');
 
-  const renderNode = (node, depth, index, defaultRenderer) => {
-    if (node.type === 'text') {
-      return (
-        <Text key={index} style={tw`font-nokia-bold`}>
-          {node.data}
-        </Text>
-      );
-    }
+  const styles = StyleSheet.create({
+    text: tw`font-nokia-bold`,
+    h3: darkMode
+      ? tw`font-nokia-bold text-primary-1 text-2xl`
+      : tw`font-nokia-bold text-secondary-6 text-2xl`,
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
+    blockquote: darkMode
+      ? tw`border-l-4 border-orange-500 p-4 text-primary-1 font-nokia-bold text-xl`
+      : tw`border-l-4 border-orange-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
+    'blockquote.p': tw`font-nokia-bold text-4xl`,
+    em: tw`mt-4`,
+    code: {
+      ...tw`font-nokia-bold`,
+      color: '#EA9215',
+    },
+    strong: tw`text-xl`,
+    a: tw`text-accent-7`,
+  });
+  const renderNode = (node, index, siblings, parent, defaultRenderer) => {
     if (node.name === 'blockquote') {
+      const childrenWithStyles = node.children.map((child, childIndex) => {
+        if (child.type === 'text') {
+          return (
+            <Text
+              key={childIndex}
+              style={[
+                tw` font-nokia-bold text-lg text-justify`,
+                darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+              ]}>
+              {child.data}
+            </Text>
+          );
+        } else if (child.name === 'a') {
+          const onPress = () => {};
+          return (
+            <TouchableOpacity key={childIndex} onPress={onPress}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                {defaultRenderer(child.children, child)}
+              </Text>
+            </TouchableOpacity>
+          );
+        } else {
+          return defaultRenderer(child.children, child);
+        }
+      });
       return (
-        <View key={index}>
-          <Text style={tw`border-l-4 border-accent-6 font-nokia-bold pl-3`}>
-            {defaultRenderer(node.children)}
-          </Text>
+        <View
+          key={index}
+          style={[
+            tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
+          ]}>
+          {childrenWithStyles}
         </View>
       );
     }
-    if (node.name === 'a') {
-      const verseKey = node.attribs.href ? node.attribs.href.substring(1) : ''; // Assume href contains the verse key
-      return (
-        <TouchableOpacity key={index} onPress={() => showModal(verseKey)}>
-          <Text style={tw`text-accent-7 underline`}>
-            {defaultRenderer(node.children)}
-          </Text>
-        </TouchableOpacity>
-      );
-    }
-    if (node.name === 'code') {
-      return (
-        <Text style={tw`text-accent-6`} key={index}>
-          {defaultRenderer(node.children)}
-        </Text>
-      );
-    }
-  };
-
-  const source = {
-    html: sanitizedContent,
-  };
-
-  // define the custom renderer
-  const customRenderer = {
-    renderers: {
-      a: (htmlAttribs, children, convertedCSSStyles, passProps) => (
-        <TouchableOpacity onPress={() => showModal(htmlAttribs.verse)}>
-          <Text style={tw`text-accent-7 underline`}>{children}</Text>
-        </TouchableOpacity>
-      ),
-    },
-    // Possibly add additional renderers for other tags like 'code', 'blockquote' etc. similar to above
   };
 
   const handleBackButtonPress = () => {
@@ -171,24 +163,6 @@ const SSLWeek = ({route}) => {
 
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
-
-  const styles = StyleSheet.create({
-    text: tw`font-nokia-bold`,
-    h3: darkMode
-      ? tw`font-nokia-bold text-primary-1 text-2xl`
-      : tw`font-nokia-bold text-secondary-6 text-2xl`,
-    p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-1`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-1`,
-  });
-
-  const stylesSecond = StyleSheet.create({
-    text: tw`text-accent-6`,
-    h2: darkMode
-      ? tw`font-nokia-bold text-primary-1 text-2xl`
-      : tw`font-nokia-bold text-secondary-6 text-2xl leading-tighter -mb-8`,
-    sup: tw`font-nokia-bold`,
-  });
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -233,32 +207,12 @@ const SSLWeek = ({route}) => {
               </Text>
             </View>
           </ImageBackground>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={verseModalVisible}
-            onRequestClose={hideModal}>
-            <ScrollView
-              contentContainerStyle={tw`flex justify-center items-center bg-secondary-9 bg-opacity-40`}
-              style={{height: '70%'}}>
-              <View
-                style={tw`mx-4 mt-12 bg-white rounded-lg p-6 items-center shadow-opacity-25 rounded-xl border border-accent-6`}>
-                <TouchableOpacity style={tw``} onPress={hideModal}>
-                  <Text style={tw`text-gray-400 text-lg font-nokia-bold`}>
-                    Close
-                  </Text>
-                </TouchableOpacity>
-                <HTMLView value={selectedVerse} stylesheet={stylesSecond} />
-              </View>
-            </ScrollView>
-          </Modal>
-
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
-            <RenderHTML
-              contentWidth={70} // You should obtain width from somewhere. It's necessary for images if you have any.
-              source={source}
-              tagsStyles={styles}
-              renderers={customRenderer}
+            <HTMLView
+              value={sanitizedContent}
+              renderNode={renderNode}
+              stylesheet={styles}
+              addLineBreaks={false}
             />
             <View style={tw`flex flex-row justify-between`}>
               {check !== '01' && (
