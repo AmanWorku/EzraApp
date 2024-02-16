@@ -9,10 +9,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
-  StatusBar,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import DateConverter from './DateConverter';
 import {
   useGetSSLOfDayQuery,
@@ -97,6 +95,7 @@ const SSLWeek = ({route}) => {
   const sanitizedContent = content.replace(/\n/g, '');
 
   const styles = StyleSheet.create({
+    text: tw`font-nokia-bold`,
     h3: darkMode
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl`,
@@ -117,9 +116,42 @@ const SSLWeek = ({route}) => {
   });
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
     if (node.name === 'blockquote') {
+      const childrenWithStyles = node.children.map((child, childIndex) => {
+        if (child.type === 'text') {
+          return (
+            <Text
+              key={childIndex}
+              style={[
+                tw` font-nokia-bold text-lg text-justify`,
+                darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+              ]}>
+              {child.data}
+            </Text>
+          );
+        } else if (child.name === 'a') {
+          const onPress = () => {};
+          return (
+            <TouchableOpacity key={childIndex} onPress={onPress}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                {defaultRenderer(child.children, child)}
+              </Text>
+            </TouchableOpacity>
+          );
+        } else {
+          return defaultRenderer(child.children, child);
+        }
+      });
       return (
-        <View style={tw`border-l-4 border-accent-6`} key={index}>
-          {defaultRenderer(node.children, parent)}
+        <View
+          key={index}
+          style={[
+            tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
+          ]}>
+          {childrenWithStyles}
         </View>
       );
     }
@@ -178,6 +210,7 @@ const SSLWeek = ({route}) => {
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
             <HTMLView
               value={sanitizedContent}
+              renderNode={renderNode}
               stylesheet={styles}
               addLineBreaks={false}
             />
