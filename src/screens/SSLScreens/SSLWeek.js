@@ -22,6 +22,7 @@ import {ArrowSquareLeft} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
+import {RenderHTML, defaultRenderer} from 'react-native-render-html';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -112,7 +113,7 @@ const SSLWeek = ({route}) => {
   const {content} = sslWeek;
   const sanitizedContent = content.replace(/\n/g, '');
 
-  const renderNode = (node, index, siblings, parent, defaultRenderer) => {
+  const renderNode = (node, depth, index, defaultRenderer) => {
     if (node.type === 'text') {
       return (
         <Text key={index} style={tw`font-nokia-bold`}>
@@ -124,17 +125,17 @@ const SSLWeek = ({route}) => {
       return (
         <View key={index}>
           <Text style={tw`border-l-4 border-accent-6 font-nokia-bold pl-3`}>
-            {defaultRenderer(node.children, parent)}
+            {defaultRenderer(node.children)}
           </Text>
         </View>
       );
     }
     if (node.name === 'a') {
-      const verseKey = node.attribs.verse ? node.attribs.verse : '';
+      const verseKey = node.attribs.href ? node.attribs.href.substring(1) : ''; // Assume href contains the verse key
       return (
         <TouchableOpacity key={index} onPress={() => showModal(verseKey)}>
           <Text style={tw`text-accent-7 underline`}>
-            {defaultRenderer(node.children, node)}
+            {defaultRenderer(node.children)}
           </Text>
         </TouchableOpacity>
       );
@@ -142,10 +143,26 @@ const SSLWeek = ({route}) => {
     if (node.name === 'code') {
       return (
         <Text style={tw`text-accent-6`} key={index}>
-          {defaultRenderer(node.children, node)}
+          {defaultRenderer(node.children)}
         </Text>
       );
     }
+  };
+
+  const source = {
+    html: sanitizedContent,
+  };
+
+  // define the custom renderer
+  const customRenderer = {
+    renderers: {
+      a: (htmlAttribs, children, convertedCSSStyles, passProps) => (
+        <TouchableOpacity onPress={() => showModal(htmlAttribs.verse)}>
+          <Text style={tw`text-accent-7 underline`}>{children}</Text>
+        </TouchableOpacity>
+      ),
+    },
+    // Possibly add additional renderers for other tags like 'code', 'blockquote' etc. similar to above
   };
 
   const handleBackButtonPress = () => {
@@ -156,6 +173,7 @@ const SSLWeek = ({route}) => {
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
 
   const styles = StyleSheet.create({
+    text: tw`font-nokia-bold`,
     h3: darkMode
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl`,
@@ -165,7 +183,7 @@ const SSLWeek = ({route}) => {
   });
 
   const stylesSecond = StyleSheet.create({
-    text: tw`flex flex-row font-nokia-bold`,
+    text: tw`text-accent-6`,
     h2: darkMode
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl leading-tighter -mb-8`,
@@ -236,11 +254,11 @@ const SSLWeek = ({route}) => {
           </Modal>
 
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
-            <HTMLView
-              value={sanitizedContent}
-              stylesheet={styles}
-              renderNode={renderNode}
-              addLineBreaks={false}
+            <RenderHTML
+              contentWidth={70} // You should obtain width from somewhere. It's necessary for images if you have any.
+              source={source}
+              tagsStyles={styles}
+              renderers={customRenderer}
             />
             <View style={tw`flex flex-row justify-between`}>
               {check !== '01' && (
