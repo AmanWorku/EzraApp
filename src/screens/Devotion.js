@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  RefreshControl,
 } from 'react-native';
 import React from 'react';
 import RNFS from 'react-native-fs';
@@ -79,6 +80,10 @@ const Devotion = () => {
       console.error('Error during sharing:', error);
     }
   };
+
+  if (!devotionals || devotionals.length === 0) {
+    return <Text>No devotionals available.</Text>;
+  }
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
