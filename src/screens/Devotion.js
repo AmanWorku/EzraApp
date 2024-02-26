@@ -9,7 +9,7 @@ import {
   ImageBackground,
   RefreshControl,
 } from 'react-native';
-import React from 'react';
+import React, {useState, useCallback} from 'react';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import {useSelector} from 'react-redux';
@@ -27,7 +27,17 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
-  const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+  const {data: devotionals = [], isFetching, refetch} = useGetDevotionsQuery();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
   if (isFetching) {
     return <Text>Loading...</Text>;
   }
@@ -88,7 +98,16 @@ const Devotion = () => {
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
           <View style={tw`flex flex-row justify-between my-4`}>
             <List
               size={32}
