@@ -284,7 +284,7 @@ const Home = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
+                    uri: `https://ezra-seminary.mybese.techimages/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

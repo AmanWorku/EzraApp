@@ -221,7 +221,7 @@ const Devotion = () => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary-api.onrender.com/images/${lastDevotional.image}`,
+                uri: `https://ezra-seminary.mybese.techimages/${lastDevotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -284,7 +284,7 @@ const Devotion = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
+                    uri: `https://ezra-seminary.mybese.techimages/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>
