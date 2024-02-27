@@ -16,6 +16,7 @@ import {login as loginUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -34,8 +35,7 @@ const Login = ({navigation}) => {
     return unsubscribe; // Return the unsubscribe function to call it on unmount
   }, [navigation]);
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
       const result = await login({email, password}).unwrap();
       console.log('Login Result:', result);
@@ -43,9 +43,17 @@ const Login = ({navigation}) => {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
         navigation.navigate('MainTab');
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successful',
+        });
       }
     } catch (err) {
-      console.error('Login Error:', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Error',
+        text2: 'Invalid email or password. Please try again.',
+      });
     }
   };
 
@@ -75,11 +83,6 @@ const Login = ({navigation}) => {
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
-          {error && (
-            <Text style={tw`text-red-500 mb-2 font-Lato-Regular`}>
-              Invalid email or password. Please try again.
-            </Text>
-          )}
           <View style={tw`mb-2`}>
             <View
               style={[
