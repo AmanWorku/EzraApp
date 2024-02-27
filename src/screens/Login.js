@@ -207,10 +207,9 @@ const Login = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          style={tw`flex flex-row justify-center mt-12`}
+          style={tw`self-center justify-center mt-12 px-4 py-2 items-center border border-accent-6 rounded-full`}
           onPress={() => navigation.navigate('MainTab')}>
-          <Text
-            style={tw`font-nokia-bold text-accent-6 px-4 py-2 border border-accent-6 rounded-full`}>
+          <Text style={tw`font-nokia-bold text-accent-6`}>
             Continue without account
           </Text>
         </TouchableOpacity>
