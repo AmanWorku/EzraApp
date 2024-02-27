@@ -32,11 +32,9 @@ const Setting = ({navigation}) => {
     dispatch(updateUser({name, surname, email}));
     alert('Information updated!');
   };
-
   const handleLogout = () => {
-    // Call the logoutUser action creator when the logout button is pressed
     dispatch(logoutUser());
-    // Navigate to the login screen or root stack if desired
+    setEmail('');
     navigation.navigate('Login');
   };
 
