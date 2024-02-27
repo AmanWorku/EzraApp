@@ -26,8 +26,13 @@ const Login = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
 
   useEffect(() => {
-    setPassword('');
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setEmail('');
+      setPassword('');
+    });
+
+    return unsubscribe; // Return the unsubscribe function to call it on unmount
+  }, [navigation]);
 
   const handleSubmit = async e => {
     e.preventDefault();
