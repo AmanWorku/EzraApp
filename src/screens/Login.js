@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
@@ -24,6 +24,10 @@ const Login = ({navigation}) => {
   const [login, {isLoading, error}] = useLoginMutation();
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
+
+  useEffect(() => {
+    setPassword('');
+  }, []);
 
   const handleSubmit = async e => {
     e.preventDefault();

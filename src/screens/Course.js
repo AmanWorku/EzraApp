@@ -131,7 +131,7 @@ const Course = () => {
                   <View style={tw`h-48`}>
                     <Image
                       source={{
-                        uri: `https://ezra-seminary-api.onrender.com/images/${course.image}`,
+                        uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
                       }}
                       style={tw`w-full h-full rounded-3`}
                     />

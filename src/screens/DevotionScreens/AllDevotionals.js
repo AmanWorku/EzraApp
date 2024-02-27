@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {ArrowSquareLeft, User, ArrowSquareUpRight} from 'phosphor-react-native';
@@ -17,9 +18,23 @@ import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
 const AllDevotionals = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  const {data: originalDevotionals = [], isFetching} = useGetDevotionsQuery();
+  const {
+    data: originalDevotionals = [],
+    isFetching,
+    refetch,
+  } = useGetDevotionsQuery();
   const [devotionals, setDevotionals] = useState(originalDevotionals);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetch();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetch]);
 
   if (isFetching) {
     return (
@@ -45,7 +60,17 @@ const AllDevotionals = ({navigation}) => {
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-        <ScrollView showsVerticalScrollIndicator={false} style={tw`h-100%`}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={tw`h-100%`}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
           <View style={tw`flex flex-row justify-between my-4`}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
@@ -90,7 +115,7 @@ const AllDevotionals = ({navigation}) => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
+                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

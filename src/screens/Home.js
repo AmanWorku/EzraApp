@@ -21,6 +21,8 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import CurrentSSL from './SSLScreens/CurrentSSL';
+import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -154,29 +156,6 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
-            {/* <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={tw`mt-4`}>
-          <View style={tw`flex flex-row items-center gap-4`}>
-            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
-                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
-              </Text>
-              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
-                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
-              </Text>
-            </View>
-            <View style={tw`border border-accent-6 rounded-4 px-4 py-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-secondary-6`}>
-                የአማርኛ ትምህርት መጽሐፍ ቅዱስ
-              </Text>
-              <Text style={tw`font-nokia-light text-lg text-secondary-6`}>
-                በአማርኛ ትምህርት መጽሐፍ ቅዱስ ለመጻፍ የሚያስችል መልክ ነው።
-              </Text>
-            </View>
-          </View>
-        </ScrollView> */}
             <View style={tw`h-48`}>
               <Image
                 source={require('./../assets/bible.png')}
@@ -212,49 +191,14 @@ const Home = () => {
               Study this week's SSL
             </Text>
             <TouchableOpacity
-              style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+              style={tw`border border-accent-6 px-4 py-1 rounded-4`}
+              onPress={() => navigation.navigate('SSL')}>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All SSLs
               </Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={tw`flex flex-row border border-accent-6 mt-4 rounded-4 p-2 gap-2`}>
-            <View style={tw`h-32 w-32`}>
-              <Image
-                source={require('./../assets/bible.png')}
-                style={tw`w-full h-full rounded-3`}
-              />
-            </View>
-            <View style={tw`w-65%`}>
-              <Text
-                style={tw`font-nokia-bold text-accent-6 text-sm leading-tight`}>
-                የአጠናን ዘዴዎች
-              </Text>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
-                  darkMode ? tw`text-primary-3` : null,
-                ]}>
-                ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
-              </Text>
-              <View style={tw`border-b border-accent-6 mt-1 w-[63%]`} />
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-5 text-xs`,
-                  darkMode ? tw`text-primary-3` : null,
-                ]}>
-                ጥቅምት 01 - ጥቅምት 07
-              </Text>
-              <TouchableOpacity
-                style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-1`}>
-                <Text
-                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                  ኮርሱን ክፈት
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+          <HomeCurrentSSL />
           <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
           <View style={tw`flex flex-row justify-between items-center`}>
             <Text
@@ -284,7 +228,7 @@ const Home = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary-api.onrender.com/images/${item.image}`,
+                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>
