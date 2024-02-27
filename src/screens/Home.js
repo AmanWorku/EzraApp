@@ -21,6 +21,7 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import CurrentSSL from './SSLScreens/CurrentSSL';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -218,7 +219,7 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View
+          {/* <View
             style={tw`flex flex-row border border-accent-6 mt-4 rounded-4 p-2 gap-2`}>
             <View style={tw`h-32 w-32`}>
               <Image
@@ -255,6 +256,8 @@ const Home = () => {
               </TouchableOpacity>
             </View>
           </View>
+           */}
+          <CurrentSSL />
           <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
           <View style={tw`flex flex-row justify-between items-center`}>
             <Text
