@@ -1,4 +1,4 @@
-import {View, Text, Switch} from 'react-native';
+import {View, Text, Switch, SafeAreaView} from 'react-native';
 import React from 'react';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
@@ -13,9 +13,9 @@ const Setting = () => {
   };
 
   return (
-    <View
+    <SafeAreaView
       style={[
-        tw`flex-1 items-center justify-center gap-2 bg-primary-1`,
+        tw`flex-1 items-center gap-2 bg-primary-1`,
         darkMode ? tw`bg-secondary-9` : null,
       ]}>
       <Text
@@ -30,7 +30,7 @@ const Setting = () => {
         Page Under Construction
       </Text>
       <Switch onValueChange={handleToggle} value={darkMode} />
-    </View>
+    </SafeAreaView>
   );
 };
 
