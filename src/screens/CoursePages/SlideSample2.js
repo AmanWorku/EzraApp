@@ -127,7 +127,7 @@ const SlideSample2 = ({route}) => {
         />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
-            <View style={tw`flex flex-row items-center justify-between`}>
+            <View style={tw`flex flex-row items-center justify-between w-88%`}>
               <View style={tw`flex flex-row items-center gap-3`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
@@ -136,7 +136,14 @@ const SlideSample2 = ({route}) => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text
+                  ellipsizeMode="tail" // Add ellipsis at the end of the text if it's too long
+                  numberOfLines={1} // Keep the text to one line
+                  style={[
+                    tw`font-nokia-bold text-primary-1 text-sm`,
+                    {flexShrink: 1},
+                  ]} // Allow text to shrink if needed
+                >
                   {chapter.chapter}
                 </Text>
               </View>
@@ -149,6 +156,7 @@ const SlideSample2 = ({route}) => {
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
           <ScrollView
@@ -202,34 +210,23 @@ const SlideSample2 = ({route}) => {
                         );
                       } else if (element.type === 'slide') {
                         return (
-                          <Text
-                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
-                            {'  '} {element.value}
-                          </Text>
-                          // <Carousel
-                          //   loop
-                          //   width={width}
-                          //   height={width / 2}
-                          //   autoPlay={true}
-                          //   data={element.value}
-                          //   scrollAnimationDuration={1000}
-                          //   onSnapToItem={index =>
-                          //     console.log('current index:', index)
-                          //   }
-                          //   renderItem={({index}) => (
-                          //     <View
-                          //       style={{
-                          //         flex: 1,
-                          //         borderWidth: 1,
-                          //         justifyContent: 'center',
-                          //       }}>
-                          //       <Text
-                          //         style={{textAlign: 'center', fontSize: 30}}>
-                          //         {index}
-                          //       </Text>
-                          //     </View>
-                          //   )}
-                          // />
+                          <ScrollView
+                            key={element._id}
+                            horizontal
+                            pagingEnabled
+                            showsHorizontalScrollIndicator={false}
+                            style={tw`flex-grow`}>
+                            {element.value.map((slidePage, pageIndex) => (
+                              <View
+                                style={tw`w-full`}
+                                key={`${element._id}-${pageIndex}`}>
+                                <Text
+                                  style={tw`text-primary-1 text-3xl font-nokia-bold text-center`}>
+                                  {slidePage}
+                                </Text>
+                              </View>
+                            ))}
+                          </ScrollView>
                         );
                       } else if (element.type === 'img') {
                         return (
