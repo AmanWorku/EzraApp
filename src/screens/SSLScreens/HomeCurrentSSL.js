@@ -10,9 +10,9 @@ import {useNavigation} from '@react-navigation/native';
 import DateConverter from './DateConverter';
 import {
   View,
+  Image,
   Text,
   ImageBackground,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import tw from './../../../tailwind';
@@ -36,13 +36,13 @@ const HomeCurrentSSL = () => {
   } = useGetSSLOfQuarterQuery(quarter);
 
   useEffect(() => {
-    if (lessonDetails) {
-      setBackgroundImage(lessonDetails.lesson.cover);
+    if (quarterDetails) {
+      setBackgroundImage(quarterDetails.quarterly.splash);
     }
-  }, [lessonDetails]);
+  }, [quarterDetails]);
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
+  const textStyle = 'font-nokia-bold text-secondary-5 text-xs';
   const gradientColor = '#222222';
   const handleOpenButtonPress = () => {
     navigation.navigate('SSLWeek', {
@@ -64,7 +64,56 @@ const HomeCurrentSSL = () => {
     return <Text>Missing data...</Text>;
   }
   return (
-    <View style={tw`mb-3 rounded-2 overflow-hidden`}>
+    <View style={tw` rounded-2 overflow-hidden`}>
+      <View
+        style={tw`flex flex-row border border-accent-6 mt-4 rounded-4 p-2 gap-2`}>
+        <View style={tw`h-32 w-32`}>
+          <Image
+            source={{
+              uri: backgroundImage,
+            }}
+            style={tw`w-full h-full rounded-3`}
+          />
+        </View>
+        <View style={tw`w-65%`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-sm leading-tight`}>
+            {quarterDetails.quarterly.title}
+          </Text>
+          <Text
+            style={[
+              tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
+            {lessonDetails.lesson.title}
+          </Text>
+          <View style={tw`border-b border-accent-6 mt-1 w-[63%]`} />
+          <Text
+            style={[
+              tw`font-nokia-bold text-secondary-5 text-xs`,
+              darkMode ? tw`text-primary-3` : null,
+            ]}>
+            <View style={tw`flex flex-row items-center`}>
+              <DateConverter
+                gregorianDate={lessonDetails.lesson.start_date}
+                textStyle={textStyle}
+              />
+              <Text style={tw`font-nokia-bold text-secondary-5`}> - </Text>
+              <DateConverter
+                gregorianDate={lessonDetails.lesson.end_date}
+                textStyle={textStyle}
+              />
+            </View>
+          </Text>
+          <TouchableOpacity
+            style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-1`}
+            onPress={handleOpenButtonPress}>
+            <Text
+              style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+              ትምህርቱን ክፈት
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <ImageBackground
         source={{
           uri: backgroundImage,
