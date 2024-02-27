@@ -33,7 +33,9 @@ const HomeCurrentSSL = () => {
   }, [quarterDetails]);
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  const textStyle = 'font-nokia-bold text-secondary-5 text-xs';
+  const textStyle = `font-nokia-bold text-secondary-5 text-xs ${
+    darkMode ? 'text-primary-1' : null
+  }`;
   const handleOpenButtonPress = () => {
     navigation.navigate('SSLWeek', {
       ssl: quarter,
@@ -87,7 +89,14 @@ const HomeCurrentSSL = () => {
                 gregorianDate={lessonDetails.lesson.start_date}
                 textStyle={textStyle}
               />
-              <Text style={tw`font-nokia-bold text-secondary-5`}> - </Text>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-secondary-5`,
+                  darkMode ? 'text-primary-1' : null,
+                ]}>
+                {' '}
+                -{' '}
+              </Text>
               <DateConverter
                 gregorianDate={lessonDetails.lesson.end_date}
                 textStyle={textStyle}

@@ -191,7 +191,8 @@ const Home = () => {
               Study this week's SSL
             </Text>
             <TouchableOpacity
-              style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+              style={tw`border border-accent-6 px-4 py-1 rounded-4`}
+              onPress={() => navigation.navigate('SSL')}>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All SSLs
               </Text>
