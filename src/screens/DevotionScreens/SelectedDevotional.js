@@ -139,7 +139,7 @@ const SelectedDevotional = ({route}) => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.techimages/${devotional.image}`,
+                uri: `https://ezra-seminary.mybese.tech/images/${devotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"

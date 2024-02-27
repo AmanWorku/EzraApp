@@ -236,7 +236,7 @@ const SlideSample2 = ({route}) => {
                           <Image
                             key={element._id}
                             source={{
-                              uri: `https://ezra-seminary.mybese.techimages/${element.value}`,
+                              uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
                             }}
                             style={tw`w-36 h-36`}
                           />
