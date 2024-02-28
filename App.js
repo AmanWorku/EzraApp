@@ -19,6 +19,7 @@ import React from 'react';
 import {StatusBar} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Toast from 'react-native-toast-message';
+import ToastComponent from './src/components/ToastComponent';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -95,7 +96,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
-      <Toast ref={ref => Toast.setRef(ref)} />
+      <ToastComponent ref={ref => Toast.setRef(ref)} />
     </Provider>
   );
 }
