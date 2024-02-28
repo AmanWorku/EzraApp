@@ -37,11 +37,13 @@ const Login = ({navigation}) => {
 
   const handleSubmit = async () => {
     try {
+      console.log('Trying to log in with', email, password);
       const result = await login({email, password}).unwrap();
       console.log('Login Result:', result);
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
+        console.log('Navigating to MainTab');
         navigation.navigate('MainTab');
         Toast.show({
           type: 'success',
@@ -49,6 +51,7 @@ const Login = ({navigation}) => {
         });
       }
     } catch (err) {
+      console.error('Login Failed: ', err);
       Toast.show({
         type: 'error',
         text1: 'Login Error',
