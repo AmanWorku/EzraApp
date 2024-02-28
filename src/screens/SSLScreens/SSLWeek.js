@@ -103,8 +103,8 @@ const SSLWeek = ({route}) => {
       ? tw`text-primary-1 font-nokia-bold text-justify py-2`
       : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
     blockquote: darkMode
-      ? tw`border-l-4 border-orange-500 p-4 text-primary-1 font-nokia-bold text-xl`
-      : tw`border-l-4 border-orange-500 p-4 text-secondary-6 font-nokia-bold text-xl`,
+      ? tw` text-primary-1 font-nokia-bold text-xl`
+      : tw` text-secondary-6 font-nokia-bold text-xl`,
     'blockquote.p': tw`font-nokia-bold text-4xl`,
     em: tw`mt-4`,
     code: {
