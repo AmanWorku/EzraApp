@@ -24,7 +24,7 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  whitelist: [SSLapi.reducerPath], // You can choose to persist specific reducers only
+  whitelist: [SSLapi.reducerPath, courseReducer, devotionsReducer],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
