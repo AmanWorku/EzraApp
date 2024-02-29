@@ -8,7 +8,7 @@ import {SSLapi} from '../services/SabbathSchoolApi';
 import {combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'; // Optionally, this improves state reconciliation
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {setupListeners} from '@reduxjs/toolkit/query';
 
 const rootReducer = combineReducers({
