@@ -32,8 +32,14 @@ const Login = ({navigation}) => {
 
   const handleSubmit = async () => {
     try {
+      if (!email || !password) {
+        throw new Error('Please enter both email and password.');
+      }
+
       console.log('Trying to log in with', email, password);
-      const result = await login({email, password}).unwrap();
+      const result = await login({email, password}).unwrap({
+        timeout: 5000, // Timeout set to 5 seconds (adjust as needed)
+      });
       console.log('Login Result:', result);
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
@@ -47,10 +53,20 @@ const Login = ({navigation}) => {
       }
     } catch (err) {
       console.error('Login Failed: ', err);
+      let errorMessage = 'Invalid email or password. Please try again.';
+      if (err.message === 'Please enter both email and password.') {
+        errorMessage = err.message;
+      } else if (
+        err.message === 'Network Error' ||
+        err.code === 'ECONNABORTED'
+      ) {
+        errorMessage =
+          'Network error or timeout. Please check your internet connection and try again.';
+      }
       Toast.show({
         type: 'error',
         text1: 'Login Error',
-        text2: 'Invalid email or password. Please try again.',
+        text2: errorMessage,
       });
     }
   };
@@ -81,11 +97,6 @@ const Login = ({navigation}) => {
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
-          {error && (
-            <Text style={tw`text-red-500 mb-2 font-Lato-Regular`}>
-              Invalid email or password. Please try again.
-            </Text>
-          )}
           <View style={tw`mb-2`}>
             <View
               style={[
