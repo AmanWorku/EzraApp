@@ -21,9 +21,7 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
-import CurrentSSL from './SSLScreens/CurrentSSL';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
-import LoadingSkeleton from '../components/LoadingSkeleton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -96,16 +94,7 @@ const Home = () => {
               ]}
             />
           </View>
-          <View>
-            <TextInput
-              placeholder="Search anything..."
-              style={[
-                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-            />
-          </View>
+
           <View
             style={[
               tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,
