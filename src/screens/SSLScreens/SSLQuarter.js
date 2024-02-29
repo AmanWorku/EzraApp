@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Modal,
 } from 'react-native';
 import {ArrowSquareLeft} from 'phosphor-react-native';
 import DateConverter from './DateConverter';
@@ -28,6 +29,20 @@ const SSLQuarter = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const textStyle = 'font-nokia-bold text-sm text-secondary-4';
+  const [showModal, setShowModal] = useState(false);
+  const [fullDescription, setFullDescription] = useState('');
+
+  const handleMorePress = () => {
+    setFullDescription(
+      // sslQuarter.quarterly.description,
+      sslQuarter.quarterly.introduction,
+    );
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
 
   const onRefresh = useCallback(async () => {
     try {
@@ -103,17 +118,51 @@ const SSLQuarter = ({route}) => {
                 style={tw`font-nokia-bold text-sm text-primary-3 text-center`}>
                 {sslQuarter.quarterly.human_date}
               </Text>
-              <TouchableOpacity
-                style={tw`border border-primary-3 rounded-full px-4 py-2 self-center mt-4`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  ትምህርቱን ክፈት
+              <View style={tw`mt-4`}>
+                <Text
+                  style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}
+                  numberOfLines={3}>
+                  {sslQuarter.quarterly.description}{' '}
                 </Text>
-              </TouchableOpacity>
-              <Text
-                style={tw` mt-4 font-nokia-bold text-sm text-primary-1 text-justify`}
-                numberOfLines={3}>
-                {sslQuarter.quarterly.description}
-              </Text>
+                <TouchableOpacity onPress={handleMorePress}>
+                  <Text
+                    style={tw`font-nokia-bold text-primary-3 border border-primary-3 px-2 w-14 text-center mt-2 rounded py-1`}>
+                    More
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <Modal visible={showModal} transparent animationType="fade">
+                <View
+                  style={tw`flex-1 justify-center items-center bg-secondary-10 bg-opacity-50 `}>
+                  <ScrollView
+                    contentContainerStyle={tw`p-4`}
+                    style={[
+                      tw`bg-primary-1 rounded-lg w-80% my-20 rounded`,
+                      darkMode ? tw`bg-secondary-6` : null,
+                    ]}>
+                    <Text
+                      style={[
+                        tw`font-nokia-bold text-lg text-secondary-6 text-center mb-2`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      ሙሉ መግለጫ
+                    </Text>
+                    <TouchableOpacity onPress={closeModal} style={tw``}>
+                      <Text
+                        style={tw`font-nokia-bold text-sm text-secondary-3 text-center`}>
+                        Close
+                      </Text>
+                    </TouchableOpacity>
+                    <Text
+                      style={[
+                        tw`font-nokia-bold text-sm text-secondary-6 text-justify`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      {fullDescription}
+                    </Text>
+                  </ScrollView>
+                </View>
+              </Modal>
             </View>
           </ImageBackground>
         </View>
