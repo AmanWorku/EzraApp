@@ -23,6 +23,7 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
 import {useSelector} from 'react-redux';
+import Carousel from 'react-native-snap-carousel';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -204,10 +205,23 @@ const SlideSample2 = ({route}) => {
                         );
                       } else if (element.type === 'slide') {
                         return (
-                          <Text
-                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
-                            {element.value}
-                          </Text>
+                          <View style={tw`items-center justify-center`}>
+                            <Carousel
+                              key={element._id}
+                              data={element.value}
+                              renderItem={({item}) => (
+                                <View style={tw`items-center justify-center `}>
+                                  <Text
+                                    style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
+                                    {item}
+                                  </Text>
+                                </View>
+                              )}
+                              sliderWidth={Dimensions.get('window').width}
+                              itemWidth={Dimensions.get('window').width - 100}
+                              windowSize={1}
+                            />
+                          </View>
                         );
                       } else if (element.type === 'img') {
                         return (
