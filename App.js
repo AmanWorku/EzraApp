@@ -16,11 +16,12 @@ import SSLStack from './src/navigation/SSLStack';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider, useSelector} from 'react-redux';
 import {store, persistor} from './src/redux/store';
-import React from 'react';
-import {StatusBar} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, ActivityIndicator} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Toast from 'react-native-toast-message';
 import ToastComponent from './src/components/ToastComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -71,11 +72,34 @@ const MainTabNavigator = () => {
 };
 
 export default function App() {
+  const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true); // New State
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // New State
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          setIsAuthenticated(true); // If user details exist, consider them logged in
+        }
+      } catch (error) {
+        console.error('Failed to get user details', error);
+      }
+      setIsCheckingLoginStatus(false); // Finished checking
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  if (isCheckingLoginStatus) {
+    return <ActivityIndicator />; // Render a loading indicator while checking
+  }
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Welcome">
+          <Stack.Navigator
+            initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
             <Stack.Screen
               name="Welcome"
               component={Welcome}
