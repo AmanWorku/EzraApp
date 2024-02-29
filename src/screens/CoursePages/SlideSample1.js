@@ -56,14 +56,17 @@ const SlideSample1 = ({route}) => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
                   {chapterTitle}
                 </Text>
-              </View>
-              <View style={tw`flex flex-row items-center gap-1`}>
-                <TouchableOpacity onPress={closeButton}>
-                  <XCircle weight="fill" color="#EA9215" />
-                </TouchableOpacity>
+                <View style={tw`flex flex-row items-center gap-1`}>
+                  <TouchableOpacity onPress={closeButton}>
+                    <XCircle weight="fill" color="#EA9215" />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
             <View style={tw`border-b border-accent-6 mt-2`} />

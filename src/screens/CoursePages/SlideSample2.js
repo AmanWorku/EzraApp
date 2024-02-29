@@ -32,7 +32,6 @@ const SlideSample2 = ({route}) => {
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   const [menuVisible, setMenuVisible] = React.useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
-  const width = Dimensions.get('window').width;
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -127,7 +126,7 @@ const SlideSample2 = ({route}) => {
         />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
-            <View style={tw`flex flex-row items-center justify-between`}>
+            <View style={tw`flex flex-row items-center justify-between w-88%`}>
               <View style={tw`flex flex-row items-center gap-3`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
@@ -136,7 +135,10 @@ const SlideSample2 = ({route}) => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text
+                  ellipsizeMode="tail" // Add ellipsis at the end of the text if it's too long
+                  numberOfLines={1} // Keep the text to one line
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
                   {chapter.chapter}
                 </Text>
               </View>
