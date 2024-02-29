@@ -15,7 +15,7 @@ import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
 import {PersistGate} from 'redux-persist/integration/react';
 import {Provider, useSelector} from 'react-redux';
-import store, {persistor} from './src/redux/store';
+import {store, persistor} from './src/redux/store';
 import React from 'react';
 import {StatusBar} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
