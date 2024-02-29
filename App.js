@@ -13,8 +13,9 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
+import {PersistGate} from 'redux-persist/integration/react';
 import {Provider, useSelector} from 'react-redux';
-import store from './src/redux/store';
+import store, {persistor} from './src/redux/store';
 import React from 'react';
 import {StatusBar} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -72,30 +73,32 @@ const MainTabNavigator = () => {
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={Signup}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="MainTab"
-            component={MainTabNavigator}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Welcome">
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MainTab"
+              component={MainTabNavigator}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
       <ToastComponent ref={ref => Toast.setRef(ref)} />
     </Provider>
   );
