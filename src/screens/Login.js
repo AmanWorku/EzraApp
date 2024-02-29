@@ -16,6 +16,7 @@ import {login as loginUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -29,18 +30,28 @@ const Login = ({navigation}) => {
     setPassword('');
   }, []);
 
-  const handleSubmit = async e => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
+      console.log('Trying to log in with', email, password);
       const result = await login({email, password}).unwrap();
       console.log('Login Result:', result);
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
+        console.log('Navigating to MainTab');
         navigation.navigate('MainTab');
+        Toast.show({
+          type: 'success',
+          text1: 'Login Successful',
+        });
       }
     } catch (err) {
-      console.error('Login Error:', err);
+      console.error('Login Failed: ', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Login Error',
+        text2: 'Invalid email or password. Please try again.',
+      });
     }
   };
 
