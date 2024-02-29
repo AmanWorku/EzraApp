@@ -23,10 +23,11 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
 import {useSelector} from 'react-redux';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndexCarousel, setActiveIndexCarousel] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
   const {courseId, chapterId} = route.params;
@@ -207,10 +208,11 @@ const SlideSample2 = ({route}) => {
                         return (
                           <View style={tw`items-center justify-center`}>
                             <Carousel
+                              layout={'default'}
                               key={element._id}
                               data={element.value}
                               renderItem={({item}) => (
-                                <View style={tw`items-center justify-center `}>
+                                <View style={tw`items-center justify-center`}>
                                   <Text
                                     style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
                                     {item}
@@ -220,6 +222,18 @@ const SlideSample2 = ({route}) => {
                               sliderWidth={Dimensions.get('window').width}
                               itemWidth={Dimensions.get('window').width - 100}
                               windowSize={1}
+                              onSnapToItem={index =>
+                                setActiveIndexCarousel(index)
+                              }
+                            />
+                            <Pagination
+                              dotsLength={element.value.length}
+                              activeDotIndex={activeIndexCarousel}
+                              containerStyle={tw`mt-2`}
+                              dotStyle={tw`w-1.5 h-1.5 bg-primary-1`}
+                              inactiveDotStyle={tw`bg-primary-1`}
+                              inactiveDotOpacity={0.4}
+                              inactiveDotScale={0.6}
                             />
                           </View>
                         );
