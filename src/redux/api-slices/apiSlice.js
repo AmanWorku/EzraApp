@@ -50,5 +50,11 @@ export const apiSlice = createApi({
   }),
 });
 
-export const {useSignupMutation, useLoginMutation, useGetDevotionsQuery} =
-  apiSlice;
+// Export the generated hooks for each API endpoint
+export const {
+  useSignupMutation,
+  useLoginMutation,
+  useGetDevotionsQuery,
+  useGetCoursesQuery,
+  useGetCourseByIdQuery,
+} = apiSlice;

@@ -23,16 +23,20 @@ import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
 import {useSelector} from 'react-redux';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Toast from 'react-native-toast-message';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndexCarousel, setActiveIndexCarousel] = useState(0);
   const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
   const {courseId, chapterId} = route.params;
   const {data: courseData, error, isLoading} = useGetCourseByIdQuery(courseId);
   const [menuVisible, setMenuVisible] = React.useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
-  const width = Dimensions.get('window').width;
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -127,7 +131,7 @@ const SlideSample2 = ({route}) => {
         />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
-            <View style={tw`flex flex-row items-center justify-between`}>
+            <View style={tw`flex flex-row items-center justify-between w-88%`}>
               <View style={tw`flex flex-row items-center gap-3`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
@@ -136,7 +140,10 @@ const SlideSample2 = ({route}) => {
                     resizeMode="contain"
                   />
                 </View>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
                   {chapter.chapter}
                 </Text>
               </View>
@@ -151,101 +158,194 @@ const SlideSample2 = ({route}) => {
             </View>
             <View style={tw`border-b border-accent-6 mt-2`} />
           </View>
+
           <ScrollView
             contentContainerStyle={tw` flex-grow justify-center pt-8 px-2`}
             showsVerticalScrollIndicator={false}>
             {data.map((slides, index) => {
               if (index === activeIndex) {
                 return (
-                  <View key={slides._id} style={tw`flex gap-4`}>
-                    {slides.elements.map(element => {
-                      if (element.type === 'title') {
-                        return (
-                          <Text
-                            key={element._id}
-                            style={tw`text-primary-1 text-3xl font-nokia-bold text-center`}>
-                            {element.value}
-                          </Text>
-                        );
-                      } else if (element.type === 'sub') {
-                        return (
-                          <Text
-                            key={element._id}
-                            style={tw`font-nokia-bold text-primary-1 text-lg text-center `}>
-                            {element.value}
-                          </Text>
-                        );
-                      } else if (element.type === 'text') {
-                        return (
-                          <Text
-                            key={element._id}
-                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify leading-tight`}>
-                            {'  '}
-                            {element.value}
-                          </Text>
-                        );
-                      } else if (element.type === 'list') {
-                        return (
-                          <ScrollView nestedScrollEnabled>
-                            <FlatList
+                  <>
+                    <Text
+                      style={tw`text-primary-1 text-3xl font-nokia-bold text-center mb-8`}>
+                      {slides.slide}
+                    </Text>
+                    <View key={slides._id} style={tw`flex gap-4`}>
+                      {slides.elements.map(element => {
+                        if (element.type === 'title') {
+                          return (
+                            <Text
                               key={element._id}
-                              data={element.value}
-                              renderItem={({item}) => (
-                                <Text
-                                  style={tw`font-nokia-bold text-sm text-primary-1`}>
-                                  {'\u2022 '}
-                                  {item}
-                                </Text>
-                              )}
+                              style={tw`text-primary-1 text-3xl font-nokia-bold text-center`}>
+                              {element.value}
+                            </Text>
+                          );
+                        } else if (element.type === 'sub') {
+                          return (
+                            <Text
+                              key={element._id}
+                              style={tw`font-nokia-bold text-primary-1 text-lg text-center `}>
+                              {element.value}
+                            </Text>
+                          );
+                        } else if (element.type === 'text') {
+                          return (
+                            <Text
+                              key={element._id}
+                              style={tw`font-nokia-bold text-sm text-primary-1 text-justify leading-tight`}>
+                              {'  '}
+                              {element.value}
+                            </Text>
+                          );
+                        } else if (element.type === 'list') {
+                          return (
+                            <ScrollView nestedScrollEnabled>
+                              <FlatList
+                                key={element._id}
+                                data={element.value}
+                                renderItem={({item}) => (
+                                  <Text
+                                    style={tw`font-nokia-bold text-sm text-primary-1`}>
+                                    {'\u2022 '}
+                                    {item}
+                                  </Text>
+                                )}
+                              />
+                            </ScrollView>
+                          );
+                        } else if (element.type === 'slide') {
+                          return (
+                            <View style={tw`items-center justify-center`}>
+                              <Carousel
+                                layout={'default'}
+                                key={element._id}
+                                data={element.value}
+                                renderItem={({item}) => (
+                                  <View style={tw`items-center justify-center`}>
+                                    <Text
+                                      style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
+                                      {item}
+                                    </Text>
+                                  </View>
+                                )}
+                                sliderWidth={Dimensions.get('window').width}
+                                itemWidth={Dimensions.get('window').width - 100}
+                                windowSize={1}
+                                onSnapToItem={index =>
+                                  setActiveIndexCarousel(index)
+                                }
+                              />
+                              <Pagination
+                                dotsLength={element.value.length}
+                                activeDotIndex={activeIndexCarousel}
+                                containerStyle={tw`mt-2`}
+                                dotStyle={tw`w-1.5 h-1.5 bg-primary-1`}
+                                inactiveDotStyle={tw`bg-primary-1`}
+                                inactiveDotOpacity={0.4}
+                                inactiveDotScale={0.6}
+                              />
+                            </View>
+                          );
+                        } else if (element.type === 'img') {
+                          return (
+                            <Image
+                              key={element._id}
+                              source={{
+                                uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
+                              }}
+                              style={tw`w-36 h-36`}
                             />
-                          </ScrollView>
-                        );
-                      } else if (element.type === 'slide') {
-                        return (
-                          <Text
-                            style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
-                            {'  '} {element.value}
-                          </Text>
-                          // <Carousel
-                          //   loop
-                          //   width={width}
-                          //   height={width / 2}
-                          //   autoPlay={true}
-                          //   data={element.value}
-                          //   scrollAnimationDuration={1000}
-                          //   onSnapToItem={index =>
-                          //     console.log('current index:', index)
-                          //   }
-                          //   renderItem={({index}) => (
-                          //     <View
-                          //       style={{
-                          //         flex: 1,
-                          //         borderWidth: 1,
-                          //         justifyContent: 'center',
-                          //       }}>
-                          //       <Text
-                          //         style={{textAlign: 'center', fontSize: 30}}>
-                          //         {index}
-                          //       </Text>
-                          //     </View>
-                          //   )}
-                          // />
-                        );
-                      } else if (element.type === 'img') {
-                        return (
-                          <Image
-                            key={element._id}
-                            source={{
-                              uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
-                            }}
-                            style={tw`w-36 h-36`}
-                          />
-                        );
-                      } else {
-                        return null;
-                      }
-                    })}
-                  </View>
+                          );
+                        } else if (element.type === 'quiz') {
+                          const handleAnswerSelection = answer => {
+                            // Allow selection only if the answer is not yet checked
+                            if (!isAnswerChecked) {
+                              setSelectedAnswer(answer);
+                            }
+                          };
+
+                          const checkAnswer = () => {
+                            // Check answer only if an answer is selected and the answer is not yet checked
+                            if (selectedAnswer && !isAnswerChecked) {
+                              setIsAnswerChecked(true); // Set answer checked flag to true
+                              if (
+                                selectedAnswer.text ===
+                                element.value.correctAnswer
+                              ) {
+                                // Show success message if the answer is correct
+                                return Toast.show({
+                                  type: 'success',
+                                  text1: 'Correct Answer!',
+                                });
+                              } else {
+                                // Show error message if the answer is incorrect
+                                return Toast.show({
+                                  type: 'error',
+                                  text1: 'Wrong Answer!',
+                                });
+                              }
+                            }
+                          };
+
+                          return (
+                            <View style={tw`items-center justify-center`}>
+                              <Text
+                                style={tw`font-nokia-bold text-lg text-primary-1 mb-4`}>
+                                {element.value.question}
+                              </Text>
+                              <View
+                                style={tw`flex flex-row justify-center flex-wrap gap-4`}>
+                                {element.value.choices.map((choice, index) => (
+                                  <TouchableOpacity
+                                    key={index}
+                                    onPress={() =>
+                                      handleAnswerSelection(choice)
+                                    }
+                                    style={[
+                                      tw` mb-2`,
+                                      selectedAnswer === choice &&
+                                      !isAnswerChecked
+                                        ? tw`bg-primary-2 text-secondary-6 rounded-lg`
+                                        : null,
+                                    ]}
+                                    disabled={isAnswerChecked}>
+                                    <Text
+                                      style={[
+                                        tw`font-nokia-bold text-sm text-primary-1 border border-primary-1 rounded-lg p-2`,
+                                        selectedAnswer === choice &&
+                                        !isAnswerChecked
+                                          ? tw` text-secondary-6`
+                                          : null,
+                                      ]}>
+                                      {choice.text}
+                                    </Text>
+                                  </TouchableOpacity>
+                                ))}
+                              </View>
+                              <TouchableOpacity
+                                onPress={checkAnswer}
+                                style={[
+                                  tw`bg-primary-2 py-2 px-4 mt-4 rounded-lg`,
+                                  selectedAnswer === null || isAnswerChecked
+                                    ? tw`bg-gray-300`
+                                    : null,
+                                ]}
+                                disabled={
+                                  selectedAnswer === null || isAnswerChecked
+                                }>
+                                <Text
+                                  style={tw`font-nokia-bold text-sm text-secondary-6`}>
+                                  Check Answer
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          );
+                        } else {
+                          return null;
+                        }
+                      })}
+                    </View>
+                  </>
                 );
               }
             })}

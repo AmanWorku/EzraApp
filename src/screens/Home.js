@@ -23,9 +23,11 @@ import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import CurrentSSL from './SSLScreens/CurrentSSL';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const {data: devotionals = [], isFetching, refetch} = useGetDevotionsQuery();
@@ -41,6 +43,7 @@ const Home = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -50,6 +53,10 @@ const Home = () => {
         </Text>
       </SafeAreaView>
     );
+  }
+
+  if (!isFetching && isLoading) {
+    setIsLoading(false);
   }
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>

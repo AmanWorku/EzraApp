@@ -13,11 +13,15 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
+import {PersistGate} from 'redux-persist/integration/react';
 import {Provider, useSelector} from 'react-redux';
-import store from './src/redux/store';
-import React from 'react';
-import {StatusBar} from 'react-native';
+import {store, persistor} from './src/redux/store';
+import React, {useEffect, useState} from 'react';
+import {StatusBar, ActivityIndicator, Platform} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import Toast from 'react-native-toast-message';
+import ToastComponent from './src/components/ToastComponent';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -29,7 +33,9 @@ const MainTabNavigator = () => {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
   };
 
-  StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);
+  if (Platform.OS === 'android') {
+    StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);
+  }
   StatusBar.setBarStyle(darkMode ? 'light-content' : 'dark-content', true);
   changeNavigationBarColor(darkMode ? '#293239' : '#F1F1F1', !darkMode, true);
 
@@ -68,32 +74,58 @@ const MainTabNavigator = () => {
 };
 
 export default function App() {
+  const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true); // New State
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // New State
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        if (user) {
+          setIsAuthenticated(true); // If user details exist, consider them logged in
+        }
+      } catch (error) {
+        console.error('Failed to get user details', error);
+      }
+      setIsCheckingLoginStatus(false); // Finished checking
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  if (isCheckingLoginStatus) {
+    return <ActivityIndicator />; // Render a loading indicator while checking
+  }
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Welcome">
-          <Stack.Screen
-            name="Welcome"
-            component={Welcome}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Signup"
-            component={Signup}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="MainTab"
-            component={MainTabNavigator}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MainTab"
+              component={MainTabNavigator}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+      <ToastComponent ref={ref => Toast.setRef(ref)} />
     </Provider>
   );
 }
