@@ -136,8 +136,8 @@ const SlideSample2 = ({route}) => {
                   />
                 </View>
                 <Text
-                  ellipsizeMode="tail" // Add ellipsis at the end of the text if it's too long
-                  numberOfLines={1} // Keep the text to one line
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
                   style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
                   {chapter.chapter}
                 </Text>
@@ -206,32 +206,8 @@ const SlideSample2 = ({route}) => {
                         return (
                           <Text
                             style={tw`font-nokia-bold text-sm text-primary-1 text-justify`}>
-                            {'  '} {element.value}
+                            {element.value}
                           </Text>
-                          // <Carousel
-                          //   loop
-                          //   width={width}
-                          //   height={width / 2}
-                          //   autoPlay={true}
-                          //   data={element.value}
-                          //   scrollAnimationDuration={1000}
-                          //   onSnapToItem={index =>
-                          //     console.log('current index:', index)
-                          //   }
-                          //   renderItem={({index}) => (
-                          //     <View
-                          //       style={{
-                          //         flex: 1,
-                          //         borderWidth: 1,
-                          //         justifyContent: 'center',
-                          //       }}>
-                          //       <Text
-                          //         style={{textAlign: 'center', fontSize: 30}}>
-                          //         {index}
-                          //       </Text>
-                          //     </View>
-                          //   )}
-                          // />
                         );
                       } else if (element.type === 'img') {
                         return (
