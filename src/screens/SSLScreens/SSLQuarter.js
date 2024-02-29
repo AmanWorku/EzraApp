@@ -10,7 +10,7 @@ import {
   RefreshControl,
   Modal,
 } from 'react-native';
-import {ArrowSquareLeft} from 'phosphor-react-native';
+import {ArrowSquareLeft, X, XCircle} from 'phosphor-react-native';
 import DateConverter from './DateConverter';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -33,10 +33,7 @@ const SSLQuarter = ({route}) => {
   const [fullDescription, setFullDescription] = useState('');
 
   const handleMorePress = () => {
-    setFullDescription(
-      // sslQuarter.quarterly.description,
-      sslQuarter.quarterly.introduction,
-    );
+    setFullDescription(sslQuarter.quarterly.introduction);
     setShowModal(true);
   };
 
@@ -140,19 +137,26 @@ const SSLQuarter = ({route}) => {
                       tw`bg-primary-1 rounded-lg w-80% my-20 rounded`,
                       darkMode ? tw`bg-secondary-6` : null,
                     ]}>
-                    <Text
-                      style={[
-                        tw`font-nokia-bold text-lg text-secondary-6 text-center mb-2`,
-                        darkMode ? tw`text-primary-1` : null,
-                      ]}>
-                      ሙሉ መግለጫ
-                    </Text>
-                    <TouchableOpacity onPress={closeModal} style={tw``}>
+                    <View
+                      style={tw`flex flex-row justify-between border-b border-accent-6 mb-4`}>
                       <Text
-                        style={tw`font-nokia-bold text-sm text-secondary-3 text-center`}>
-                        Close
+                        style={[
+                          tw`font-nokia-bold text-lg text-secondary-6 text-center mb-2`,
+                          darkMode ? tw`text-primary-1` : null,
+                        ]}>
+                        ሙሉ መግለጫ
                       </Text>
-                    </TouchableOpacity>
+                      <TouchableOpacity onPress={closeModal} style={tw``}>
+                        <XCircle
+                          weight="bold"
+                          size={20}
+                          style={[
+                            tw`text-secondary-6`,
+                            darkMode ? tw`text-primary-1` : null,
+                          ]}
+                        />
+                      </TouchableOpacity>
+                    </View>
                     <Text
                       style={[
                         tw`font-nokia-bold text-sm text-secondary-6 text-justify`,
