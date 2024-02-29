@@ -17,7 +17,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {Provider, useSelector} from 'react-redux';
 import {store, persistor} from './src/redux/store';
 import React, {useEffect, useState} from 'react';
-import {StatusBar, ActivityIndicator} from 'react-native';
+import {StatusBar, ActivityIndicator, Platform} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Toast from 'react-native-toast-message';
 import ToastComponent from './src/components/ToastComponent';
@@ -33,7 +33,9 @@ const MainTabNavigator = () => {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
   };
 
-  StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);
+  if (Platform.OS === 'android') {
+    StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);
+  }
   StatusBar.setBarStyle(darkMode ? 'light-content' : 'dark-content', true);
   changeNavigationBarColor(darkMode ? '#293239' : '#F1F1F1', !darkMode, true);
 
