@@ -22,7 +22,6 @@ import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
