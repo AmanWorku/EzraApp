@@ -71,7 +71,6 @@ const Home = () => {
             />
           }>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <DrawerToggleButton darkMode={darkMode} />
             <Text
               style={[
                 tw`font-nokia-bold text-xl text-secondary-6`,

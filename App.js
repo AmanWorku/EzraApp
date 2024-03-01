@@ -21,7 +21,6 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
-import DrawerNavigator from './src/navigation/DrawerNavigator';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 
 const Stack = createNativeStackNavigator();
@@ -102,31 +101,29 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <DrawerNavigator>
-            <Stack.Navigator
-              initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
-              <Stack.Screen
-                name="Welcome"
-                component={Welcome}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Login"
-                component={Login}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Signup"
-                component={Signup}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="MainTab"
-                component={MainTabNavigator}
-                options={{headerShown: false}}
-              />
-            </Stack.Navigator>
-          </DrawerNavigator>
+          <Stack.Navigator
+            initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
+            <Stack.Screen
+              name="Welcome"
+              component={Welcome}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Signup"
+              component={Signup}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MainTab"
+              component={MainTabNavigator}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
         </NavigationContainer>
       </PersistGate>
       <ToastComponent ref={ref => Toast.setRef(ref)} />
