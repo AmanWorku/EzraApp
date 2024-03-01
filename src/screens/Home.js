@@ -22,6 +22,7 @@ import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
+import DrawerToggleButton from '../components/DrawerToggleButton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -70,14 +71,7 @@ const Home = () => {
             />
           }>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+            <DrawerToggleButton darkMode={darkMode} />
             <Text
               style={[
                 tw`font-nokia-bold text-xl text-secondary-6`,
