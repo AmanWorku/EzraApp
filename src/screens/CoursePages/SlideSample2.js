@@ -10,9 +10,12 @@ import {
   SafeAreaView,
   Dimensions,
   FlatList,
+  Modal,
+  Button,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {
+  ArrowsOut,
   CaretCircleLeft,
   CaretCircleRight,
   DotsThreeOutlineVertical,
@@ -37,6 +40,12 @@ const SlideSample2 = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
+  };
 
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
@@ -248,13 +257,46 @@ const SlideSample2 = ({route}) => {
                           );
                         } else if (element.type === 'img') {
                           return (
-                            <Image
-                              key={element._id}
-                              source={{
-                                uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
-                              }}
-                              style={tw`w-36 h-36`}
-                            />
+                            <View>
+                              <TouchableOpacity
+                                onPress={toggleModal}
+                                style={tw`w-42 h-42 self-center`}>
+                                <Image
+                                  key={element._id}
+                                  source={{
+                                    uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
+                                  }}
+                                  style={tw`w-full h-full items-center `}
+                                />
+                                <View
+                                  style={tw`absolute bottom-2 right-2 bg-accent-6 rounded-1`}>
+                                  <ArrowsOut size={24} color="white" />
+                                </View>
+                              </TouchableOpacity>
+
+                              <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={isModalVisible}
+                                onRequestClose={toggleModal}>
+                                <View
+                                  style={tw`flex-1 justify-center items-center bg-gray-900 bg-opacity-90`}>
+                                  <View style={tw`bg-white p-4 rounded-lg`}>
+                                    {/* Image */}
+                                    <Image
+                                      source={{
+                                        uri: `https://ezra-seminary.mybese.tech/images/${element.value}`,
+                                      }}
+                                      style={tw`w-80 h-80`}
+                                    />
+                                    <Button
+                                      title="Close"
+                                      onPress={toggleModal}
+                                    />
+                                  </View>
+                                </View>
+                              </Modal>
+                            </View>
                           );
                         } else if (element.type === 'quiz') {
                           const handleAnswerSelection = answer => {
