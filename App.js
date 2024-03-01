@@ -1,7 +1,15 @@
+import React, {useState, useEffect} from 'react';
+import {ActivityIndicator, Platform, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
+import {Provider, useSelector} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import ToastComponent from './src/components/ToastComponent';
+import {store, persistor} from './src/redux/store';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {
   House,
   Student,
@@ -13,16 +21,8 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
-import {PersistGate} from 'redux-persist/integration/react';
-import {Provider, useSelector} from 'react-redux';
-import {store, persistor} from './src/redux/store';
-import React, {useEffect, useState} from 'react';
-import {StatusBar, ActivityIndicator, Platform} from 'react-native';
-import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import Toast from 'react-native-toast-message';
-import ToastComponent from './src/components/ToastComponent';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DrawerNavigator from './src/navigation/DrawerNavigator';
+import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,60 +74,64 @@ const MainTabNavigator = () => {
   );
 };
 
-export default function App() {
-  const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true); // New State
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // New State
+const App = () => {
+  const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const user = await AsyncStorage.getItem('user');
         if (user) {
-          setIsAuthenticated(true); // If user details exist, consider them logged in
+          setIsAuthenticated(true);
         }
       } catch (error) {
         console.error('Failed to get user details', error);
       }
-      setIsCheckingLoginStatus(false); // Finished checking
+      setIsCheckingLoginStatus(false);
     };
 
     checkLoginStatus();
   }, []);
 
   if (isCheckingLoginStatus) {
-    return <ActivityIndicator />; // Render a loading indicator while checking
+    return <ActivityIndicator />;
   }
+
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
-          <DrawerNavigator />
-          <Stack.Navigator
-            initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
-            <Stack.Screen
-              name="Welcome"
-              component={Welcome}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="Signup"
-              component={Signup}
-              options={{headerShown: false}}
-            />
-            <Stack.Screen
-              name="MainTab"
-              component={MainTabNavigator}
-              options={{headerShown: false}}
-            />
-          </Stack.Navigator>
+          <DrawerNavigator>
+            <Stack.Navigator
+              initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
+              <Stack.Screen
+                name="Welcome"
+                component={Welcome}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="Signup"
+                component={Signup}
+                options={{headerShown: false}}
+              />
+              <Stack.Screen
+                name="MainTab"
+                component={MainTabNavigator}
+                options={{headerShown: false}}
+              />
+            </Stack.Navigator>
+          </DrawerNavigator>
         </NavigationContainer>
       </PersistGate>
       <ToastComponent ref={ref => Toast.setRef(ref)} />
     </Provider>
   );
-}
+};
+
+export default App;
