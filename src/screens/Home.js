@@ -21,9 +21,8 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
-import CurrentSSL from './SSLScreens/CurrentSSL';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
-import LoadingSkeleton from '../components/LoadingSkeleton';
+import DrawerToggleButton from '../components/DrawerToggleButton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -72,14 +71,6 @@ const Home = () => {
             />
           }>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
             <Text
               style={[
                 tw`font-nokia-bold text-xl text-secondary-6`,
@@ -96,16 +87,7 @@ const Home = () => {
               ]}
             />
           </View>
-          <View>
-            <TextInput
-              placeholder="Search anything..."
-              style={[
-                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-            />
-          </View>
+
           <View
             style={[
               tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,
@@ -156,7 +138,8 @@ const Home = () => {
               Continue Studying
             </Text>
             <TouchableOpacity
-              style={tw`border border-accent-6 px-4 py-1 rounded-4`}>
+              style={tw`border border-accent-6 px-4 py-1 rounded-4`}
+              onPress={() => navigation.navigate('Course')}>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All Courses
               </Text>

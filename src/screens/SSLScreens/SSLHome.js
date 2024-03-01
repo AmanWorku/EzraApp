@@ -51,7 +51,7 @@ const SSLHome = () => {
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
-      <SafeAreaView style={tw`flex`}>
+      <SafeAreaView style={tw`flex mb-50`}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
