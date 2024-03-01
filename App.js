@@ -22,6 +22,7 @@ import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import Toast from 'react-native-toast-message';
 import ToastComponent from './src/components/ToastComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DrawerNavigator from './src/navigation/DrawerNavigator';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,6 +101,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
+          <DrawerNavigator />
           <Stack.Navigator
             initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
             <Stack.Screen
