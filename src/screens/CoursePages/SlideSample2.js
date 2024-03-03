@@ -262,13 +262,6 @@ const SlideSample2 = ({route}) => {
                           return (
                             <View>
                               <View style={tw`w-42 h-42 self-center relative`}>
-                                {!isImageLoaded && (
-                                  <ActivityIndicator
-                                    size="large"
-                                    color="#EA9215"
-                                    style={tw`absolute inset-0`}
-                                  />
-                                )}
                                 <TouchableOpacity onPress={toggleModal}>
                                   <Image
                                     key={element._id}

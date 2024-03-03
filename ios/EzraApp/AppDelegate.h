@@ -1,8 +1,13 @@
-#import <UserNotifications/UNUserNotificationCenter.h>
-#import <RCTAppDelegate.h>
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UNUserNotificationCenter.h>
+#import <React/RCTBridgeDelegate.h>
+#import <React/RCTRootView.h>
 
-@interface AppDelegate : RCTAppDelegate <UNUserNotificationCenterDelegate>
-@interface AppDelegate : RCTAppDelegate
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate, UNUserNotificationCenterDelegate>
+
+@property (nonatomic, strong) UIWindow *window;
+@property (nonatomic, strong) NSString *moduleName; // Add this if you need it
+@property (nonatomic, strong) NSDictionary *initialProps; // And this
+
 
 @end
