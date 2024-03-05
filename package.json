@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "clean": "rm -rf node_modules && rm -rf ios/build && rm -rf ios/Pods && rm -rf ios/Podfile.lock && rm -rf ios/*.xcworkspace && rm -rf ios/*.pbxproj && rm -rf ios/*.mode1v3 && rm -rf ios/*.mode2v3 && rm -rf ios/Manifest.lock && rm -rf ios/Pods/**/build"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
