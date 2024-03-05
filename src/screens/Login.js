@@ -44,7 +44,6 @@ const Login = ({navigation}) => {
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
-        console.log('Navigating to MainTab');
         navigation.navigate('MainTab');
         Toast.show({
           type: 'success',

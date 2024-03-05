@@ -25,11 +25,12 @@ import {
 const Setting = ({navigation}) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
+  const user = useSelector(state => state.auth);
   const firstName = useSelector(state => state.auth.firstName);
   const lastName = useSelector(state => state.auth.lastName);
   const email = useSelector(state => state.auth.email);
 
-  console.log(firstName + ' ' + lastName);
+  console.log(user);
 
   const handleToggle = () => {
     dispatch(toggleDarkMode());
@@ -65,7 +66,14 @@ const Setting = ({navigation}) => {
               tw`font-nokia-bold text-lg text-secondary-6`,
               darkMode ? tw`text-primary-1` : null,
             ]}>
-            {firstName}
+            {user.user.firstName}
+          </Text>
+          <Text
+            style={[
+              tw`font-nokia-light text-sm text-secondary-6`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
+            {user.user.email}
           </Text>
         </View>
 
