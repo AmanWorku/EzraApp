@@ -12,7 +12,13 @@ import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
 import {toggleDarkMode} from '../redux/uiSlice';
 import {logoutUser} from '../redux/authSlice'; // Import the logout action
-import {ArrowCircleRight, Pencil} from 'phosphor-react-native';
+import {
+  ArrowCircleRight,
+  DeviceMobile,
+  Lock,
+  Moon,
+  Pencil,
+} from 'phosphor-react-native';
 
 const Setting = ({navigation}) => {
   const dispatch = useDispatch();
@@ -87,14 +93,36 @@ const Setting = ({navigation}) => {
           <TouchableOpacity
             style={tw`flex-row w-full justify-between items-center`}>
             <View style={tw`flex-row items-center`}>
-              <Pencil
+              <Lock
                 size={20}
                 weight="fill"
                 color={'#EA9215'}
                 style={tw`mr-2`}
               />
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                Edit Profile
+                Change Password
+              </Text>
+            </View>
+            <ArrowCircleRight
+              size={24}
+              weight="fill"
+              color={'#EA9215'}
+              style={tw`mr-2`}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={tw`py-4 border-b border-accent-6`}>
+          <TouchableOpacity
+            style={tw`flex-row w-full justify-between items-center`}>
+            <View style={tw`flex-row items-center`}>
+              <DeviceMobile
+                size={20}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`mr-2`}
+              />
+              <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                App Information
               </Text>
             </View>
             <ArrowCircleRight
@@ -108,9 +136,12 @@ const Setting = ({navigation}) => {
 
         <View
           style={tw`flex-row w-full justify-between items-center py-4 border-b border-accent-6`}>
-          <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-            Dark Mode
-          </Text>
+          <View style={tw`flex-row items-center`}>
+            <Moon size={20} weight="fill" color={'#EA9215'} style={tw`mr-2`} />
+            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+              Dark Mode
+            </Text>
+          </View>
           <Switch onValueChange={handleToggle} value={darkMode} />
         </View>
         <TouchableOpacity
