@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import RNFS from 'react-native-fs';
@@ -147,7 +148,14 @@ const Devotion = () => {
   };
 
   if (isFetching) {
-    return <Text>Loading...</Text>;
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -328,7 +336,7 @@ const Devotion = () => {
             </TouchableOpacity>
           </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            {devotions.slice(-4).map((item, index) => (
+            {[...devotions].slice(0, 4).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
