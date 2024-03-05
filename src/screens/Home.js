@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,6 +22,7 @@ import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
+import {toEthiopian} from 'ethiopian-date';
 import DrawerToggleButton from '../components/DrawerToggleButton';
 
 const Home = () => {
@@ -29,8 +30,8 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
-  const {data: devotionals = [], isFetching, refetch} = useGetDevotionsQuery();
-  const lastDevotional = devotionals[devotionals.length - 1] || {};
+  const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
+  const [selectedDevotion, setSelectedDevotion] = useState(null);
   const handleButtonPress = () => {
     navigation.navigate('CourseContent');
   };
@@ -42,6 +43,50 @@ const Home = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+  const ethiopianMonths = [
+    '', // There is no month 0
+    'መስከረም',
+    'ጥቅምት',
+    'ህዳር',
+    'ታህሳስ',
+    'ጥር',
+    'የካቲት',
+    'መጋቢት',
+    'ሚያዝያ',
+    'ግንቦት',
+    'ሰኔ',
+    'ሐምሌ',
+    'ነሐሴ',
+    'ጳጉሜ', // 13th month
+  ];
+
+  useEffect(() => {
+    if (devotions && devotions.length > 0) {
+      const today = new Date();
+      const ethiopianDate = toEthiopian(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        today.getDate(),
+      );
+      const [year, month, day] = ethiopianDate;
+      const ethiopianMonth = ethiopianMonths[month];
+      const todaysDevotion = devotions.find(
+        devotion =>
+          devotion.month === ethiopianMonth && Number(devotion.day) === day,
+      );
+      setSelectedDevotion(todaysDevotion || devotions[0]);
+    }
+  }, [devotions]);
+
+  useEffect(() => {
+    refetch();
+  }, [devotions, refetch]);
+
+  if (!devotions || devotions.length === 0) {
+    return <Text>No devotions available</Text>;
+  }
+
+  const devotionToDisplay = selectedDevotion || devotions[0];
 
   if (isFetching) {
     return (
@@ -124,7 +169,7 @@ const Home = () => {
                   tw`font-nokia-bold text-lg text-secondary-6`,
                   darkMode ? tw`text-primary-2` : null,
                 ]}>
-                {lastDevotional.verse}
+                {devotionToDisplay.verse}
               </Text>
             </View>
           </View>
@@ -207,7 +252,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            {devotionals.slice(-4).map((item, index) => (
+            {devotions.slice(0, 4).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
