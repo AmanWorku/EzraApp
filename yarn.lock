@@ -3826,6 +3826,11 @@ ethiopian-calendar-date-converter@^2.1.3:
   resolved "https://registry.npmjs.org/ethiopian-calendar-date-converter/-/ethiopian-calendar-date-converter-2.1.3.tgz"
   integrity sha512-wNHRKVXTyhCNBBJsC089ZreQOBBDQh6HpltmFQANZf/lUqR8RKYeqwNTqLnCNMs1yPN9bj9fwi4HJAgN7jt7tA==
 
+ethiopian-date@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.npmjs.org/ethiopian-date/-/ethiopian-date-0.0.6.tgz"
+  integrity sha512-O+8hYimosZVn85MWcHtq9HQLR2HdELZPbv1zk3Xc6nm1cYvBl3V1fezrcMkqWKt8tin9dr3/vk0JkQAEWQZzXA==
+
 event-target-shim@^5.0.0, event-target-shim@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/event-target-shim/-/event-target-shim-5.0.1.tgz"

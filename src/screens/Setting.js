@@ -14,10 +14,12 @@ import {toggleDarkMode} from '../redux/uiSlice';
 import {logoutUser} from '../redux/authSlice'; // Import the logout action
 import {
   ArrowCircleRight,
+  Bell,
   DeviceMobile,
   Lock,
   Moon,
   Pencil,
+  ShareNetwork,
 } from 'phosphor-react-native';
 
 const Setting = ({navigation}) => {
@@ -133,7 +135,39 @@ const Setting = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
+        <View style={tw`py-4 border-b border-accent-6`}>
+          <TouchableOpacity
+            style={tw`flex-row w-full justify-between items-center`}>
+            <View style={tw`flex-row items-center`}>
+              <ShareNetwork
+                size={20}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`mr-2`}
+              />
+              <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                Share Application
+              </Text>
+            </View>
+            <ArrowCircleRight
+              size={24}
+              weight="fill"
+              color={'#EA9215'}
+              style={tw`mr-2`}
+            />
+          </TouchableOpacity>
+        </View>
 
+        <View
+          style={tw`flex-row w-full justify-between items-center py-4 border-b border-accent-6`}>
+          <View style={tw`flex-row items-center`}>
+            <Bell size={20} weight="fill" color={'#EA9215'} style={tw`mr-2`} />
+            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+              Enable Notifications
+            </Text>
+          </View>
+          <Switch />
+        </View>
         <View
           style={tw`flex-row w-full justify-between items-center py-4 border-b border-accent-6`}>
           <View style={tw`flex-row items-center`}>
@@ -146,7 +180,7 @@ const Setting = ({navigation}) => {
         </View>
         <TouchableOpacity
           onPress={handleLogout}
-          style={tw`w-36 flex justify-center self-center border border-red-500 rounded-full mt-4`}>
+          style={tw`w-36 flex justify-center self-center border border-red-500 rounded-full mt-8`}>
           <Text
             style={tw`text-center font-nokia-bold text-lg text-red-500 px-8 py-2 `}>
             Logout
