@@ -26,9 +26,6 @@ const Setting = ({navigation}) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
   const user = useSelector(state => state.auth);
-  const firstName = useSelector(state => state.auth.firstName);
-  const lastName = useSelector(state => state.auth.lastName);
-  const email = useSelector(state => state.auth.email);
 
   console.log(user);
 

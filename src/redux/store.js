@@ -24,7 +24,7 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  whitelist: [SSLapi.reducerPath, apiSlice.reducerPath, 'ui'],
+  whitelist: [SSLapi.reducerPath, apiSlice.reducerPath, 'ui', 'auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

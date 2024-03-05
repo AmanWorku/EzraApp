@@ -26,10 +26,6 @@ const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  useEffect(() => {
-    setPassword('');
-  }, []);
-
   const handleSubmit = async () => {
     try {
       if (!email || !password) {
@@ -49,6 +45,8 @@ const Login = ({navigation}) => {
           type: 'success',
           text1: 'Login Successful',
         });
+        setEmail('');
+        setPassword('');
       }
     } catch (err) {
       console.error('Login Failed: ', err);
