@@ -86,6 +86,15 @@ const Signup = ({navigation}) => {
       return;
     }
 
+    if (error) {
+      setErrorMessage(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errorMessage,
+      });
+      return;
+    }
     try {
       const result = await signupMutation({
         firstName,
@@ -111,12 +120,6 @@ const Signup = ({navigation}) => {
       }
       console.error(err);
     }
-
-    Toast.show({
-      type: 'error',
-      text1: 'Error during sign up',
-      text2: errorMessage,
-    });
   };
 
   return (
@@ -142,13 +145,6 @@ const Signup = ({navigation}) => {
             progress with the courses you take.
           </Text>
         </View>
-        {errorMessage.length > 0 && (
-          <View style={tw`mb-4`}>
-            <Text style={tw`text-red-500 font-Lato-Regular`}>
-              {errorMessage}
-            </Text>
-          </View>
-        )}
         <View style={tw`flex flex-col gap-4`}>
           <View style={tw`flex flex-row mb-2 justify-between`}>
             <View
