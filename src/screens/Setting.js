@@ -44,7 +44,7 @@ const Setting = ({navigation}) => {
         tw`flex-1 items-center px-4 bg-primary-1`,
         darkMode && tw`bg-secondary-9`,
       ]}>
-      <View style={tw`w-85%`}>
+      <View style={tw`w-92%`}>
         <Text
           style={[
             tw`font-nokia-bold text-xl text-secondary-6 text-center mt-4`,

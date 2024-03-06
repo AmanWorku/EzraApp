@@ -122,12 +122,11 @@ const Devotion = () => {
 
   const handleShare = async () => {
     try {
-      const filePath = `${RNFS.DocumentDirectoryPath}/day18.png`; // Update the path as needed
+      const imageURI = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
       const shareOptions = {
-        title: 'Share file',
-        message: 'Share file with:',
-        url: `file://${filePath}`,
-        type: 'image/png', // Updated MIME type for a .png image
+        title: 'Share Devotional',
+        url: imageURI,
+        type: 'image/png',
       };
 
       await Share.open(shareOptions);
