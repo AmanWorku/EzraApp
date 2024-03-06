@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
-import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -25,6 +24,8 @@ import {
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
+import CameraRoll from '@react-native-community/cameraroll';
+import Toast from 'react-native-toast-message';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -32,6 +33,7 @@ const Devotion = () => {
   const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedDevotion, setSelectedDevotion] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -89,34 +91,23 @@ const Devotion = () => {
 
   const handleDownload = async () => {
     try {
-      const url =
-        'https://img.freepik.com/free-photo/holy-bible-with-rays-light-coming-out-ai-generative_123827-23906.jpg';
-      const fileName = 'bible.jpg';
-
-      const downloadDest = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-      const options = {
-        fromUrl: url,
-        toFile: downloadDest,
-        background: true,
-        begin: res => {
-          console.log('Download has begun', res);
-        },
-        progress: res => {
-          let percentage = ((100 * res.bytesWritten) / res.contentLength) | 0;
-          console.log(`Progress ${percentage}%`);
-        },
-      };
-
-      const result = await RNFS.downloadFile(options).promise;
-
-      if (result.statusCode === 200) {
-        console.log('File downloaded to:', downloadDest);
-        // You can share or open the file here if necessary.
+      const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+      const result = await CameraRoll.save(url, {type: 'photo'});
+      if (result) {
+        console.log('File saved to:', result);
+        Toast.show({
+          type: 'success',
+          text1: 'Image downloaded successfully!',
+        });
       } else {
-        console.log('Download failed with status code:', result.statusCode);
+        console.log('Download failed.');
+        Toast.show({
+          type: 'error',
+          text1: 'Unable to download image. Try again later.',
+        });
       }
     } catch (error) {
-      console.error('Error during download:', error);
+      console.error('Error during save to camera roll:', error);
     }
   };
 

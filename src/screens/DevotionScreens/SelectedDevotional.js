@@ -1,3 +1,4 @@
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,9 +8,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React from 'react';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import Share from 'react-native-share';
 import {
   User,
   DownloadSimple,
@@ -18,12 +19,57 @@ import {
 } from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
+import CameraRoll from '@react-native-community/cameraroll';
+import Toast from 'react-native-toast-message';
 
 const SelectedDevotional = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
   const {devotionalId} = route.params;
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const devotional = devotionals.find(item => item._id === devotionalId) || {};
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true); // Set downloading state to true when download starts
+      const url = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
+      const result = await CameraRoll.save(url, {type: 'photo'});
+      if (result) {
+        console.log('File saved to:', result);
+        Toast.show({
+          type: 'success',
+          text1: 'Image downloaded successfully!',
+        });
+      } else {
+        console.log('Download failed.');
+        Toast.show({
+          type: 'error',
+          text1: 'Unable to download image. Try again later.',
+        });
+      }
+    } catch (error) {
+      console.error('Error during save to camera roll:', error);
+    } finally {
+      setIsDownloading(false); // Set downloading state back to false when download finishes
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      const imageURI = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
+      const shareOptions = {
+        title: 'Share Devotional',
+        url: imageURI,
+        type: 'image/png',
+      };
+
+      await Share.open(shareOptions);
+    } catch (error) {
+      console.error('Error during sharing:', error);
+    }
+  };
 
   if (isFetching) {
     return (
@@ -35,7 +81,6 @@ const SelectedDevotional = ({route}) => {
       </SafeAreaView>
     );
   }
-  const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -145,30 +190,42 @@ const SelectedDevotional = ({route}) => {
               resizeMode="cover"
             />
             <View style={tw`flex flex-row gap-2 justify-center my-4`}>
-              <TouchableOpacity
-                style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  {' '}
-                  ምስሉን አውርድ
-                </Text>
-                <DownloadSimple
-                  size={28}
-                  weight="bold"
-                  style={tw`text-primary-1`}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  {' '}
-                  ምስሉን አጋራ
-                </Text>
-                <ShareNetwork
-                  size={28}
-                  weight="bold"
-                  style={tw`text-primary-1`}
-                />
-              </TouchableOpacity>
+              {/* Change TouchableOpacity to a View with conditional rendering */}
+
+              <>
+                <TouchableOpacity
+                  style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
+                  onPress={handleDownload}>
+                  {isDownloading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Text style={tw`font-nokia-bold text-primary-1`}>
+                        {' '}
+                        ምስሉን አውርድ
+                      </Text>
+                      <DownloadSimple
+                        size={28}
+                        weight="bold"
+                        style={tw`text-primary-1`}
+                      />
+                    </>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
+                  onPress={handleShare}>
+                  <Text style={tw`font-nokia-bold text-primary-1`}>
+                    {' '}
+                    ምስሉን አጋራ
+                  </Text>
+                  <ShareNetwork
+                    size={28}
+                    weight="bold"
+                    style={tw`text-primary-1`}
+                  />
+                </TouchableOpacity>
+              </>
             </View>
           </View>
         </ScrollView>
