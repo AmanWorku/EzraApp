@@ -30,6 +30,7 @@ const Signup = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState('');
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
+  let errMessage = '';
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -50,8 +51,7 @@ const Signup = ({navigation}) => {
   };
 
   const validatePassword = password => {
-    const re =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
     return re.test(password);
   };
 
@@ -60,29 +60,58 @@ const Signup = ({navigation}) => {
     setErrorMessage('');
 
     if (!validateName(firstName.trim())) {
-      setErrorMessage('First name is invalid. Only letters are allowed.');
+      errMessage = 'First name is invalid. Only letters are allowed.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
     if (!validateName(lastName.trim())) {
-      setErrorMessage('Last name is invalid. Only letters are allowed.');
+      errMessage = 'Last name is invalid. Only letters are allowed.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
     if (!validateEmail(email)) {
-      setErrorMessage('Please enter a valid email address.');
+      errMessage = 'Please enter a valid email address.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
     if (!validatePassword(password)) {
-      setErrorMessage(
-        'Password must be at least 6 characters and include uppercase, lowercase, a number, and a special character.',
-      );
+      errMessage =
+        'Password must be at least 6 characters and include uppercase, lowercase, a number, and a special character.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+        visibilityTime: 4000,
+        topOffset: 30,
+        bottomOffset: 40,
+        textStyle: {fontSize: 14},
+        style: {marginBottom: 30, borderRadius: 10}, // Adjust paddingVertical to increase height
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match.');
+      errMessage = 'Passwords do not match.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
@@ -114,9 +143,19 @@ const Signup = ({navigation}) => {
       navigation.navigate('Home');
     } catch (err) {
       if (err.status === 422) {
-        setErrorMessage('This email is already taken.');
+        errMessage = 'This email is already taken.';
+        Toast.show({
+          type: 'error',
+          text1: 'Error during sign up',
+          text2: errMessage,
+        });
       } else {
-        setErrorMessage('An error occurred during sign up. Please try again.');
+        errMessage = 'An error occurred during sign up. Please try again.';
+        Toast.show({
+          type: 'error',
+          text1: 'Error during sign up',
+          text2: errMessage,
+        });
       }
       console.error(err);
     }
