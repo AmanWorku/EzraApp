@@ -39,6 +39,8 @@ export const store = configureStore({
     }).concat(SSLapi.middleware, apiSlice.middleware),
 });
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  console.log('Rehydration complete:', store.getState());
+});
 
 setupListeners(store.dispatch);
