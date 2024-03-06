@@ -90,6 +90,7 @@ const Devotion = () => {
   const devotionToDisplay = selectedDevotion || devotions[0];
 
   const handleDownload = async () => {
+    setIsDownloading(true);
     try {
       const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
       const result = await CameraRoll.save(url, {type: 'photo'});
@@ -108,6 +109,8 @@ const Devotion = () => {
       }
     } catch (error) {
       console.error('Error during save to camera roll:', error);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -272,15 +275,21 @@ const Devotion = () => {
               <TouchableOpacity
                 style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
                 onPress={handleDownload}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  {' '}
-                  ምስሉን አውርድ
-                </Text>
-                <DownloadSimple
-                  size={28}
-                  weight="bold"
-                  style={tw`text-primary-1`}
-                />
+                {isDownloading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <>
+                    <Text style={tw`font-nokia-bold text-primary-1`}>
+                      {' '}
+                      ምስሉን አውርድ
+                    </Text>
+                    <DownloadSimple
+                      size={28}
+                      weight="bold"
+                      style={tw`text-primary-1`}
+                    />
+                  </>
+                )}
               </TouchableOpacity>
               <TouchableOpacity
                 style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
