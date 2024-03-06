@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "208112540986",
+    "project_id": "ezra-seminary",
+    "storage_bucket": "ezra-seminary.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208112540986:android:ff0ef03fd21a35e9190403",
+        "android_client_info": {
+          "package_name": "com.ezraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBscArr5TvaSF3NGeBj3AKOHuyA930boTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

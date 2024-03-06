@@ -24,7 +24,7 @@ const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
-  whitelist: [SSLapi.reducerPath, apiSlice.reducerPath, 'ui'],
+  whitelist: [SSLapi.reducerPath, apiSlice.reducerPath, 'ui', 'auth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -39,6 +39,8 @@ export const store = configureStore({
     }).concat(SSLapi.middleware, apiSlice.middleware),
 });
 
-export const persistor = persistStore(store);
+export const persistor = persistStore(store, null, () => {
+  console.log('Rehydration complete:', store.getState());
+});
 
 setupListeners(store.dispatch);

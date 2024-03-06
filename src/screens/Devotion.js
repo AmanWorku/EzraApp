@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   ImageBackground,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import {useSelector} from 'react-redux';
@@ -23,12 +24,14 @@ import {
 } from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import {toEthiopian} from 'ethiopian-date';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
-  const {data: devotionals = [], isFetching, refetch} = useGetDevotionsQuery();
+  const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedDevotion, setSelectedDevotion] = useState(null);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -38,10 +41,52 @@ const Devotion = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-  if (isFetching) {
-    return <Text>Loading...</Text>;
+
+  const ethiopianMonths = [
+    '', // There is no month 0
+    'መስከረም',
+    'ጥቅምት',
+    'ህዳር',
+    'ታህሳስ',
+    'ጥር',
+    'የካቲት',
+    'መጋቢት',
+    'ሚያዝያ',
+    'ግንቦት',
+    'ሰኔ',
+    'ሐምሌ',
+    'ነሐሴ',
+    'ጳጉሜ', // 13th month
+  ];
+
+  useEffect(() => {
+    if (devotions && devotions.length > 0) {
+      const today = new Date();
+      const ethiopianDate = toEthiopian(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        today.getDate(),
+      );
+      const [year, month, day] = ethiopianDate;
+      const ethiopianMonth = ethiopianMonths[month];
+      const todaysDevotion = devotions.find(
+        devotion =>
+          devotion.month === ethiopianMonth && Number(devotion.day) === day,
+      );
+      setSelectedDevotion(todaysDevotion || devotions[0]);
+    }
+  }, [devotions]);
+
+  useEffect(() => {
+    refetch();
+  }, [devotions, refetch]);
+
+  if (!devotions || devotions.length === 0) {
+    return <Text>No devotions available</Text>;
   }
-  const lastDevotional = devotionals[devotionals.length - 1] || {};
+
+  const devotionToDisplay = selectedDevotion || devotions[0];
+
   const handleDownload = async () => {
     try {
       const url =
@@ -91,8 +136,15 @@ const Devotion = () => {
     }
   };
 
-  if (!devotionals || devotionals.length === 0) {
-    return <Text>No devotionals available.</Text>;
+  if (isFetching) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -150,7 +202,7 @@ const Devotion = () => {
                   tw`font-nokia-bold text-secondary-6 text-4xl leading-tight`,
                   darkMode ? tw`text-primary-1` : null,
                 ]}>
-                {lastDevotional.title}
+                {devotionToDisplay.title}
               </Text>
               <View style={tw`border-b border-accent-6 mb-1`} />
               <Text
@@ -162,7 +214,7 @@ const Devotion = () => {
               </Text>
               <Text
                 style={tw`font-nokia-bold text-accent-6 text-xl leading-tight`}>
-                {lastDevotional.chapter}
+                {devotionToDisplay.chapter}
               </Text>
             </View>
             <View
@@ -170,11 +222,11 @@ const Devotion = () => {
               <View
                 style={tw`flex justify-center gap-[-1] bg-secondary-6 rounded-2 w-16 h-16`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
-                  {lastDevotional.month}
+                  {devotionToDisplay.month}
                 </Text>
                 <Text
                   style={tw`font-nokia-bold text-primary-1 text-4xl leading-tight text-center`}>
-                  {lastDevotional.day}
+                  {devotionToDisplay.day}
                 </Text>
               </View>
             </View>
@@ -189,11 +241,11 @@ const Devotion = () => {
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
               ]}>
-              {lastDevotional.verse}
+              {devotionToDisplay.verse}
             </Text>
           </View>
           <View style={tw`mt-2`}>
-            {lastDevotional.body.map((paragraph, paragraphIndex) => {
+            {devotionToDisplay.body.map((paragraph, paragraphIndex) => {
               return (
                 <Text
                   style={[
@@ -214,14 +266,14 @@ const Devotion = () => {
             ]}>
             <Text
               style={tw`font-nokia-bold text-accent-6 text-sm leading-tight text-center`}>
-              {lastDevotional.prayer}
+              {devotionToDisplay.prayer}
             </Text>
           </View>
           <View
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.tech/images/${lastDevotional.image}`,
+                uri: `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -273,7 +325,7 @@ const Devotion = () => {
             </TouchableOpacity>
           </View>
           <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            {devotionals.slice(-4).map((item, index) => (
+            {[...devotions].slice(0, 4).map((item, index) => (
               <TouchableOpacity
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}

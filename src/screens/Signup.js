@@ -16,6 +16,7 @@ import {signup as signupUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 const Signup = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
@@ -29,6 +30,7 @@ const Signup = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState('');
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
+  let errMessage = '';
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -38,31 +40,90 @@ const Signup = ({navigation}) => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const validateEmail = email => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
+  const validateName = name => {
+    const re = /^[A-Za-z]+$/;
+    return re.test(name);
+  };
+
+  const validatePassword = password => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+    return re.test(password);
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     setErrorMessage('');
 
-    // Validate the input before sending the request
-    if (!firstName.trim() || !lastName.trim()) {
-      setErrorMessage('Please fill in your first and last names.');
+    if (!validateName(firstName.trim())) {
+      errMessage = 'First name is invalid. Only letters are allowed.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
-    if (!email.includes('@')) {
-      setErrorMessage('Please enter a valid email address.');
+    if (!validateName(lastName.trim())) {
+      errMessage = 'Last name is invalid. Only letters are allowed.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMessage('Password should be at least 6 characters.');
+    if (!validateEmail(email)) {
+      errMessage = 'Please enter a valid email address.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      errMessage =
+        'Password must be at least 6 characters and include uppercase, lowercase, a number, and a special character.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+        visibilityTime: 4000,
+        topOffset: 30,
+        bottomOffset: 40,
+        textStyle: {fontSize: 14},
+        style: {marginBottom: 30, borderRadius: 10}, // Adjust paddingVertical to increase height
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match.');
+      errMessage = 'Passwords do not match.';
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errMessage,
+      });
       return;
     }
 
+    if (error) {
+      setErrorMessage(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error during sign up',
+        text2: errorMessage,
+      });
+      return;
+    }
     try {
       const result = await signupMutation({
         firstName,
@@ -73,13 +134,28 @@ const Signup = ({navigation}) => {
       AsyncStorage.setItem('user', JSON.stringify(result));
 
       dispatch(signupUser(result));
-      console.log(result);
+      if (result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account created successfully!',
+        });
+      }
       navigation.navigate('Home');
     } catch (err) {
       if (err.status === 422) {
-        setErrorMessage('This email is already taken.');
+        errMessage = 'This email is already taken.';
+        Toast.show({
+          type: 'error',
+          text1: 'Error during sign up',
+          text2: errMessage,
+        });
       } else {
-        setErrorMessage('An error occurred during sign up. Please try again.');
+        errMessage = 'An error occurred during sign up. Please try again.';
+        Toast.show({
+          type: 'error',
+          text1: 'Error during sign up',
+          text2: errMessage,
+        });
       }
       console.error(err);
     }
@@ -108,13 +184,6 @@ const Signup = ({navigation}) => {
             progress with the courses you take.
           </Text>
         </View>
-        {errorMessage.length > 0 && (
-          <View style={tw`mb-4`}>
-            <Text style={tw`text-red-500 font-Lato-Regular`}>
-              {errorMessage}
-            </Text>
-          </View>
-        )}
         <View style={tw`flex flex-col gap-4`}>
           <View style={tw`flex flex-row mb-2 justify-between`}>
             <View

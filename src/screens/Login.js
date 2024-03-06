@@ -26,10 +26,6 @@ const Login = ({navigation}) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
 
-  useEffect(() => {
-    setPassword('');
-  }, []);
-
   const handleSubmit = async () => {
     try {
       if (!email || !password) {
@@ -44,12 +40,13 @@ const Login = ({navigation}) => {
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));
-        console.log('Navigating to MainTab');
         navigation.navigate('MainTab');
         Toast.show({
           type: 'success',
           text1: 'Login Successful',
         });
+        setEmail('');
+        setPassword('');
       }
     } catch (err) {
       console.error('Login Failed: ', err);
