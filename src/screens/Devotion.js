@@ -9,6 +9,7 @@ import {
   ImageBackground,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import Share from 'react-native-share';
@@ -28,6 +29,7 @@ import CameraRoll from '@react-native-community/cameraroll';
 import Toast from 'react-native-toast-message';
 import RNFS from 'react-native-fs';
 import {PermissionsAndroid} from 'react-native';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -91,52 +93,135 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
+  // const handleDownload = async () => {
+  //   setIsDownloading(true);
+  //   try {
+  //     const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+  //     if (result === RESULTS.DENIED) {
+  //       const requestResult = await request(
+  //         PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+  //       );
+
+  //       if (requestResult === RESULTS.GRANTED) {
+  //         const encodedUrl = encodeURI(
+  //           `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
+  //         );
+  //         const result = await CameraRoll.save(encodedUrl, {type: 'photo'});
+  //         console.log('Download result:', result);
+  //         if (result) {
+  //           Toast.show({
+  //             type: 'success',
+  //             text1: 'Image downloaded successfully!',
+  //           });
+  //         } else {
+  //           Toast.show({
+  //             type: 'error',
+  //             text1: 'Unable to download image. Try again later.',
+  //           });
+  //         }
+  //       } else {
+  //         Toast.show({
+  //           type: 'error',
+  //           text1: 'Permission denied',
+  //         });
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during save to camera roll:', error);
+  //     Toast.show({
+  //       type: 'error',
+  //       text1:
+  //         'Error downloading image. Please check your internet connection.',
+  //     });
+  //   } finally {
+  //     setIsDownloading(false);
+  //   }
+  // };
   const handleDownload = async () => {
     setIsDownloading(true);
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Storage Permission',
-          message: 'App needs access to memory to download the image',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const encodedUrl = encodeURI(
-          `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
-        );
-        const result = await CameraRoll.save(encodedUrl, {type: 'photo'});
-        console.log('Download result:', result);
+    const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+    if (Platform.OS === 'android') {
+      try {
+        const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+        if (result === RESULTS.DENIED) {
+          const requestResult = await request(
+            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
+          );
+
+          if (requestResult === RESULTS.GRANTED) {
+            const result = await CameraRoll.save(url, {type: 'photo'});
+            if (result) {
+              console.log('File saved to:', result);
+              Toast.show({
+                type: 'success',
+                text1: 'Image downloaded successfully!',
+              });
+            } else {
+              console.log('Download failed.');
+              Toast.show({
+                type: 'error',
+                text1: 'Unable to download image. Try again later.',
+              });
+            }
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: 'Permission Denied!!!!!',
+            });
+          }
+        } else if (result === RESULTS.GRANTED) {
+          const result = await CameraRoll.save(url, {type: 'photo'});
+          if (result) {
+            console.log('File saved to:', result);
+            Toast.show({
+              type: 'success',
+              text1: 'Image downloaded successfully!',
+            });
+          } else {
+            console.log('Download failed.');
+            Toast.show({
+              type: 'error',
+              text1: 'Unable to download image. Try again later.',
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error during save to camera roll:', error);
+        Toast.show({
+          type: 'error',
+          text1:
+            'Error downloading image. Please check your internet connection.',
+        });
+      } finally {
+        setIsDownloading(false);
+      }
+    } else {
+      try {
+        const result = await CameraRoll.save(url, {type: 'photo'});
         if (result) {
+          console.log('File saved to:', result);
           Toast.show({
             type: 'success',
             text1: 'Image downloaded successfully!',
           });
         } else {
+          console.log('Download failed.');
           Toast.show({
             type: 'error',
             text1: 'Unable to download image. Try again later.',
           });
         }
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Permission denied',
-        });
+      } catch (error) {
+        console.error('Error during save to camera roll:', error);
+      } finally {
+        setIsDownloading(false);
       }
-    } catch (error) {
-      console.error('Error during save to camera roll:', error);
-      Toast.show({
-        type: 'error',
-        text1:
-          'Error downloading image. Please check your internet connection.',
-      });
-    } finally {
-      setIsDownloading(false);
     }
   };
 
   const handleShare = async () => {
+    console.log('check message');
     try {
       const imageName = devotionToDisplay.image;
       if (!imageName) {
