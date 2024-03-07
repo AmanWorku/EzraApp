@@ -27,6 +27,7 @@ import {toEthiopian} from 'ethiopian-date';
 import CameraRoll from '@react-native-community/cameraroll';
 import Toast from 'react-native-toast-message';
 import RNFS from 'react-native-fs';
+import {PermissionsAndroid} from 'react-native';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -93,23 +94,43 @@ const Devotion = () => {
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-      const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
-      const result = await CameraRoll.save(url, {type: 'photo'});
-      if (result) {
-        console.log('File saved to:', result);
-        Toast.show({
-          type: 'success',
-          text1: 'Image downloaded successfully!',
-        });
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Storage Permission',
+          message: 'App needs access to memory to download the image',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const encodedUrl = encodeURI(
+          `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
+        );
+        const result = await CameraRoll.save(encodedUrl, {type: 'photo'});
+        console.log('Download result:', result);
+        if (result) {
+          Toast.show({
+            type: 'success',
+            text1: 'Image downloaded successfully!',
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Unable to download image. Try again later.',
+          });
+        }
       } else {
-        console.log('Download failed.');
         Toast.show({
           type: 'error',
-          text1: 'Unable to download image. Try again later.',
+          text1: 'Permission denied',
         });
       }
     } catch (error) {
       console.error('Error during save to camera roll:', error);
+      Toast.show({
+        type: 'error',
+        text1:
+          'Error downloading image. Please check your internet connection.',
+      });
     } finally {
       setIsDownloading(false);
     }
