@@ -26,6 +26,7 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
 import CameraRoll from '@react-native-community/cameraroll';
 import Toast from 'react-native-toast-message';
+import RNFS from 'react-native-fs';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -116,11 +117,31 @@ const Devotion = () => {
 
   const handleShare = async () => {
     try {
-      const imageURI = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+      const imageName = devotionToDisplay.image;
+      if (!imageName) {
+        throw new Error('No image name provided');
+      }
+
+      const imageURI = `https://ezra-seminary.mybese.tech/images/${imageName}`;
+      const filename = 'devotional_image.jpg';
+      const localFile = `${RNFS.CachesDirectoryPath}/${filename}`;
+
+      // Download the image file using native fetch API
+      const response = await fetch(imageURI);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok for URI: ${imageURI}`);
+      }
+      const imageBlob = await response.blob();
+
+      // Process the image blob and write to local file system
+      const base64data = await blobToBase64(imageBlob);
+      await RNFS.writeFile(localFile, base64data, 'base64');
+
+      // Share the image file using react-native-share
       const shareOptions = {
         title: 'Share Devotional',
-        url: imageURI,
-        type: 'image/png',
+        url: `file://${localFile}`,
+        type: 'image/jpeg',
       };
 
       await Share.open(shareOptions);
@@ -129,6 +150,19 @@ const Devotion = () => {
     }
   };
 
+  // Helper function to convert a blob to base64
+  const blobToBase64 = blob => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        // Strip off the first part of the data URL
+        const base64data = reader.result.split(',')[[1]];
+        resolve(base64data);
+      };
+      reader.onerror = () => reject(new Error('Failed to read blob as base64'));
+      reader.readAsDataURL(blob);
+    });
+  };
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
