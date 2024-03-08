@@ -53,26 +53,28 @@ const Setting = ({navigation}) => {
           {' '}
           My Profile{' '}
         </Text>
-        <View style={tw`flex-col w-full justify-center items-center my-4`}>
-          <Image
-            style={tw`w-24 h-24 rounded-full border border-accent-6 my-2`}
-            source={require('./../assets/day1.jpeg')}
-          />
-          <Text
-            style={[
-              tw`font-nokia-bold text-lg text-secondary-6`,
-              darkMode ? tw`text-primary-1` : null,
-            ]}>
-            {user.user.firstName}
-          </Text>
-          <Text
-            style={[
-              tw`font-nokia-light text-sm text-secondary-6`,
-              darkMode ? tw`text-primary-1` : null,
-            ]}>
-            {user.user.email}
-          </Text>
-        </View>
+        {user && (
+          <View style={tw`flex-col w-full justify-center items-center my-4`}>
+            <Image
+              style={tw`w-24 h-24 rounded-full border border-accent-6 my-2`}
+              source={require('./../assets/day1.jpeg')}
+            />
+            <Text
+              style={[
+                tw`font-nokia-bold text-lg text-secondary-6`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}>
+              {user && user.user && user.user.firstName}
+            </Text>
+            <Text
+              style={[
+                tw`font-nokia-light text-sm text-secondary-6`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}>
+              {user && user.user && user.user.email}
+            </Text>
+          </View>
+        )}
 
         <View style={tw` py-4 border-b border-accent-6`}>
           <TouchableOpacity
