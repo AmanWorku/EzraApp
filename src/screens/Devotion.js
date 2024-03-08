@@ -10,6 +10,8 @@ import {
   RefreshControl,
   ActivityIndicator,
   Platform,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import Share from 'react-native-share';
@@ -28,7 +30,6 @@ import {toEthiopian} from 'ethiopian-date';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import Toast from 'react-native-toast-message';
 import RNFS from 'react-native-fs';
-import {PermissionsAndroid} from 'react-native';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const Devotion = () => {
@@ -93,98 +94,74 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  // const handleDownload = async () => {
-  //   setIsDownloading(true);
-  //   try {
-  //     const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-  //     if (result === RESULTS.DENIED) {
-  //       const requestResult = await request(
-  //         PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-  //       );
+  const hasAndroidPermission = async () => {
+    if (Platform.OS !== 'android') {
+      return true;
+    }
 
-  //       if (requestResult === RESULTS.GRANTED) {
-  //         const encodedUrl = encodeURI(
-  //           `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
-  //         );
-  //         const result = await CameraRoll.save(encodedUrl, {type: 'photo'});
-  //         console.log('Download result:', result);
-  //         if (result) {
-  //           Toast.show({
-  //             type: 'success',
-  //             text1: 'Image downloaded successfully!',
-  //           });
-  //         } else {
-  //           Toast.show({
-  //             type: 'error',
-  //             text1: 'Unable to download image. Try again later.',
-  //           });
-  //         }
-  //       } else {
-  //         Toast.show({
-  //           type: 'error',
-  //           text1: 'Permission denied',
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error during save to camera roll:', error);
-  //     Toast.show({
-  //       type: 'error',
-  //       text1:
-  //         'Error downloading image. Please check your internet connection.',
-  //     });
-  //   } finally {
-  //     setIsDownloading(false);
-  //   }
-  // };
+    const readStoragePermission =
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+    const writeStoragePermission =
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    try {
+      const hasReadPermission = await PermissionsAndroid.check(
+        readStoragePermission,
+      );
+      const hasWritePermission = await PermissionsAndroid.check(
+        writeStoragePermission,
+      );
+      if (hasReadPermission && hasWritePermission) {
+        return true;
+      }
+      const grantedPermissions = await PermissionsAndroid.requestMultiple([
+        readStoragePermission,
+        writeStoragePermission,
+      ]);
+      const readGranted =
+        grantedPermissions[readStoragePermission] === 'granted';
+      const writeGranted =
+        grantedPermissions[writeStoragePermission] === 'granted';
+
+      if (readGranted && writeGranted) {
+        return true;
+      } else {
+        ToastAndroid.show(
+          'Storage permission required to download images.',
+          ToastAndroid.LONG,
+        );
+        return false;
+      }
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
   const handleDownload = async () => {
     setIsDownloading(true);
     const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
     if (Platform.OS === 'android') {
       try {
-        const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+        const hasPermission = await hasAndroidPermission();
+        if (!hasPermission) {
+          console.log('Permission Denied');
+          return;
+        }
 
-        if (result === RESULTS.DENIED) {
-          const requestResult = await request(
-            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-          );
-
-          if (requestResult === RESULTS.GRANTED) {
-            const result = await CameraRoll.save(url, {type: 'photo'});
-            if (result) {
-              console.log('File saved to:', result);
-              Toast.show({
-                type: 'success',
-                text1: 'Image downloaded successfully!',
-              });
-            } else {
-              console.log('Download failed.');
-              Toast.show({
-                type: 'error',
-                text1: 'Unable to download image. Try again later.',
-              });
-            }
-          } else {
-            Toast.show({
-              type: 'error',
-              text1: 'Permission Denied!!!!!',
-            });
-          }
-        } else if (result === RESULTS.GRANTED) {
-          const result = await CameraRoll.save(url, {type: 'photo'});
-          if (result) {
-            console.log('File saved to:', result);
-            Toast.show({
-              type: 'success',
-              text1: 'Image downloaded successfully!',
-            });
-          } else {
-            console.log('Download failed.');
-            Toast.show({
-              type: 'error',
-              text1: 'Unable to download image. Try again later.',
-            });
-          }
+        const result = await CameraRoll.save(url, {type: 'photo'});
+        if (result) {
+          console.log('File saved to:', result);
+          Toast.show({
+            type: 'success',
+            text1: 'Image downloaded successfully!',
+          });
+        } else {
+          console.log('Download failed.');
+          Toast.show({
+            type: 'error',
+            text1: 'Unable to download image. Try again later.',
+          });
         }
       } catch (error) {
         console.error('Error during save to camera roll:', error);
@@ -227,23 +204,16 @@ const Devotion = () => {
       if (!imageName) {
         throw new Error('No image name provided');
       }
-
       const imageURI = `https://ezra-seminary.mybese.tech/images/${imageName}`;
       const filename = 'devotional_image.jpg';
       const localFile = `${RNFS.CachesDirectoryPath}/${filename}`;
-
-      // Download the image file using native fetch API
       const response = await fetch(imageURI);
       if (!response.ok) {
         throw new Error(`Network response was not ok for URI: ${imageURI}`);
       }
       const imageBlob = await response.blob();
-
-      // Process the image blob and write to local file system
       const base64data = await blobToBase64(imageBlob);
       await RNFS.writeFile(localFile, base64data, 'base64');
-
-      // Share the image file using react-native-share
       const shareOptions = {
         title: 'Share Devotional',
         url: `file://${localFile}`,
@@ -255,13 +225,10 @@ const Devotion = () => {
       console.error('Error during sharing:', error);
     }
   };
-
-  // Helper function to convert a blob to base64
   const blobToBase64 = blob => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => {
-        // Strip off the first part of the data URL
         const base64data = reader.result.split(',')[[1]];
         resolve(base64data);
       };

@@ -245,7 +245,11 @@ const Home = () => {
             </Text>
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('AllDevotionals')}>
+              onPress={() =>
+                navigation.navigate('Devotional', {
+                  screen: 'AllDevotionals',
+                })
+              }>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All Devotionals
               </Text>
@@ -257,8 +261,9 @@ const Home = () => {
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
                 onPress={() =>
-                  navigation.navigate('SelectedDevotional', {
-                    devotionalId: item._id,
+                  navigation.navigate('Devotional', {
+                    screen: 'SelectedDevotional',
+                    params: {devotionalId: item._id},
                   })
                 }>
                 <ImageBackground
