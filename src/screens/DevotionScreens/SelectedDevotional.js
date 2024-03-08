@@ -20,7 +20,7 @@ import {
 } from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
-import CameraRoll from '@react-native-community/cameraroll';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import Toast from 'react-native-toast-message';
 import RNFS from 'react-native-fs';
 import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
