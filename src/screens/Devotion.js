@@ -9,9 +9,11 @@ import {
   ImageBackground,
   RefreshControl,
   ActivityIndicator,
+  Platform,
+  PermissionsAndroid,
+  ToastAndroid,
 } from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
-import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -25,6 +27,10 @@ import {
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import Toast from 'react-native-toast-message';
+import RNFS from 'react-native-fs';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -32,6 +38,7 @@ const Devotion = () => {
   const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedDevotion, setSelectedDevotion] = useState(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -87,47 +94,130 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  const handleDownload = async () => {
+  const hasAndroidPermission = async () => {
+    if (Platform.OS !== 'android') {
+      return true;
+    }
+
+    const readStoragePermission =
+      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
+    const writeStoragePermission =
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
     try {
-      const url =
-        'https://img.freepik.com/free-photo/holy-bible-with-rays-light-coming-out-ai-generative_123827-23906.jpg';
-      const fileName = 'bible.jpg';
-
-      const downloadDest = `${RNFS.DocumentDirectoryPath}/${fileName}`;
-      const options = {
-        fromUrl: url,
-        toFile: downloadDest,
-        background: true,
-        begin: res => {
-          console.log('Download has begun', res);
-        },
-        progress: res => {
-          let percentage = ((100 * res.bytesWritten) / res.contentLength) | 0;
-          console.log(`Progress ${percentage}%`);
-        },
-      };
-
-      const result = await RNFS.downloadFile(options).promise;
-
-      if (result.statusCode === 200) {
-        console.log('File downloaded to:', downloadDest);
-        // You can share or open the file here if necessary.
-      } else {
-        console.log('Download failed with status code:', result.statusCode);
+      const hasReadPermission = await PermissionsAndroid.check(
+        readStoragePermission,
+      );
+      const hasWritePermission = await PermissionsAndroid.check(
+        writeStoragePermission,
+      );
+      if (hasReadPermission && hasWritePermission) {
+        return true;
       }
-    } catch (error) {
-      console.error('Error during download:', error);
+      const grantedPermissions = await PermissionsAndroid.requestMultiple([
+        readStoragePermission,
+        writeStoragePermission,
+      ]);
+      const readGranted =
+        grantedPermissions[readStoragePermission] === 'granted';
+      const writeGranted =
+        grantedPermissions[writeStoragePermission] === 'granted';
+
+      if (readGranted && writeGranted) {
+        return true;
+      } else {
+        ToastAndroid.show(
+          'Storage permission required to download images.',
+          ToastAndroid.LONG,
+        );
+        return false;
+      }
+    } catch (err) {
+      console.warn(err);
+      return false;
+    }
+  };
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+    if (Platform.OS === 'android') {
+      try {
+        const hasPermission = await hasAndroidPermission();
+        if (!hasPermission) {
+          console.log('Permission Denied');
+          return;
+        }
+
+        const result = await CameraRoll.save(url, {type: 'photo'});
+        if (result) {
+          console.log('File saved to:', result);
+          Toast.show({
+            type: 'success',
+            text1: 'Image downloaded successfully!',
+          });
+        } else {
+          console.log('Download failed.');
+          Toast.show({
+            type: 'error',
+            text1: 'Unable to download image. Try again later.',
+          });
+        }
+      } catch (error) {
+        console.error('Error during save to camera roll:', error);
+        Toast.show({
+          type: 'error',
+          text1:
+            'Error downloading image. Please check your internet connection.',
+        });
+      } finally {
+        setIsDownloading(false);
+      }
+    } else {
+      try {
+        const result = await CameraRoll.save(url, {type: 'photo'});
+        if (result) {
+          console.log('File saved to:', result);
+          Toast.show({
+            type: 'success',
+            text1: 'Image downloaded successfully!',
+          });
+        } else {
+          console.log('Download failed.');
+          Toast.show({
+            type: 'error',
+            text1: 'Unable to download image. Try again later.',
+          });
+        }
+      } catch (error) {
+        console.error('Error during save to camera roll:', error);
+      } finally {
+        setIsDownloading(false);
+      }
     }
   };
 
   const handleShare = async () => {
+    console.log('check message');
     try {
-      const filePath = `${RNFS.DocumentDirectoryPath}/day18.png`; // Update the path as needed
+      const imageName = devotionToDisplay.image;
+      if (!imageName) {
+        throw new Error('No image name provided');
+      }
+      const imageURI = `https://ezra-seminary.mybese.tech/images/${imageName}`;
+      const filename = 'devotional_image.jpg';
+      const localFile = `${RNFS.CachesDirectoryPath}/${filename}`;
+      const response = await fetch(imageURI);
+      if (!response.ok) {
+        throw new Error(`Network response was not ok for URI: ${imageURI}`);
+      }
+      const imageBlob = await response.blob();
+      const base64data = await blobToBase64(imageBlob);
+      await RNFS.writeFile(localFile, base64data, 'base64');
       const shareOptions = {
-        title: 'Share file',
-        message: 'Share file with:',
-        url: `file://${filePath}`,
-        type: 'image/png', // Updated MIME type for a .png image
+        title: 'Share Devotional',
+        url: `file://${localFile}`,
+        type: 'image/jpeg',
       };
 
       await Share.open(shareOptions);
@@ -135,7 +225,17 @@ const Devotion = () => {
       console.error('Error during sharing:', error);
     }
   };
-
+  const blobToBase64 = blob => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64data = reader.result.split(',')[[1]];
+        resolve(base64data);
+      };
+      reader.onerror = () => reject(new Error('Failed to read blob as base64'));
+      reader.readAsDataURL(blob);
+    });
+  };
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -282,15 +382,21 @@ const Devotion = () => {
               <TouchableOpacity
                 style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
                 onPress={handleDownload}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>
-                  {' '}
-                  ምስሉን አውርድ
-                </Text>
-                <DownloadSimple
-                  size={28}
-                  weight="bold"
-                  style={tw`text-primary-1`}
-                />
+                {isDownloading ? (
+                  <ActivityIndicator color="#FFFFFF" size="small" />
+                ) : (
+                  <>
+                    <Text style={tw`font-nokia-bold text-primary-1`}>
+                      {' '}
+                      ምስሉን አውርድ
+                    </Text>
+                    <DownloadSimple
+                      size={28}
+                      weight="bold"
+                      style={tw`text-primary-1`}
+                    />
+                  </>
+                )}
               </TouchableOpacity>
               <TouchableOpacity
                 style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
