@@ -2,7 +2,8 @@ import Share from 'react-native-share';
 import RNFS from 'react-native-fs';
 import {Platform} from 'react-native';
 
-export const handleShare = async imageURI => {
+export const handleShare = async (setIsSharing, imageURI) => {
+  setIsSharing(true);
   try {
     if (!imageURI) {
       throw new Error('No image name provided');
@@ -32,6 +33,8 @@ export const handleShare = async imageURI => {
     await Share.open(shareOptions);
   } catch (error) {
     console.error('Error during sharing:', error);
+  } finally {
+    setIsSharing(false);
   }
 };
 

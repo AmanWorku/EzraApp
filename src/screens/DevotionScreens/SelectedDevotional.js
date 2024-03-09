@@ -27,6 +27,7 @@ const SelectedDevotional = ({route}) => {
   const {devotionalId} = route.params;
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
@@ -174,16 +175,22 @@ const SelectedDevotional = ({route}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
-                  onPress={() => handleShare(imageURI)}>
-                  <Text style={tw`font-nokia-bold text-primary-1`}>
-                    {' '}
-                    ምስሉን አጋራ
-                  </Text>
-                  <ShareNetwork
-                    size={28}
-                    weight="bold"
-                    style={tw`text-primary-1`}
-                  />
+                  onPress={() => handleShare(setIsSharing, imageURI)}>
+                  {isSharing ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Text style={tw`font-nokia-bold text-primary-1`}>
+                        {' '}
+                        ምስሉን አጋራ
+                      </Text>
+                      <ShareNetwork
+                        size={28}
+                        weight="bold"
+                        style={tw`text-primary-1`}
+                      />
+                    </>
+                  )}
                 </TouchableOpacity>
               </>
             </View>
