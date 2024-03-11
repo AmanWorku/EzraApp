@@ -7,11 +7,11 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  Platform,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import Share from 'react-native-share';
+import handleDownload from '../../components/handleDownload';
+import {handleShare} from '../../components/handleShare';
 import {
   User,
   DownloadSimple,
@@ -20,10 +20,6 @@ import {
 } from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import Toast from 'react-native-toast-message';
-import RNFS from 'react-native-fs';
-import {PERMISSIONS, RESULTS, check, request} from 'react-native-permissions';
 
 const SelectedDevotional = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -31,141 +27,11 @@ const SelectedDevotional = ({route}) => {
   const {devotionalId} = route.params;
   const {data: devotionals = [], isFetching} = useGetDevotionsQuery();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    const url = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
-    if (Platform.OS === 'android') {
-      try {
-        const result = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
-
-        if (result === RESULTS.DENIED) {
-          const requestResult = await request(
-            PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE,
-          );
-
-          if (requestResult === RESULTS.GRANTED) {
-            const result = await CameraRoll.save(url, {type: 'photo'});
-            if (result) {
-              console.log('File saved to:', result);
-              Toast.show({
-                type: 'success',
-                text1: 'Image downloaded successfully!',
-              });
-            } else {
-              console.log('Download failed.');
-              Toast.show({
-                type: 'error',
-                text1: 'Unable to download image. Try again later.',
-              });
-            }
-          } else {
-            Toast.show({
-              type: 'error',
-              text1: 'Permission Denied!!!!!',
-            });
-          }
-        } else if (result === RESULTS.GRANTED) {
-          const result = await CameraRoll.save(url, {type: 'photo'});
-          if (result) {
-            console.log('File saved to:', result);
-            Toast.show({
-              type: 'success',
-              text1: 'Image downloaded successfully!',
-            });
-          } else {
-            console.log('Download failed.');
-            Toast.show({
-              type: 'error',
-              text1: 'Unable to download image. Try again later.',
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error during save to camera roll:', error);
-        Toast.show({
-          type: 'error',
-          text1:
-            'Error downloading image. Please check your internet connection.',
-        });
-      } finally {
-        setIsDownloading(false);
-      }
-    } else {
-      try {
-        const result = await CameraRoll.save(url, {type: 'photo'});
-        if (result) {
-          console.log('File saved to:', result);
-          Toast.show({
-            type: 'success',
-            text1: 'Image downloaded successfully!',
-          });
-        } else {
-          console.log('Download failed.');
-          Toast.show({
-            type: 'error',
-            text1: 'Unable to download image. Try again later.',
-          });
-        }
-      } catch (error) {
-        console.error('Error during save to camera roll:', error);
-      } finally {
-        setIsDownloading(false);
-      }
-    }
-  };
-
-  const handleShare = async () => {
-    console.log('check message');
-    try {
-      const imageName = devotional.image;
-      if (!imageName) {
-        throw new Error('No image name provided');
-      }
-
-      const imageURI = `https://ezra-seminary.mybese.tech/images/${imageName}`;
-      const filename = 'devotional_image.jpg';
-      const localFile = `${RNFS.CachesDirectoryPath}/${filename}`;
-
-      // Download the image file using native fetch API
-      const response = await fetch(imageURI);
-      if (!response.ok) {
-        throw new Error(`Network response was not ok for URI: ${imageURI}`);
-      }
-      const imageBlob = await response.blob();
-
-      // Process the image blob and write to local file system
-      const base64data = await blobToBase64(imageBlob);
-      await RNFS.writeFile(localFile, base64data, 'base64');
-
-      // Share the image file using react-native-share
-      const shareOptions = {
-        title: 'Share Devotional',
-        url: `file://${localFile}`,
-        type: 'image/jpeg',
-      };
-
-      await Share.open(shareOptions);
-    } catch (error) {
-      console.error('Error during sharing:', error);
-    }
-  };
-
-  const blobToBase64 = blob => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        // Strip off the first part of the data URL
-        const base64data = reader.result.split(',')[[1]];
-        resolve(base64data);
-      };
-      reader.onerror = () => reject(new Error('Failed to read blob as base64'));
-      reader.readAsDataURL(blob);
-    });
-  };
-
+  const imageURI = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
@@ -290,7 +156,7 @@ const SelectedDevotional = ({route}) => {
               <>
                 <TouchableOpacity
                   style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
-                  onPress={handleDownload}>
+                  onPress={() => handleDownload(setIsDownloading, imageURI)}>
                   {isDownloading ? (
                     <ActivityIndicator color="#FFFFFF" size="small" />
                   ) : (
@@ -309,16 +175,22 @@ const SelectedDevotional = ({route}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={tw`flex flex-row items-center gap-2 px-2 py-1 bg-accent-6 rounded-4`}
-                  onPress={handleShare}>
-                  <Text style={tw`font-nokia-bold text-primary-1`}>
-                    {' '}
-                    ምስሉን አጋራ
-                  </Text>
-                  <ShareNetwork
-                    size={28}
-                    weight="bold"
-                    style={tw`text-primary-1`}
-                  />
+                  onPress={() => handleShare(setIsSharing, imageURI)}>
+                  {isSharing ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Text style={tw`font-nokia-bold text-primary-1`}>
+                        {' '}
+                        ምስሉን አጋራ
+                      </Text>
+                      <ShareNetwork
+                        size={28}
+                        weight="bold"
+                        style={tw`text-primary-1`}
+                      />
+                    </>
+                  )}
                 </TouchableOpacity>
               </>
             </View>
