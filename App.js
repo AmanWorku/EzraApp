@@ -22,6 +22,7 @@ import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
+import SettingsStack from './src/navigation/SettingsStack';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -67,7 +68,7 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Course" component={CourseStack} />
       <Tab.Screen name="SSL" component={SSLStack} />
       <Tab.Screen name="Devotional" component={DevotionalStack} />
-      <Tab.Screen name="Setting" component={Setting} />
+      <Tab.Screen name="Setting" component={SettingsStack} />
     </Tab.Navigator>
   );
 };

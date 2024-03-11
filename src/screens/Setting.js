@@ -78,7 +78,8 @@ const Setting = ({navigation}) => {
 
         <View style={tw` py-4 border-b border-accent-6`}>
           <TouchableOpacity
-            style={tw`flex-row w-full justify-between items-center`}>
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={() => navigation.navigate('EditProfile')}>
             <View style={tw`flex-row items-center`}>
               <Pencil
                 size={20}
