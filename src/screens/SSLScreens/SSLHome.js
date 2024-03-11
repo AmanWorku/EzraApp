@@ -110,7 +110,7 @@ const SSLHome = () => {
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
                     onPress={() => handleSSLOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
-                      ኮርሱን ክፈት
+                      ትምህርቱን ክፈት
                     </Text>
                   </TouchableOpacity>
                 </View>
