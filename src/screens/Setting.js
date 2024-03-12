@@ -27,8 +27,6 @@ const Setting = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const user = useSelector(state => state.auth);
 
-  console.log(user);
-
   const handleToggle = () => {
     dispatch(toggleDarkMode());
   };

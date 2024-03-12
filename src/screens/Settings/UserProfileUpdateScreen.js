@@ -21,6 +21,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const darkMode = useSelector(state => state.ui.darkMode);
+  const user = useSelector(state => state.auth);
 
   // Redux dispatch
   const dispatch = useDispatch();
@@ -36,10 +37,9 @@ const UserProfileUpdateScreen = ({navigation}) => {
     container: tw`flex-1 items-center px-4M w-90% mx-auto`,
     input: tw`border w-full px-3 py-2 mb-4 rounded-2 border-accent-6`,
     label: [
-      tw`font-nokia-bold text-xl text-secondary-6 mt-2`,
+      tw`font-nokia-bold text-xl text-secondary-6 my-2`,
       darkMode ? tw`text-primary-1` : null,
     ],
-    switchContainer: tw`flex-row items-center justify-between w-full pb-4`,
   });
 
   return (
@@ -60,7 +60,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
         <Text style={styles.label}>First Name</Text>
         <TextInput
           style={styles.input}
-          value={firstName}
+          value={user && user.user && user.user.firstName}
           onChangeText={setFirstName}
           placeholder="Enter first name"
         />
@@ -68,14 +68,14 @@ const UserProfileUpdateScreen = ({navigation}) => {
         <Text style={styles.label}>Last Name</Text>
         <TextInput
           style={styles.input}
-          value={lastName}
+          value={user && user.user && user.user.lastName}
           onChangeText={setLastName}
           placeholder="Enter last name"
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          value={email}
+          value={user && user.user && user.user.email}
           onChangeText={setEmail}
           placeholder="Enter email"
           keyboardType="email-address"
