@@ -35,13 +35,14 @@ const Course = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-  const handleSearch = e => {
-    setSearchTerm(e.target.value);
+  const handleSearch = text => {
+    setSearchTerm(text);
   };
 
   const filteredData = courses?.filter(course => {
     return course.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
   const navigation = useNavigation();
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
