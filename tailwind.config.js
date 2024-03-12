@@ -11,9 +11,6 @@ module.exports = {
     container: {
       center: true,
       padding: '2rem',
-      screens: {
-        '2xl': '1400px',
-      },
     },
     fontSize: {
       xs1: ['10px', {lineHeight: '16px', letterSpacing: '0'}],

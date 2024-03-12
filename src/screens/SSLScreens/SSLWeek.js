@@ -217,9 +217,10 @@ const SSLWeek = ({route}) => {
             <View style={tw`flex flex-row justify-between`}>
               {check !== '01' && (
                 <TouchableOpacity
-                  style={tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`}
+                  style={tw`mb-2`}
                   onPress={onPreviousButtonClick}>
-                  <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                  <Text
+                    style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
                     Back
                   </Text>
                 </TouchableOpacity>
@@ -227,11 +228,12 @@ const SSLWeek = ({route}) => {
               {check !== '07' && (
                 <TouchableOpacity
                   style={[
-                    tw`mb-2 border border-accent-6 px-4 py-1 rounded-4 w-18`,
+                    tw`mb-2`,
                     check === '01' && tw`self-end`, // Align to the right if check is '01'
                   ]}
                   onPress={onNextButtonClick}>
-                  <Text style={tw`text-accent-6 font-nokia-bold text-xl`}>
+                  <Text
+                    style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
                     Next
                   </Text>
                 </TouchableOpacity>

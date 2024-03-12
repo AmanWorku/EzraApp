@@ -90,14 +90,14 @@ const SSLHome = () => {
                     </Text>
                     <Text
                       style={[
-                        tw`font-nokia-bold text-xl text-secondary-6`,
+                        tw`font-nokia-bold text-xl text-secondary-6 leading-tight`,
                         darkMode ? tw`text-primary-1` : null,
                       ]}>
                       {item.title}
                     </Text>
                     <View style={tw`border-b border-accent-6 my-1`} />
                     <Text
-                      numberOfLines={5}
+                      numberOfLines={4}
                       style={[
                         tw`font-nokia-bold text-sm text-secondary-6 text-justify mt-2`,
                         darkMode ? tw`text-primary-1` : null,
