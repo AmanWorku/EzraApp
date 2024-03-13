@@ -40,7 +40,7 @@ const Course = () => {
   };
 
   const filteredData = courses?.filter(course => {
-    return course.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return course.title.includes(searchTerm);
   });
 
   const navigation = useNavigation();
@@ -59,7 +59,20 @@ const Course = () => {
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={['#EA9215']}
+            tintColor="#EA9215"
+          />
+        }>
+        <Text>Error: {error.message}</Text>
+      </ScrollView>
+    );
   }
 
   return (
