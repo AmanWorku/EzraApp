@@ -21,11 +21,13 @@ import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
+  const navigation = useNavigation();
 
   const onRefresh = useCallback(async () => {
     try {
@@ -35,6 +37,7 @@ const Course = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
   const handleSearch = text => {
     setSearchTerm(text);
   };
@@ -43,9 +46,12 @@ const Course = () => {
     return course.title.includes(searchTerm);
   });
 
-  const navigation = useNavigation();
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
+  };
+
+  const handleTryAgain = () => {
+    refetch();
   };
   if (isLoading) {
     return (
@@ -70,11 +76,28 @@ const Course = () => {
             tintColor="#EA9215"
           />
         }>
-        <Text>Error: {error.message}</Text>
+        <View style={tw`flex-1 items-center justify-center`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-lg mb-4`}>
+            Error: {error.message}
+          </Text>
+          <TouchableOpacity
+            style={tw`bg-accent-6 px-4 py-2 rounded-full mb-4`}
+            onPress={handleTryAgain}>
+            <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
+              Try Again
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={tw`bg-accent-6 px-4 py-2 rounded-full`}
+            onPress={navigation.navigate('Home')}>
+            <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
+              Go to Home
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     );
   }
-
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>

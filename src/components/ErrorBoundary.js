@@ -20,7 +20,10 @@ class ErrorBoundary extends Component {
 
   handleRetry = () => {
     this.setState({hasError: false});
-    this.props.onRetry(); // name change to match what's passed down
+    // Call the refetch function passed down as a prop
+    if (this.props.onRetry) {
+      this.props.onRetry();
+    }
   };
 
   handleGoHome = () => {
