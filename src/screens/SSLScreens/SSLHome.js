@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  TextInput,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +21,7 @@ const SSLHome = () => {
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const onRefresh = useCallback(async () => {
     try {
@@ -29,6 +31,14 @@ const SSLHome = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
+  const handleSearch = text => {
+    setSearchTerm(text);
+  };
+
+  const filteredData = ssl?.filter(sslItems => {
+    return sslItems.title.includes(searchTerm);
+  });
 
   if (isLoading) {
     return (
@@ -63,6 +73,16 @@ const SSLHome = () => {
             />
           }>
           <CurrentSSL />
+          <TextInput
+            placeholder="Search courses..."
+            value={searchTerm}
+            onChangeText={handleSearch}
+            style={[
+              tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}
+            placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
+          />
           <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
             Explore quarterly lessons
           </Text>
@@ -90,14 +110,14 @@ const SSLHome = () => {
                     </Text>
                     <Text
                       style={[
-                        tw`font-nokia-bold text-xl text-secondary-6`,
+                        tw`font-nokia-bold text-xl text-secondary-6 leading-tight`,
                         darkMode ? tw`text-primary-1` : null,
                       ]}>
                       {item.title}
                     </Text>
                     <View style={tw`border-b border-accent-6 my-1`} />
                     <Text
-                      numberOfLines={5}
+                      numberOfLines={4}
                       style={[
                         tw`font-nokia-bold text-sm text-secondary-6 text-justify mt-2`,
                         darkMode ? tw`text-primary-1` : null,
@@ -110,7 +130,7 @@ const SSLHome = () => {
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
                     onPress={() => handleSSLOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
-                      ኮርሱን ክፈት
+                      ትምህርቱን ክፈት
                     </Text>
                   </TouchableOpacity>
                 </View>

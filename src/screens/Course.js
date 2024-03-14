@@ -35,13 +35,14 @@ const Course = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-  const handleSearch = e => {
-    setSearchTerm(e.target.value);
+  const handleSearch = text => {
+    setSearchTerm(text);
   };
 
   const filteredData = courses?.filter(course => {
-    return course.title.toLowerCase().includes(searchTerm.toLowerCase());
+    return course.title.includes(searchTerm);
   });
+
   const navigation = useNavigation();
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
@@ -58,7 +59,20 @@ const Course = () => {
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={['#EA9215']}
+            tintColor="#EA9215"
+          />
+        }>
+        <Text>Error: {error.message}</Text>
+      </ScrollView>
+    );
   }
 
   return (
@@ -122,49 +136,53 @@ const Course = () => {
               <CaretCircleDown size={24} weight="fill" color={'#EA9215'} />
             </View>
           </View>
-          {courses &&
-            courses.map((course, index) => {
-              return (
-                <View
-                  style={tw`border border-accent-6 my-2 rounded-4 p-2`}
-                  key={index}>
-                  <View style={tw`h-48`}>
-                    <Image
-                      source={{
-                        uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
-                      }}
-                      style={tw`w-full h-full rounded-3`}
-                    />
-                  </View>
-                  <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-                    የአጠናን ዘዴዎች
-                  </Text>
-                  <Text
-                    style={[
-                      tw`font-nokia-bold text-secondary-6 text-2xl`,
-                      darkMode ? tw`text-primary-3` : null,
-                    ]}>
-                    {course.title}
-                  </Text>
-                  <View style={tw`flex flex-row items-center justify-between`}>
-                    <TouchableOpacity
-                      style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-                      onPress={() => handleButtonPress(course._id)}>
-                      <Text
-                        style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                        ኮርሱን ክፈት
-                      </Text>
-                    </TouchableOpacity>
-                    <View style={tw`flex flex-row items-center gap-1`}>
-                      <Text style={tw`font-nokia-bold text-accent-6 text-2xl `}>
-                        5.0
-                      </Text>
-                      <Star size={22} weight="fill" color={'#EA9215'} />
-                    </View>
+          {filteredData.length > 0 ? (
+            filteredData.map((course, index) => (
+              <View
+                style={tw`border border-accent-6 my-2 rounded-4 p-2`}
+                key={index}>
+                <View style={tw`h-48`}>
+                  <Image
+                    source={{
+                      uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
+                    }}
+                    style={tw`w-full h-full rounded-3`}
+                  />
+                </View>
+                <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
+                  የአጠናን ዘዴዎች
+                </Text>
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-secondary-6 text-2xl`,
+                    darkMode ? tw`text-primary-3` : null,
+                  ]}>
+                  {course.title}
+                </Text>
+                <View style={tw`flex flex-row items-center justify-between`}>
+                  <TouchableOpacity
+                    style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
+                    onPress={() => handleButtonPress(course._id)}>
+                    <Text
+                      style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                      ኮርሱን ክፈት
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={tw`flex flex-row items-center gap-1`}>
+                    <Text style={tw`font-nokia-bold text-accent-6 text-2xl `}>
+                      5.0
+                    </Text>
+                    <Star size={22} weight="fill" color={'#EA9215'} />
                   </View>
                 </View>
-              );
-            })}
+              </View>
+            ))
+          ) : (
+            <Text
+              style={tw`font-nokia-bold text-accent-6 text-lg text-center mt-4 h-full`}>
+              No results found
+            </Text>
+          )}
         </ScrollView>
       </SafeAreaView>
     </View>

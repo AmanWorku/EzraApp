@@ -39,8 +39,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
   
-  UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-  center.delegate = self;
 
   return YES;
 }

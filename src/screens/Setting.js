@@ -27,8 +27,6 @@ const Setting = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const user = useSelector(state => state.auth);
 
-  console.log(user);
-
   const handleToggle = () => {
     dispatch(toggleDarkMode());
   };
@@ -78,7 +76,8 @@ const Setting = ({navigation}) => {
 
         <View style={tw` py-4 border-b border-accent-6`}>
           <TouchableOpacity
-            style={tw`flex-row w-full justify-between items-center`}>
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={() => navigation.navigate('EditProfile')}>
             <View style={tw`flex-row items-center`}>
               <Pencil
                 size={20}
@@ -122,7 +121,8 @@ const Setting = ({navigation}) => {
         </View>
         <View style={tw`py-4 border-b border-accent-6`}>
           <TouchableOpacity
-            style={tw`flex-row w-full justify-between items-center`}>
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={() => navigation.navigate('AppInfo')}>
             <View style={tw`flex-row items-center`}>
               <DeviceMobile
                 size={20}
