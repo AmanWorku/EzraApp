@@ -82,10 +82,6 @@ const Home = () => {
     refetch();
   }, [devotions, refetch]);
 
-  if (!devotions || devotions.length === 0) {
-    return <Text>No devotions available</Text>;
-  }
-
   const devotionToDisplay = selectedDevotion || devotions[0];
 
   if (isFetching) {
