@@ -1,39 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, TouchableOpacity, View} from 'react-native';
 import tw from '../../../../tailwind';
 import Toast from 'react-native-toast-message';
 
-const Quiz = ({
-  value,
-  selectedAnswer,
-  setSelectedAnswer,
-  isAnswerChecked,
-  setIsAnswerChecked,
-}) => {
+const Quiz = ({value}) => {
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+
   const handleAnswerSelection = answer => {
-    // Allow selection only if the answer is not yet checked
-    if (!isAnswerChecked) {
-      setSelectedAnswer(answer);
-    }
+    setSelectedAnswer(answer);
   };
 
   const checkAnswer = () => {
-    // Check answer only if an answer is selected and the answer is not yet checked
-    if (selectedAnswer && !isAnswerChecked) {
-      setIsAnswerChecked(true); // Set answer checked flag to true
-      if (selectedAnswer.text === value.correctAnswer) {
-        // Show success message if the answer is correct
-        return Toast.show({
-          type: 'success',
-          text1: 'Correct Answer!',
-        });
-      } else {
-        // Show error message if the answer is incorrect
-        return Toast.show({
-          type: 'error',
-          text1: 'Wrong Answer!',
-        });
-      }
+    setIsAnswerChecked(true);
+    if (selectedAnswer.text === value.correctAnswer) {
+      return Toast.show({
+        type: 'success',
+        text1: 'Correct Answer!',
+      });
+    } else {
+      return Toast.show({
+        type: 'error',
+        text1: 'Wrong Answer!',
+      });
     }
   };
 
@@ -48,7 +37,7 @@ const Quiz = ({
             key={index}
             onPress={() => handleAnswerSelection(choice)}
             style={[
-              tw` mb-2`,
+              tw`mb-2`,
               selectedAnswer === choice && !isAnswerChecked
                 ? tw`bg-primary-2 text-secondary-6 rounded-lg`
                 : null,
@@ -58,7 +47,7 @@ const Quiz = ({
               style={[
                 tw`font-nokia-bold text-sm text-primary-1 border border-primary-1 rounded-lg p-2`,
                 selectedAnswer === choice && !isAnswerChecked
-                  ? tw` text-secondary-6`
+                  ? tw`text-secondary-6`
                   : null,
               ]}>
               {choice.text}
@@ -69,8 +58,8 @@ const Quiz = ({
       <TouchableOpacity
         onPress={checkAnswer}
         style={tw`mt-4 bg-primary-2 px-4 py-2 rounded-lg`}
-        disabled={isAnswerChecked}>
-        <Text style={tw`font-nokia-bold text-white`}>
+        disabled={!selectedAnswer || isAnswerChecked}>
+        <Text style={tw`font-nokia-bold text-secondary-6`}>
           {isAnswerChecked ? 'Answer Checked' : 'Check Answer'}
         </Text>
       </TouchableOpacity>
