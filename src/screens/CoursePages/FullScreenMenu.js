@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
-  ScrollView,
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
@@ -16,6 +15,7 @@ import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
+import {ScrollView} from 'react-native-gesture-handler';
 const {width, height} = Dimensions.get('window');
 
 const FullScreenMenu = ({
@@ -117,30 +117,34 @@ const FullScreenMenu = ({
           Slide {currentDataNumber}/{totalDataNumber}
         </Text>
       </View>
-      <ScrollView contentContainerStyle={tw`flex-grow justify-center`}>
-        {chapter.slides.map((slide, index) => {
-          const unlocked = isSlideUnlocked(index);
-          return (
-            <TouchableOpacity
-              key={slide._id}
-              onPress={() => isSlideUnlocked(index) && handleSlideChange(index)}
-              disabled={!isSlideUnlocked(index)}>
-              <View
-                style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
-                  {slide.slide}
-                </Text>
-                {unlocked ? (
-                  <CheckCircle size={20} weight="fill" color={'#EA9215'} />
-                ) : (
-                  <Circle size={20} color={'#EA9215'} />
-                )}
-              </View>
-              <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+      <View style={tw`flex-1 h-86`}>
+        <ScrollView contentContainerStyle={tw`h-full`}>
+          {chapter.slides.map((slide, index) => {
+            const unlocked = isSlideUnlocked(index);
+            return (
+              <TouchableOpacity
+                key={slide._id}
+                onPress={() =>
+                  isSlideUnlocked(index) && handleSlideChange(index)
+                }
+                disabled={!isSlideUnlocked(index)}>
+                <View
+                  style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
+                  <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                    {slide.slide}
+                  </Text>
+                  {unlocked ? (
+                    <CheckCircle size={20} weight="fill" color={'#EA9215'} />
+                  ) : (
+                    <Circle size={20} color={'#EA9215'} />
+                  )}
+                </View>
+                <View style={tw`border-b border-accent-6 h-1 flex-grow`} />
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
       <View style={tw`flex-0.5`}>
         <TouchableOpacity
           style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 my-2 mx-auto`}
