@@ -36,7 +36,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const currentUser = useSelector(state => state.auth);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [updateUserMutation] = useUpdateUserMutation();
+  const [updateUserMutation, {isLoading}] = useUpdateUserMutation();
 
   useEffect(() => {
     if (currentUser) {
@@ -80,42 +80,40 @@ const UserProfileUpdateScreen = ({navigation}) => {
           }
 
           const updatedUser = await updateUserMutation(formData).unwrap();
-          Toast.success('Profile updated successfully!');
-          // console.log("Mutation successful, updatedUser:", updatedUser);
+          Toast.show({
+            type: 'success',
+            text1: 'Profile updated successfully!',
+          });
           dispatch(updateUser(updatedUser));
           setFirstName(updatedUser.firstName);
           setLastName(updatedUser.lastName);
           setEmail(updatedUser.email);
           setPassword(updatedUser.password);
-          setAvatarPreview(
-            updatedUser.avatar
-              ? `https://ezra-seminary.mybese.tech/images/${updatedUser.avatar}`
-              : null,
-          );
-
-          // Save the updated user information to local storage
+          Toast.show({
+            type: 'success',
+            text1: 'Profile updated successfully!',
+          });
+          navigation.navigate('Setting');
           localStorage.setItem('user', JSON.stringify(updatedUser));
         } catch (error) {
-          if (
-            typeof error === 'object' &&
-            error !== null &&
-            'status' in error &&
-            'data' in error
-          ) {
+          if (error !== null && 'status' in error && 'data' in error) {
             const apiError = error;
             if (
               apiError.status === 400 &&
               apiError.data.message === 'Error uploading avatar'
             ) {
               console.error('Mutation failed:', error);
-              Toast.error('Failed to upload avatar. Please try again.');
-            } else {
-              console.error('Mutation failed:', error);
-              Toast.error('Failed to update profile. Please try again.');
+              Toast.show({
+                type: 'error',
+                text1: 'Failed to upload avatar. Please try again.',
+              });
             }
           } else {
             console.error('Mutation failed:', error);
-            Toast.error('An unknown error occurred. Please try again.');
+            Toast.show({
+              type: 'error',
+              text1: 'An unknown error occurred. Please try again.',
+            });
           }
         }
       }
@@ -306,13 +304,15 @@ const UserProfileUpdateScreen = ({navigation}) => {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
-              onPress={handleSubmit}
+              style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-4`}
+              onPress={handleUpdateUser}
               disabled={isLoading}>
               {isLoading ? (
                 <ActivityIndicator size="small" color="#FFFFFF" />
               ) : (
-                <Text style={tw`font-Lato-Black text-primary-1`}>Sign In</Text>
+                <Text style={tw`font-Lato-Black text-primary-1`}>
+                  Update Profile
+                </Text>
               )}
             </TouchableOpacity>
           </View>
