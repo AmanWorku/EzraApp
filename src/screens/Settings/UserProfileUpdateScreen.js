@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -13,20 +13,34 @@ import {useDispatch, useSelector} from 'react-redux';
 import {updateUser} from '../../redux/authSlice';
 import tw from './../../../tailwind';
 import {ArrowSquareLeft} from 'phosphor-react-native';
+import bible from '../../assets/bible.png';
 
 const UserProfileUpdateScreen = ({navigation}) => {
   // States for user inputs
+  const dispatch = useDispatch();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
-  const user = useSelector(state => state.auth);
+  const currentUser = useSelector(state => state.auth);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
-  // Redux dispatch
-  const dispatch = useDispatch();
+  useEffect(() => {
+    if (currentUser) {
+      setFirstName(currentUser.firstName || '');
+      setLastName(currentUser.lastName || '');
+      setEmail(currentUser.email || '');
+      setPassword(currentUser.password || '');
+      setAvatarPreview(
+        currentUser.avatar
+          ? `https://ezra-seminary.mybese.tech/images/${currentUser.avatar}`
+          : bible,
+      );
+    }
+  }, [currentUser]);
 
-  // Update user handler
   const handleUpdateUser = () => {
     const userData = {firstName, lastName, email, password};
     dispatch(updateUser(userData));
@@ -60,7 +74,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
         <Text style={styles.label}>First Name</Text>
         <TextInput
           style={styles.input}
-          value={user && user.user && user.user.firstName}
+          value={currentUser && currentUser.user && currentUser.user.firstName}
           onChangeText={setFirstName}
           placeholder="Enter first name"
         />
@@ -68,14 +82,14 @@ const UserProfileUpdateScreen = ({navigation}) => {
         <Text style={styles.label}>Last Name</Text>
         <TextInput
           style={styles.input}
-          value={user && user.user && user.user.lastName}
+          value={currentUser && currentUser.user && currentUser.user.lastName}
           onChangeText={setLastName}
           placeholder="Enter last name"
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          value={user && user.user && user.user.email}
+          value={currentUser && currentUser.user && currentUser.user.email}
           onChangeText={setEmail}
           placeholder="Enter email"
           keyboardType="email-address"

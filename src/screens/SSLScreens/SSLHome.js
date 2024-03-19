@@ -74,7 +74,7 @@ const SSLHome = () => {
           }>
           <CurrentSSL />
           <TextInput
-            placeholder="Search courses..."
+            placeholder="Search SSLs..."
             value={searchTerm}
             onChangeText={handleSearch}
             style={[
@@ -95,7 +95,7 @@ const SSLHome = () => {
           </Text>
           <View style={tw`border-b border-accent-6 my-1`} />
           <View style={tw`flex flex-col`}>
-            {ssl.map((item, index) => (
+            {filteredData.map((item, index) => (
               <View
                 key={item.id}
                 style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-64`}>
