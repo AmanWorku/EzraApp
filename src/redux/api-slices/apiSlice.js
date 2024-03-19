@@ -36,6 +36,16 @@ export const apiSlice = createApi({
         body: JSON.stringify({firstName, lastName, email, password}),
       }),
     }),
+    updateUser: builder.mutation({
+      query: formData => ({
+        url: '/users/profile',
+        method: 'PUT',
+        headers: {
+          // Don't set the "Content-Type" header, as it will be set automatically by the browser
+        },
+        body: formData,
+      }),
+    }),
     getDevotions: builder.query({
       query: () => ({
         url: '/devotion/show',
@@ -54,6 +64,7 @@ export const apiSlice = createApi({
 export const {
   useSignupMutation,
   useLoginMutation,
+  useUpdateUserMutation,
   useGetDevotionsQuery,
   useGetCoursesQuery,
   useGetCourseByIdQuery,
