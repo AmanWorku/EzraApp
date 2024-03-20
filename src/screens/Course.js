@@ -26,7 +26,7 @@ const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sortByLatest, setSortByLatest] = useState(true); // Default to sorting by latest
+  const [sortByLatest, setSortByLatest] = useState(false); // Default to sorting by latest
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
   const [newError, setNewError] = useState(null);
