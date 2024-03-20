@@ -115,41 +115,27 @@ const Devotion = () => {
               tintColor="#EA9215"
             />
           }>
-          <View style={tw`flex flex-row justify-between my-4 items-center`}>
-            {/* <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            /> */}
-            <Text
-              style={[
-                tw`font-nokia-bold text-xl text-secondary-6 text-center`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              Devotional
-            </Text>
-            {/* <User
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            /> */}
+          <View style={tw`flex flex-row justify-between my-4`}>
+            <View style={tw`border-b border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-xl text-secondary-6 text-center`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}>
+                Devotional
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+              <User
+                size={32}
+                weight="bold"
+                style={[
+                  tw`text-secondary-6`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}
+              />
+            </TouchableOpacity>
           </View>
-          {/* <View>
-            <TextInput
-              placeholder="Search devotionals..."
-              style={[
-                tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-              placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-            />
-          </View> */}
           <View style={tw`flex flex-row mt-6 justify-between`}>
             <View style={tw`w-70%`}>
               <Text

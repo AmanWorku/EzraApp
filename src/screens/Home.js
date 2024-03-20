@@ -114,21 +114,25 @@ const Home = () => {
             />
           }>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <Text
-              style={[
-                tw`font-nokia-bold text-xl text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              Home
-            </Text>
-            <User
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+            <View style={tw`border-b border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-xl text-secondary-6 text-center`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}>
+                Home
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+              <User
+                size={32}
+                weight="bold"
+                style={[
+                  tw`text-secondary-6`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}
+              />
+            </TouchableOpacity>
           </View>
           <View
             style={[
