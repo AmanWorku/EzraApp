@@ -1,9 +1,17 @@
-import {SafeAreaView, StyleSheet, Text, View, ScrollView} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import tw from './../../../tailwind';
 import {useSelector} from 'react-redux';
+import {ArrowSquareLeft} from 'phosphor-react-native';
 
-const AppInfo = () => {
+const AppInfo = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const styles = StyleSheet.create({
     container: tw`flex-1 items-center px-4M w-90% mx-auto pb-8`,
@@ -19,6 +27,11 @@ const AppInfo = () => {
           darkMode && tw`bg-secondary-9`,
         ]}>
         <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={tw`self-start`}>
+            <ArrowSquareLeft weight="fill" color="#EA9215" />
+          </TouchableOpacity>
           <Text style={[styles.title, darkMode && tw`text-accent-6`]}>
             Ezra Seminary
           </Text>
@@ -77,6 +90,31 @@ const AppInfo = () => {
             of scripture guide you as you discover the depths of God's love and
             grace.
           </Text>
+          <Text
+            style={[
+              tw`font-nokia-bold text-accent-6 text-md text-center mt-4`,
+              darkMode && tw`text-primary-1`,
+            ]}>
+            Ezra Seminary
+          </Text>
+          <Text
+            style={[
+              tw`font-nokia-bold text-accent-5 text-xs text-center`,
+              darkMode && tw`text-primary-3`,
+            ]}>
+            Version 1.0.0
+          </Text>
+          <TouchableOpacity
+            style={tw`border border-accent-6 rounded-full mt-4 px-4 py-1`}
+            onPress={() => navigation.goBack()}>
+            <Text
+              style={[
+                tw`font-nokia-bold text-accent-6 text-md text-center `,
+                darkMode && tw`text-primary-1`,
+              ]}>
+              Go Back
+            </Text>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </ScrollView>

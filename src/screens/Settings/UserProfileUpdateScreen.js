@@ -42,7 +42,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
     if (currentUser) {
       setFirstName(currentUser.firstName || '');
       setLastName(currentUser.lastName || '');
-      setEmail(currentUser.email || '');
+      setEmail(currentUser.user.email || '');
       setPassword(currentUser.password || '');
       setAvatarPreview(
         currentUser.avatar
@@ -93,7 +93,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
             type: 'success',
             text1: 'Profile updated successfully!',
           });
-          navigation.navigate('Setting');
+          navigation.navigate('SettingsStack');
           localStorage.setItem('user', JSON.stringify(updatedUser));
         } catch (error) {
           if (error !== null && 'status' in error && 'data' in error) {
@@ -129,6 +129,13 @@ const UserProfileUpdateScreen = ({navigation}) => {
       <ScrollView
         style={tw`flex mx-auto w-[92%]`}
         showsVerticalScrollIndicator={false}>
+        <Text
+          style={[
+            tw`font-nokia-bold text-secondary-6 text-center text-xl mt-4`,
+            darkMode ? tw`text-primary-1` : null,
+          ]}>
+          Update Profile
+        </Text>
         {currentUser && (
           <View style={tw`flex-col w-full justify-center items-center my-4`}>
             <Image
@@ -303,18 +310,30 @@ const UserProfileUpdateScreen = ({navigation}) => {
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-4`}
-              onPress={handleUpdateUser}
-              disabled={isLoading}>
-              {isLoading ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
-              ) : (
-                <Text style={tw`font-Lato-Black text-primary-1`}>
-                  Update Profile
-                </Text>
-              )}
-            </TouchableOpacity>
+            <View style={tw`flex flex-row justify-between`}>
+              <TouchableOpacity
+                style={tw`w-70% py-4 items-center bg-accent-6 rounded-2 my-4`}
+                onPress={handleUpdateUser}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={tw`font-Lato-Black text-primary-1`}>
+                    Update Profile
+                  </Text>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={tw`w-28% py-4 items-center bg-red-600 rounded-2 my-4`}
+                onPress={() => navigation.navigate('SettingsStack')}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={tw`font-Lato-Black text-primary-1`}>Cancel</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
