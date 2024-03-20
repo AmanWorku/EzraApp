@@ -129,6 +129,11 @@ const UserProfileUpdateScreen = ({navigation}) => {
       <ScrollView
         style={tw`flex mx-auto w-[92%]`}
         showsVerticalScrollIndicator={false}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={tw`self-start`}>
+          <ArrowSquareLeft weight="fill" color="#EA9215" />
+        </TouchableOpacity>
         <Text
           style={[
             tw`font-nokia-bold text-secondary-6 text-center text-xl mt-4`,

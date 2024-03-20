@@ -26,7 +26,7 @@ const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sortByLatest, setSortByLatest] = useState(true); // Default to sorting by latest
+  const [sortByLatest, setSortByLatest] = useState(false); // Default to sorting by latest
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
   const [newError, setNewError] = useState(null);
@@ -124,30 +124,26 @@ const Course = () => {
               tintColor="#EA9215"
             />
           }>
-          <View style={tw`flex flex-row justify-between my-4 text-secondary-6`}>
-            <List
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
-            <Text
-              style={[
-                tw`font-nokia-bold text-xl text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              Course
-            </Text>
-            <User
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+          <View style={tw`flex flex-row justify-between my-4`}>
+            <View style={tw`border-b border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-xl text-secondary-6 text-center`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}>
+                Courses
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+              <User
+                size={32}
+                weight="bold"
+                style={[
+                  tw`text-secondary-6`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}
+              />
+            </TouchableOpacity>
           </View>
           <View>
             <TextInput

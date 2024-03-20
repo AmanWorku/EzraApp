@@ -107,8 +107,7 @@ const FullScreenMenu = ({
         </TouchableOpacity>
       </View>
       <Text style={tw`font-nokia-light text-primary-1 text-sm mt-4`}>
-        ይህ የፍሬያማ የመጽሐፍ ቅዱስ አጠናን ዘዴ ኮርስ ሦስተኛ ክፍል ሲሆን ከሰባቱ የመጽሐፍ ቅዱስ አጠናን ዘዴዎች አንዱ
-        የሆነውን የጥሞናን ጥናት በዝርዝር ለማየት እንሞክራለን።
+        {courseData.description}
       </Text>
       <View style={tw`border-b border-primary-1 my-4`} />
       <View style={tw`flex flex-row gap-2 mb-2`}>

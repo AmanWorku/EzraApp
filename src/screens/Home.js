@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  TextInput,
   View,
   ImageBackground,
   RefreshControl,
@@ -23,7 +22,6 @@ import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
-import DrawerToggleButton from '../components/DrawerToggleButton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -116,23 +114,26 @@ const Home = () => {
             />
           }>
           <View style={tw`flex flex-row justify-between my-4`}>
-            <Text
-              style={[
-                tw`font-nokia-bold text-xl text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}>
-              Home
-            </Text>
-            <User
-              size={32}
-              weight="bold"
-              style={[
-                tw`text-secondary-6`,
-                darkMode ? tw`text-primary-1` : null,
-              ]}
-            />
+            <View style={tw`border-b border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-xl text-secondary-6 text-center`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}>
+                Home
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
+              <User
+                size={32}
+                weight="bold"
+                style={[
+                  tw`text-secondary-6`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}
+              />
+            </TouchableOpacity>
           </View>
-
           <View
             style={[
               tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,

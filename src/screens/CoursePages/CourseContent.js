@@ -6,6 +6,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useCallback} from 'react';
 import tw from './../../../tailwind';
@@ -59,6 +60,17 @@ const CourseContent = ({route}) => {
     navigation.navigate('CourseHome');
   };
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView>
@@ -74,7 +86,9 @@ const CourseContent = ({route}) => {
           }>
           <View style={tw`flex-1 h-70`}>
             <ImageBackground
-              source={require('./../../assets/bible2.jpeg')}
+              source={{
+                uri: `https://ezra-seminary.mybese.tech/images/${courseData.image}`,
+              }}
               style={tw`flex-5`}>
               <TouchableOpacity onPress={backButtonPress}>
                 <ArrowSquareLeft
@@ -155,9 +169,9 @@ const CourseContent = ({route}) => {
                         {chapter.chapter}
                         {/* <Text>ID</Text> {courseId} */}
                       </Text>
-                      <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
+                      {/* <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
                         15/15 Slides
-                      </Text>
+                      </Text> */}
                     </View>
                     {unlocked ? (
                       <CheckCircle size={20} weight="fill" color={'#EA9215'} />
