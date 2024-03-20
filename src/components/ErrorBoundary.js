@@ -1,40 +1,50 @@
 import React, {Component} from 'react';
 import {View, Text, Button} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = {hasError: false};
+    this.state = {hasError: false, error: null};
   }
 
   static getDerivedStateFromError(error) {
     // Update state so the next render will show the fallback UI.
-    return {hasError: true};
+    return {hasError: true, error};
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
+    // Log the error to an error reporting service
     console.error('Error caught by ErrorBoundary:', error, errorInfo);
   }
 
   handleRetry = () => {
-    // Callback function to retry fetching the data
-    this.setState({hasError: false}); // Reset the error state
-    this.props.retryFetch(); // Call the retry function passed as props
+    this.setState({hasError: false});
+    // Call the refetch function passed down as a prop
+    if (this.props.onRetry) {
+      this.props.onRetry();
+    }
+  };
+
+  handleGoHome = () => {
+    const navigation = useNavigation();
+    navigation.navigate('Home'); // Assuming 'Home' is the name of your home route
   };
 
   render() {
-    if (this.state.hasError) {
-      // Fallback UI if an error occurs
+    const {hasError, error} = this.state;
+
+    if (hasError) {
+      // You can render any custom fallback UI
       return (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>An error occurred. Please try again later.</Text>
+          <Text>An error occurred: {error ? error.toString() : null}</Text>
           <Button title="Retry" onPress={this.handleRetry} />
+          <Button title="Go to Home" onPress={this.handleGoHome} />
         </View>
       );
     }
 
-    // If there's no error, render the children components as usual
     return this.props.children;
   }
 }

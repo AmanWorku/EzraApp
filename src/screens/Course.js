@@ -21,11 +21,15 @@ import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [sortByLatest, setSortByLatest] = useState(true); // Default to sorting by latest
   const darkMode = useSelector(state => state.ui.darkMode);
+  const navigation = useNavigation();
+  const [newError, setNewError] = useState(null);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -35,18 +39,29 @@ const Course = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
   const handleSearch = text => {
     setSearchTerm(text);
   };
 
-  const filteredData = courses?.filter(course => {
-    return course.title.includes(searchTerm);
-  });
+  let filteredData = courses
+    ?.filter(course => {
+      return course.title.includes(searchTerm);
+    })
+    .slice(); // Create a copy of the filtered data
 
-  const navigation = useNavigation();
+  if (!sortByLatest) {
+    // Reverse the order if sorting by oldest
+    filteredData = filteredData.reverse();
+  }
   const handleButtonPress = id => {
-    navigation.navigate('CourseContent', {courseId: id}); // Make sure to pass an object with a key 'courseId'
+    navigation.navigate('CourseContent', {courseId: id});
   };
+
+  const toggleSortOrder = () => {
+    setSortByLatest(prev => !prev); // Toggle sorting order
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -58,20 +73,41 @@ const Course = () => {
     );
   }
 
-  if (error) {
+  if (error || newError) {
+    const errorMessage = error ? error.message : newError.message;
     return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            colors={['#EA9215']}
-            tintColor="#EA9215"
-          />
-        }>
-        <Text>Error: {error.message}</Text>
-      </ScrollView>
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-full` : null}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`flex-1 items-center justify-center`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-lg mb-4`}>
+              Error: {errorMessage}
+            </Text>
+            <TouchableOpacity
+              style={tw`bg-accent-6 px-4 py-2 rounded-full mb-4`}
+              onPress={() => refetch()}>
+              <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
+                Try Again
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`bg-accent-6 px-4 py-2 rounded-full`}
+              onPress={() => navigation.navigate('Home')}>
+              <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
+                Go to Home
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
@@ -129,12 +165,14 @@ const Course = () => {
             <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
               Popular Courses
             </Text>
-            <View style={tw`flex flex-row justify-between items-center gap-2`}>
+            <TouchableOpacity
+              style={tw`flex flex-row justify-between items-center gap-2`}
+              onPress={toggleSortOrder}>
               <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
-                Latest
+                {sortByLatest ? 'Latest' : 'Oldest'}
               </Text>
               <CaretCircleDown size={24} weight="fill" color={'#EA9215'} />
-            </View>
+            </TouchableOpacity>
           </View>
           {filteredData.length > 0 ? (
             filteredData.map((course, index) => (

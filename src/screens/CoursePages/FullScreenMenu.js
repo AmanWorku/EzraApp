@@ -117,7 +117,7 @@ const FullScreenMenu = ({
           Slide {currentDataNumber}/{totalDataNumber}
         </Text>
       </View>
-      <ScrollView contentContainerStyle={tw`flex-grow justify-center`}>
+      <ScrollView contentContainerStyle={tw`h-64`}>
         {chapter.slides.map((slide, index) => {
           const unlocked = isSlideUnlocked(index);
           return (
