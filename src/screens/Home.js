@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   Text,
-  TextInput,
   View,
   ImageBackground,
   RefreshControl,
@@ -23,7 +22,6 @@ import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
-import DrawerToggleButton from '../components/DrawerToggleButton';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -132,7 +130,6 @@ const Home = () => {
               ]}
             />
           </View>
-
           <View
             style={[
               tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,

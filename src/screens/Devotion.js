@@ -115,32 +115,32 @@ const Devotion = () => {
               tintColor="#EA9215"
             />
           }>
-          <View style={tw`flex flex-row justify-between my-4`}>
-            <List
+          <View style={tw`flex flex-row justify-between my-4 items-center`}>
+            {/* <List
               size={32}
               weight="bold"
               style={[
                 tw`text-secondary-6`,
                 darkMode ? tw`text-primary-1` : null,
               ]}
-            />
+            /> */}
             <Text
               style={[
-                tw`font-nokia-bold text-xl text-secondary-6`,
+                tw`font-nokia-bold text-xl text-secondary-6 text-center`,
                 darkMode ? tw`text-primary-1` : null,
               ]}>
               Devotional
             </Text>
-            <User
+            {/* <User
               size={32}
               weight="bold"
               style={[
                 tw`text-secondary-6`,
                 darkMode ? tw`text-primary-1` : null,
               ]}
-            />
+            /> */}
           </View>
-          <View>
+          {/* <View>
             <TextInput
               placeholder="Search devotionals..."
               style={[
@@ -149,7 +149,7 @@ const Devotion = () => {
               ]}
               placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
             />
-          </View>
+          </View> */}
           <View style={tw`flex flex-row mt-6 justify-between`}>
             <View style={tw`w-70%`}>
               <Text
