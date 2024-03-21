@@ -14,7 +14,7 @@ import {ArrowSquareLeft} from 'phosphor-react-native';
 const AppInfo = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const styles = StyleSheet.create({
-    container: tw`flex-1 items-center px-4M w-90% mx-auto pb-8`,
+    container: tw`flex-1 items-center w-92% mx-auto pb-8`,
     title: tw`font-nokia-bold text-2xl text-accent-6 my-2 border-b border-accent-6`,
     text: tw`font-nokia-bold text-secondary-6 text-md text-justify leading-tight my-2`,
     subtitle: tw`font-nokia-bold text-accent-6 text-lg text-justify border-b border-accent-6 pb-2`,
@@ -30,7 +30,7 @@ const AppInfo = ({navigation}) => {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={tw`self-start`}>
-            <ArrowSquareLeft weight="fill" color="#EA9215" />
+            <ArrowSquareLeft weight="fill" color="#EA9215" size={32} />
           </TouchableOpacity>
           <Text style={[styles.title, darkMode && tw`text-accent-6`]}>
             Ezra Seminary

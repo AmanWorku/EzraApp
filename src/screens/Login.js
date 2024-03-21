@@ -80,14 +80,14 @@ const Login = ({navigation}) => {
         <View style={tw`my-8`}>
           <Text
             style={[
-              tw`font-nokia-bold text-3xl text-secondary-6`,
+              tw`font-nokia-bold text-3xl text-secondary-6 text-center`,
               darkMode ? tw`text-primary-3` : null,
             ]}>
-            Welcome back!
+            Welcome!
           </Text>
           <Text
             style={[
-              tw`font-nokia-bold text-sm text-secondary-4`,
+              tw`font-nokia-bold text-sm text-secondary-4 text-center`,
               darkMode ? tw`text-primary-3` : null,
             ]}>
             Fill your credentials.

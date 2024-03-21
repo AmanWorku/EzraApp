@@ -48,10 +48,8 @@ const Course = () => {
     ?.filter(course => {
       return course.title.includes(searchTerm);
     })
-    .slice(); // Create a copy of the filtered data
-
+    .slice();
   if (!sortByLatest) {
-    // Reverse the order if sorting by oldest
     filteredData = filteredData.reverse();
   }
   const handleButtonPress = id => {
@@ -59,7 +57,7 @@ const Course = () => {
   };
 
   const toggleSortOrder = () => {
-    setSortByLatest(prev => !prev); // Toggle sorting order
+    setSortByLatest(prev => !prev);
   };
 
   if (isLoading) {
