@@ -49,8 +49,15 @@ const Course = () => {
       return course.title.includes(searchTerm);
     })
     .slice();
-  if (!sortByLatest) {
-    filteredData = filteredData.reverse();
+
+  if (courses) {
+    filteredData = courses.filter(course => {
+      return course.title.includes(searchTerm);
+    });
+
+    if (!sortByLatest) {
+      filteredData = [...filteredData].reverse();
+    }
   }
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id});

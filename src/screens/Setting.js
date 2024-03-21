@@ -4,19 +4,17 @@ import {
   Text,
   Switch,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
   Image,
 } from 'react-native';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
 import {toggleDarkMode} from '../redux/uiSlice';
-import {logoutUser} from '../redux/authSlice'; // Import the logout action
+import {logoutUser} from '../redux/authSlice';
 import {
   ArrowCircleRight,
   Bell,
   DeviceMobile,
-  Lock,
   Moon,
   Pencil,
   ShareNetwork,
@@ -36,10 +34,11 @@ const Setting = ({navigation}) => {
     navigation.navigate('Login');
   };
 
+  console.log(user);
   return (
     <SafeAreaView
       style={[
-        tw`flex-1 items-center px-4 bg-primary-1`,
+        tw`flex-1 items-center px-4 bg-primary-1 justify-between`,
         darkMode && tw`bg-secondary-9`,
       ]}>
       <View style={tw`w-92%`}>
@@ -163,15 +162,21 @@ const Setting = ({navigation}) => {
           </View>
           <Switch onValueChange={handleToggle} value={darkMode} />
         </View>
-        <TouchableOpacity
-          onPress={handleLogout}
-          style={tw`w-36 flex justify-center self-center border border-red-500 rounded-full mt-8`}>
-          <Text
-            style={tw`text-center font-nokia-bold text-lg text-red-500 px-8 py-2 `}>
-            Logout
-          </Text>
-        </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        onPress={handleLogout}
+        style={[
+          tw`w-36 flex justify-center self-center border border-red-500 rounded-full mb-8`,
+          user.user ? null : tw`border-accent-6 bg-accent-6`,
+        ]}>
+        <Text
+          style={[
+            tw`text-center font-nokia-bold text-lg text-red-500 px-8 py-2 `,
+            user.user ? null : tw`text-primary-1`,
+          ]}>
+          {user.user ? 'Logout' : 'Login'}
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
