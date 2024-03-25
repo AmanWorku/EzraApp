@@ -39,13 +39,13 @@ const Course = () => {
 
   let filteredData = courses
     ?.filter(course => {
-      return course.title.includes(searchTerm) || course.published;
+      return course.title.includes(searchTerm) && course.published;
     })
     .slice();
 
   if (courses) {
     filteredData = courses.filter(course => {
-      return course.title.includes(searchTerm) || course.published;
+      return course.title.includes(searchTerm) && course.published;
     });
 
     if (!sortByLatest) {
