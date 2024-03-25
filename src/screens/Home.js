@@ -79,13 +79,6 @@ const Home = () => {
   useEffect(() => {
     refetch();
   }, [devotions, refetch]);
-
-  if (!devotions || devotions.length === 0) {
-    return <Text>No devotions available</Text>;
-  }
-
-  const devotionToDisplay = selectedDevotion || devotions[0];
-
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -96,6 +89,12 @@ const Home = () => {
       </SafeAreaView>
     );
   }
+
+  if (!devotions || devotions.length === 0) {
+    return <Text>No devotions available</Text>;
+  }
+
+  const devotionToDisplay = selectedDevotion || devotions[0];
 
   if (!isFetching && isLoading) {
     setIsLoading(false);
