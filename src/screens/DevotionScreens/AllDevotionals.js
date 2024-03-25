@@ -11,7 +11,12 @@ import {
   RefreshControl,
 } from 'react-native';
 import {useSelector} from 'react-redux';
-import {ArrowSquareLeft, User, ArrowSquareUpRight} from 'phosphor-react-native';
+import {
+  ArrowSquareLeft,
+  User,
+  ArrowSquareUpRight,
+  Warning,
+} from 'phosphor-react-native';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from './../../redux/api-slices/apiSlice';
 
@@ -22,6 +27,7 @@ const AllDevotionals = ({navigation}) => {
     data: originalDevotionals = [],
     isFetching,
     refetch,
+    error,
   } = useGetDevotionsQuery();
   const [devotionals, setDevotionals] = useState(originalDevotionals);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +49,39 @@ const AllDevotionals = ({navigation}) => {
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
           Loading
         </Text>
+      </SafeAreaView>
+    );
+  }
+  if (error) {
+    return (
+      <SafeAreaView
+        style={
+          darkMode
+            ? tw`bg-secondary-9 h-100% justify-center items-center`
+            : tw`h-100% justify-center items-center`
+        }>
+        <Warning size={50} color={darkMode ? '#898989' : '#EA9215'} />
+        <Text
+          style={
+            darkMode
+              ? tw`font-nokia-bold text-lg text-primary-1 text-center mt-4`
+              : tw`font-nokia-bold text-lg text-accent-6 text-center mt-4`
+          }>
+          There seems to be a problem with the system or your internet
+          connection.
+        </Text>
+        <TouchableOpacity
+          onPress={refetch}
+          style={tw`mt-4 px-8 py-2 border border-accent-6 rounded-full`}>
+          <Text
+            style={
+              darkMode
+                ? tw`font-nokia-bold text-lg text-primary-1 text-center`
+                : tw`font-nokia-bold text-lg text-accent-6 text-center`
+            }>
+            Reload
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
