@@ -70,6 +70,18 @@ const SSLHome = () => {
           There seems to be a problem with the system or your internet
           connection.
         </Text>
+        <TouchableOpacity
+          onPress={refetch}
+          style={tw`mt-4 px-8 py-2 border border-accent-6 rounded-full`}>
+          <Text
+            style={
+              darkMode
+                ? tw`font-nokia-bold text-lg text-primary-1 text-center`
+                : tw`font-nokia-bold text-lg text-accent-6 text-center`
+            }>
+            Reload
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
