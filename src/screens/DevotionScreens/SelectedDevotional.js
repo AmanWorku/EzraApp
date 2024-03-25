@@ -26,7 +26,12 @@ const SelectedDevotional = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
   const {devotionalId} = route.params;
-  const {data: devotionals = [], isFetching, error} = useGetDevotionsQuery();
+  const {
+    data: devotionals = [],
+    isFetching,
+    error,
+    refetch,
+  } = useGetDevotionsQuery();
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
 
