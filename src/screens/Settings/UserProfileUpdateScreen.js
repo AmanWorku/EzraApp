@@ -132,7 +132,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={tw`self-start`}>
-          <ArrowSquareLeft weight="fill" color="#EA9215" />
+          <ArrowSquareLeft weight="fill" color="#EA9215" size={32} />
         </TouchableOpacity>
         <Text
           style={[

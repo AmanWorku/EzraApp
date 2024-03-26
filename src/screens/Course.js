@@ -10,13 +10,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {
-  List,
-  User,
-  CaretCircleDown,
-  Star,
-  ArrowSquareRight,
-} from 'phosphor-react-native';
+import {User, CaretCircleDown, Star, Warning} from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
@@ -29,7 +23,6 @@ const Course = () => {
   const [sortByLatest, setSortByLatest] = useState(false); // Default to sorting by latest
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
-  const [newError, setNewError] = useState(null);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -46,20 +39,25 @@ const Course = () => {
 
   let filteredData = courses
     ?.filter(course => {
-      return course.title.includes(searchTerm);
+      return course.title.includes(searchTerm) && course.published;
     })
-    .slice(); // Create a copy of the filtered data
+    .slice();
 
-  if (!sortByLatest) {
-    // Reverse the order if sorting by oldest
-    filteredData = filteredData.reverse();
+  if (courses) {
+    filteredData = courses.filter(course => {
+      return course.title.includes(searchTerm) && course.published;
+    });
+
+    if (!sortByLatest) {
+      filteredData = [...filteredData].reverse();
+    }
   }
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id});
   };
 
   const toggleSortOrder = () => {
-    setSortByLatest(prev => !prev); // Toggle sorting order
+    setSortByLatest(prev => !prev);
   };
 
   if (isLoading) {
@@ -73,44 +71,39 @@ const Course = () => {
     );
   }
 
-  if (error || newError) {
-    const errorMessage = error ? error.message : newError.message;
+  if (error) {
     return (
-      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-full` : null}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={['#EA9215']}
-              tintColor="#EA9215"
-            />
+      <SafeAreaView
+        style={
+          darkMode
+            ? tw`bg-secondary-9 h-100% justify-center items-center`
+            : tw`h-100% justify-center items-center`
+        }>
+        <Warning size={50} color={darkMode ? '#898989' : '#EA9215'} />
+        <Text
+          style={
+            darkMode
+              ? tw`font-nokia-bold text-lg text-primary-1 text-center mt-4`
+              : tw`font-nokia-bold text-lg text-accent-6 text-center mt-4`
           }>
-          <View style={tw`flex-1 items-center justify-center`}>
-            <Text style={tw`font-nokia-bold text-accent-6 text-lg mb-4`}>
-              Error: {errorMessage}
-            </Text>
-            <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full mb-4`}
-              onPress={() => refetch()}>
-              <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
-                Try Again
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={tw`bg-accent-6 px-4 py-2 rounded-full`}
-              onPress={() => navigation.navigate('Home')}>
-              <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
-                Go to Home
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+          There seems to be a problem with the system or your internet
+          connection.
+        </Text>
+        <TouchableOpacity
+          onPress={refetch}
+          style={tw`mt-4 px-8 py-2 border border-accent-6 rounded-full`}>
+          <Text
+            style={
+              darkMode
+                ? tw`font-nokia-bold text-lg text-primary-1 text-center`
+                : tw`font-nokia-bold text-lg text-accent-6 text-center`
+            }>
+            Reload
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
-
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>

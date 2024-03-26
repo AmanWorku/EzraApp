@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -9,19 +9,16 @@ import {
   ImageBackground,
   RefreshControl,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
-import {
-  List,
-  User,
-  BookOpenText,
-  ArrowSquareUpRight,
-} from 'phosphor-react-native';
+import {User, BookOpenText, ArrowSquareUpRight} from 'phosphor-react-native';
 import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -30,6 +27,8 @@ const Home = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
   const [selectedDevotion, setSelectedDevotion] = useState(null);
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
   const handleButtonPress = () => {
     navigation.navigate('CourseContent');
   };
@@ -76,26 +75,55 @@ const Home = () => {
     }
   }, [devotions]);
 
+  const handlePulseAnimation = useCallback(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 0.9,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, [pulseAnim]);
+
+  useEffect(() => {
+    handlePulseAnimation();
+  }, [handlePulseAnimation]);
+
   useEffect(() => {
     refetch();
   }, [devotions, refetch]);
+
+  if (isFetching && !devotions.length) {
+    return (
+      <SafeAreaView style={tw`flex-1 justify-center items-center bg-primary-1`}>
+        <Animated.View
+          style={{
+            transform: [{scale: pulseAnim}],
+          }}>
+          <SkeletonPlaceholder>
+            <View style={tw`w-full px-4`}>
+              <View style={tw`h-20 bg-secondary-3 rounded mb-4`}></View>
+              <View style={tw`h-10 bg-secondary-3 rounded mb-4`}></View>
+              <View style={tw`h-10 bg-secondary-3 rounded`}></View>
+            </View>
+          </SkeletonPlaceholder>
+        </Animated.View>
+      </SafeAreaView>
+    );
+  }
 
   if (!devotions || devotions.length === 0) {
     return <Text>No devotions available</Text>;
   }
 
   const devotionToDisplay = selectedDevotion || devotions[0];
-
-  if (isFetching) {
-    return (
-      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
-        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
-        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
-        </Text>
-      </SafeAreaView>
-    );
-  }
 
   if (!isFetching && isLoading) {
     setIsLoading(false);
