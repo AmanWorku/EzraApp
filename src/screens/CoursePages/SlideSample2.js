@@ -29,6 +29,7 @@ import Subtitle from './Types/Subtitle';
 import TextComponent from './Types/Text';
 import ImageComponent from './Types/Image';
 import Title from './Types/Title';
+import AccordionComponent from './Types/AccordionComponent';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -267,13 +268,9 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'accordion':
                             return (
-                              <Quiz
+                              <AccordionComponent
                                 key={element._id}
                                 value={element.value}
-                                selectedAnswer={selectedAnswer}
-                                setSelectedAnswer={setSelectedAnswer}
-                                isAnswerChecked={isAnswerChecked}
-                                setIsAnswerChecked={setIsAnswerChecked}
                               />
                             );
                           default:
