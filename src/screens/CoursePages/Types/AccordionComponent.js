@@ -1,27 +1,22 @@
-import React, {useState} from 'react';
-import {Accordion, AccordionItem, Layout, Text} from '@ui-kitten/components';
+import * as React from 'react';
+import {List} from 'react-native-paper';
+import tw from '../../../../tailwind';
 
 const AccordionComponent = ({value}) => {
-  const [multipleSelect, setMultipleSelect] = useState(true);
-
-  const renderAccordionHeader = headerContent => (
-    <Text category="h6">{headerContent.title}</Text>
-  );
-
-  const renderAccordionContent = contentContent => (
-    <Layout style={{padding: 16}}>
-      <Text>{contentContent.content}</Text>
-    </Layout>
-  );
-
   return (
-    <Accordion
-      style={{marginVertical: 16}}
-      multiple={multipleSelect}
-      data={value}
-      renderHeader={renderAccordionHeader}
-      renderContent={renderAccordionContent}
-    />
+    <>
+      {value.map((item, index) => (
+        <List.Accordion
+          key={index}
+          title={item.title}
+          left={props => (
+            <List.Icon {...props} icon="folder" style={tw`text-gray-500`} />
+          )}
+          style={tw`bg-accent-6 rounded-lg mb-2 overflow-hidden`}>
+          <List.Item title={item.content} style={tw`py-3 px-4`} />
+        </List.Accordion>
+      ))}
+    </>
   );
 };
 
