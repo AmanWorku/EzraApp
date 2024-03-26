@@ -265,6 +265,17 @@ const SlideSample2 = ({route}) => {
                                 setIsAnswerChecked={setIsAnswerChecked}
                               />
                             );
+                          case 'accordion':
+                            return (
+                              <Quiz
+                                key={element._id}
+                                value={element.value}
+                                selectedAnswer={selectedAnswer}
+                                setSelectedAnswer={setSelectedAnswer}
+                                isAnswerChecked={isAnswerChecked}
+                                setIsAnswerChecked={setIsAnswerChecked}
+                              />
+                            );
                           default:
                             return null;
                         }
