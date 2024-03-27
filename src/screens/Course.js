@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {User, CaretCircleDown, Star} from 'phosphor-react-native';
+import {User, CaretCircleDown} from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
@@ -21,7 +21,7 @@ const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sortByLatest, setSortByLatest] = useState(false); // Default to sorting by latest
+  const [sortByLatest, setSortByLatest] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
 
@@ -167,10 +167,9 @@ const Course = () => {
                     </Text>
                   </TouchableOpacity>
                   <View style={tw`flex flex-row items-center gap-1`}>
-                    <Text style={tw`font-nokia-bold text-accent-6 text-2xl `}>
-                      5.0
+                    <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
+                      {course.chapters.length} {''}Chapters
                     </Text>
-                    <Star size={22} weight="fill" color={'#EA9215'} />
                   </View>
                 </View>
               </View>
