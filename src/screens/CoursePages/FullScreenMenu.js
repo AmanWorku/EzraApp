@@ -22,6 +22,7 @@ import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
+import ErrorScreen from '../../components/ErrorScreen';
 const {width, height} = Dimensions.get('window');
 
 const FullScreenMenu = ({
@@ -86,37 +87,7 @@ const FullScreenMenu = ({
   }
 
   if (error) {
-    return (
-      <SafeAreaView
-        style={
-          darkMode
-            ? tw`bg-secondary-9 h-100% justify-center items-center`
-            : tw`h-100% justify-center items-center`
-        }>
-        <Warning size={50} color={darkMode ? '#898989' : '#EA9215'} />
-        <Text
-          style={
-            darkMode
-              ? tw`font-nokia-bold text-lg text-primary-1 text-center mt-4`
-              : tw`font-nokia-bold text-lg text-accent-6 text-center mt-4`
-          }>
-          There seems to be a problem with the system or your internet
-          connection.
-        </Text>
-        <TouchableOpacity
-          onPress={refetch}
-          style={tw`mt-4 px-8 py-2 border border-accent-6 rounded-full`}>
-          <Text
-            style={
-              darkMode
-                ? tw`font-nokia-bold text-lg text-primary-1 text-center`
-                : tw`font-nokia-bold text-lg text-accent-6 text-center`
-            }>
-            Reload
-          </Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
+    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
   return (

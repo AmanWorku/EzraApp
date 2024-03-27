@@ -19,13 +19,19 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import ErrorScreen from '../components/ErrorScreen';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
-  const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
+  const {
+    data: devotions = [],
+    isFetching,
+    refetch,
+    error,
+  } = useGetDevotionsQuery();
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -93,10 +99,6 @@ const Home = () => {
   }, [pulseAnim]);
 
   useEffect(() => {
-    handlePulseAnimation();
-  }, [handlePulseAnimation]);
-
-  useEffect(() => {
     refetch();
   }, [devotions, refetch]);
 
@@ -109,6 +111,10 @@ const Home = () => {
         </Text>
       </SafeAreaView>
     );
+  }
+
+  if (error) {
+    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
   if (!devotions || devotions.length === 0) {
