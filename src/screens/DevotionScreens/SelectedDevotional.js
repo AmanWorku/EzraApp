@@ -235,6 +235,17 @@ const SelectedDevotional = ({route}) => {
               </>
             </View>
           </View>
+          <TouchableOpacity
+            style={tw`border border-accent-6 px-4 py-1 rounded-4 my-4`}
+            onPress={() =>
+              navigation.navigate('Devotional', {
+                screen: 'AllDevotionals',
+              })
+            }>
+            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+              See All Devotionals
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </View>
