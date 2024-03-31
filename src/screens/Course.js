@@ -10,17 +10,18 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {User, CaretCircleDown, Star, Warning} from 'phosphor-react-native';
+import {User, CaretCircleDown} from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import ErrorScreen from '../components/ErrorScreen';
 
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
   const [searchTerm, setSearchTerm] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [sortByLatest, setSortByLatest] = useState(false); // Default to sorting by latest
+  const [sortByLatest, setSortByLatest] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
 
@@ -72,37 +73,7 @@ const Course = () => {
   }
 
   if (error) {
-    return (
-      <SafeAreaView
-        style={
-          darkMode
-            ? tw`bg-secondary-9 h-100% justify-center items-center`
-            : tw`h-100% justify-center items-center`
-        }>
-        <Warning size={50} color={darkMode ? '#898989' : '#EA9215'} />
-        <Text
-          style={
-            darkMode
-              ? tw`font-nokia-bold text-lg text-primary-1 text-center mt-4`
-              : tw`font-nokia-bold text-lg text-accent-6 text-center mt-4`
-          }>
-          There seems to be a problem with the system or your internet
-          connection.
-        </Text>
-        <TouchableOpacity
-          onPress={refetch}
-          style={tw`mt-4 px-8 py-2 border border-accent-6 rounded-full`}>
-          <Text
-            style={
-              darkMode
-                ? tw`font-nokia-bold text-lg text-primary-1 text-center`
-                : tw`font-nokia-bold text-lg text-accent-6 text-center`
-            }>
-            Reload
-          </Text>
-        </TouchableOpacity>
-      </SafeAreaView>
-    );
+    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -196,10 +167,9 @@ const Course = () => {
                     </Text>
                   </TouchableOpacity>
                   <View style={tw`flex flex-row items-center gap-1`}>
-                    <Text style={tw`font-nokia-bold text-accent-6 text-2xl `}>
-                      5.0
+                    <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
+                      {course.chapters.length} {''}Chapters
                     </Text>
-                    <Star size={22} weight="fill" color={'#EA9215'} />
                   </View>
                 </View>
               </View>

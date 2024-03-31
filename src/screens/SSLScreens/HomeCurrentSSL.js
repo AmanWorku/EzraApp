@@ -37,9 +37,12 @@ const HomeCurrentSSL = () => {
     darkMode ? 'text-primary-1' : null
   }`;
   const handleOpenButtonPress = () => {
-    navigation.navigate('SSLWeek', {
-      ssl: quarter,
-      weekId: week,
+    navigation.navigate('SSL', {
+      screen: 'SSLWeek',
+      params: {
+        ssl: quarter,
+        weekId: week,
+      },
     });
   };
 

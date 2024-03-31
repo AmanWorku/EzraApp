@@ -19,13 +19,19 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import ErrorScreen from '../components/ErrorScreen';
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
-  const {data: devotions = [], isFetching, refetch} = useGetDevotionsQuery();
+  const {
+    data: devotions = [],
+    isFetching,
+    refetch,
+    error,
+  } = useGetDevotionsQuery();
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
@@ -93,30 +99,22 @@ const Home = () => {
   }, [pulseAnim]);
 
   useEffect(() => {
-    handlePulseAnimation();
-  }, [handlePulseAnimation]);
-
-  useEffect(() => {
     refetch();
   }, [devotions, refetch]);
 
   if (isFetching && !devotions.length) {
     return (
-      <SafeAreaView style={tw`flex-1 justify-center items-center bg-primary-1`}>
-        <Animated.View
-          style={{
-            transform: [{scale: pulseAnim}],
-          }}>
-          <SkeletonPlaceholder>
-            <View style={tw`w-full px-4`}>
-              <View style={tw`h-20 bg-secondary-3 rounded mb-4`}></View>
-              <View style={tw`h-10 bg-secondary-3 rounded mb-4`}></View>
-              <View style={tw`h-10 bg-secondary-3 rounded`}></View>
-            </View>
-          </SkeletonPlaceholder>
-        </Animated.View>
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
       </SafeAreaView>
     );
+  }
+
+  if (error) {
+    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
   if (!devotions || devotions.length === 0) {
@@ -185,7 +183,12 @@ const Home = () => {
               </View>
               <TouchableOpacity
                 style={tw`bg-accent-6 px-4 py-1 rounded-full`}
-                onPress={() => navigation.navigate('Devotional')}>
+                onPress={() =>
+                  navigation.navigate('Devotional', {
+                    screen: 'SelectedDevotional',
+                    params: {devotionalId: devotionToDisplay._id},
+                  })
+                }>
                 <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
                   Open
                 </Text>
