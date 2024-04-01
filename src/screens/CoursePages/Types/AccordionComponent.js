@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import tw from '../../../../tailwind';
-import {ArrowSquareDown} from 'phosphor-react-native';
+import {ArrowSquareDown, ArrowSquareUp} from 'phosphor-react-native';
 
 const AccordionComponent = ({value}) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -54,7 +54,11 @@ const AccordionComponent = ({value}) => {
             <Text style={tw`font-nokia-bold text-lg text-primary-1 py-3`}>
               {item.title}
             </Text>
-            <ArrowSquareDown size={24} weight="fill" color={'white'} />
+            {expandedIndex === index ? (
+              <ArrowSquareUp size={24} color={'white'} />
+            ) : (
+              <ArrowSquareDown size={24} color={'white'} />
+            )}
           </TouchableOpacity>
           {renderAccordionContent(item, index)}
         </View>
