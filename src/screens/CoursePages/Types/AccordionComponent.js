@@ -8,6 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import tw from '../../../../tailwind';
+import {ArrowSquareDown} from 'phosphor-react-native';
 
 const AccordionComponent = ({value}) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
@@ -30,7 +31,9 @@ const AccordionComponent = ({value}) => {
     if (expandedIndex === index) {
       return (
         <Animated.View style={[tw`overflow-hidden`, {height: contentHeight}]}>
-          <Text style={tw`py-3 px-4`}>{item.content}</Text>
+          <Text style={tw`py-2 px-4 font-nokia-bold text-primary-1`}>
+            {item.content}
+          </Text>
         </Animated.View>
       );
     } else {
@@ -43,9 +46,15 @@ const AccordionComponent = ({value}) => {
       {value.map((item, index) => (
         <View key={index} style={tw`mb-2 rounded-lg overflow-hidden`}>
           <TouchableOpacity
-            style={[tw`bg-accent-6`, expandedIndex === index && tw`mb-2`]}
+            style={[
+              tw`flex flex-row bg-accent-6 w-100% items-center justify-between px-4 `,
+              expandedIndex === index && tw`mb-2`,
+            ]}
             onPress={() => toggleAccordion(index)}>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={tw`font-nokia-bold text-lg text-primary-1 py-3`}>
+              {item.title}
+            </Text>
+            <ArrowSquareDown size={24} weight="fill" color={'white'} />
           </TouchableOpacity>
           {renderAccordionContent(item, index)}
         </View>
