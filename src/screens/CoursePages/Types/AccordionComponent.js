@@ -44,10 +44,10 @@ const AccordionComponent = ({value}) => {
   return (
     <View>
       {value.map((item, index) => (
-        <View key={index} style={tw`mb-2 rounded-lg overflow-hidden`}>
+        <View key={index} style={tw`mb-2 overflow-hidden`}>
           <TouchableOpacity
             style={[
-              tw`flex flex-row bg-accent-6 w-100% items-center justify-between px-4 `,
+              tw`flex flex-row bg-accent-6 w-100% items-center justify-between px-4 rounded`,
               expandedIndex === index && tw`mb-2`,
             ]}
             onPress={() => toggleAccordion(index)}>
