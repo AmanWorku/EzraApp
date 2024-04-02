@@ -54,7 +54,9 @@ const Setting = ({navigation}) => {
           <View style={tw`flex-col w-full justify-center items-center my-4`}>
             <Image
               style={tw`w-24 h-24 rounded-full border border-accent-6 my-2`}
-              source={require('./../assets/day1.jpeg')}
+              source={{
+                uri: `https://ezra-seminary.mybese.tech/images/${user.user.avatar}`,
+              }}
             />
             <Text
               style={[
