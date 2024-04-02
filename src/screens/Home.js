@@ -19,8 +19,24 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {useGetCoursesQuery} from '../services/api';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ErrorScreen from '../components/ErrorScreen';
+
+const ethiopianMonths = [
+  '', // There is no month 0
+  'መስከረም',
+  'ጥቅምት',
+  'ህዳር',
+  'ታህሳስ',
+  'ጥር',
+  'የካቲት',
+  'መጋቢት',
+  'ሚያዝያ',
+  'ግንቦት',
+  'ሰኔ',
+  'ሐምሌ',
+  'ነሐሴ',
+  'ጳጉሜ', // 13th month
+];
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -52,22 +68,6 @@ const Home = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-  const ethiopianMonths = [
-    '', // There is no month 0
-    'መስከረም',
-    'ጥቅምት',
-    'ህዳር',
-    'ታህሳስ',
-    'ጥር',
-    'የካቲት',
-    'መጋቢት',
-    'ሚያዝያ',
-    'ግንቦት',
-    'ሰኔ',
-    'ሐምሌ',
-    'ነሐሴ',
-    'ጳጉሜ', // 13th month
-  ];
 
   useEffect(() => {
     if (devotions && devotions.length > 0) {
