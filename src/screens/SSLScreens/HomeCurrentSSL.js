@@ -50,7 +50,13 @@ const HomeCurrentSSL = () => {
     return <Text>Loading...</Text>;
   }
   if (lessonError) {
-    return <Text>Error: {lessonError.message}</Text>;
+    return (
+      <View style={tw`border border-accent-6 rounded my-2`}>
+        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+          Wait for quarterly update!
+        </Text>
+      </View>
+    );
   }
   if (quarterError) {
     return <Text>Error: {quarterError.message}</Text>;

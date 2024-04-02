@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -36,8 +36,12 @@ const SelectedDevotional = ({route}) => {
   } = useGetDevotionsQuery();
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
-
+  const scrollViewRef = useRef();
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
+  }, [devotionalId]);
 
   const imageURI = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
   if (isFetching) {
@@ -58,7 +62,7 @@ const SelectedDevotional = ({route}) => {
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}>
           <View style={tw`flex flex-row justify-between mt-4 mb-4`}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
@@ -232,12 +236,12 @@ const SelectedDevotional = ({route}) => {
               <TouchableOpacity
                 key={index}
                 style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('Devotional', {
                     screen: 'SelectedDevotional',
                     params: {devotionalId: item._id},
-                  })
-                }>
+                  });
+                }}>
                 <ImageBackground
                   source={{
                     uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,

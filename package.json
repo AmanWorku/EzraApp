@@ -11,7 +11,7 @@
     "clean": "rm -rf node_modules && rm -rf ios/build && rm -rf ios/Pods && rm -rf ios/Podfile.lock && rm -rf ios/*.xcworkspace && rm -rf ios/*.pbxproj && rm -rf ios/*.mode1v3 && rm -rf ios/*.mode2v3 && rm -rf ios/Manifest.lock && rm -rf ios/Pods/**/build"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.21.0",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-camera-roll/camera-roll": "^7.4.3",
     "@react-native-community/push-notification-ios": "^1.11.0",
     "@react-native-masked-view/masked-view": "^0.3.1",

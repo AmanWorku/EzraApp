@@ -16,10 +16,27 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import {useGetCoursesQuery} from '../services/api';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ErrorScreen from '../components/ErrorScreen';
+
+const ethiopianMonths = [
+  '', // There is no month 0
+  'መስከረም',
+  'ጥቅምት',
+  'ህዳር',
+  'ታህሳስ',
+  'ጥር',
+  'የካቲት',
+  'መጋቢት',
+  'ሚያዝያ',
+  'ግንቦት',
+  'ሰኔ',
+  'ሐምሌ',
+  'ነሐሴ',
+  'ጳጉሜ', // 13th month
+];
 
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -32,11 +49,16 @@ const Home = () => {
     refetch,
     error,
   } = useGetDevotionsQuery();
-  const [selectedDevotion, setSelectedDevotion] = useState(null);
-  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const {
+    data: courses = [],
+    courseIsFetching,
+    courseError,
+  } = useGetCoursesQuery();
 
-  const handleButtonPress = () => {
-    navigation.navigate('CourseContent');
+  const [selectedDevotion, setSelectedDevotion] = useState(null);
+
+  const handleButtonPress = id => {
+    navigation.navigate('CourseContent', {courseId: id});
   };
   const onRefresh = useCallback(async () => {
     try {
@@ -46,22 +68,6 @@ const Home = () => {
       setIsRefreshing(false);
     }
   }, [refetch]);
-  const ethiopianMonths = [
-    '', // There is no month 0
-    'መስከረም',
-    'ጥቅምት',
-    'ህዳር',
-    'ታህሳስ',
-    'ጥር',
-    'የካቲት',
-    'መጋቢት',
-    'ሚያዝያ',
-    'ግንቦት',
-    'ሰኔ',
-    'ሐምሌ',
-    'ነሐሴ',
-    'ጳጉሜ', // 13th month
-  ];
 
   useEffect(() => {
     if (devotions && devotions.length > 0) {
@@ -81,28 +87,11 @@ const Home = () => {
     }
   }, [devotions]);
 
-  const handlePulseAnimation = useCallback(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 0.9,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, [pulseAnim]);
-
   useEffect(() => {
     refetch();
   }, [devotions, refetch]);
 
-  if (isFetching && !devotions.length) {
+  if (courseIsFetching && isFetching && !devotions.length) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
@@ -113,7 +102,7 @@ const Home = () => {
     );
   }
 
-  if (error) {
+  if ((error, courseError)) {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
@@ -126,6 +115,10 @@ const Home = () => {
   if (!isFetching && isLoading) {
     setIsLoading(false);
   }
+
+  const publishedCourses = courses.filter(course => course.published);
+  const lastCourse = publishedCourses[publishedCourses.length - 1];
+
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
@@ -133,7 +126,7 @@ const Home = () => {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={isRefreshing}
+              refreshing={isFetching}
               onRefresh={onRefresh}
               colors={['#EA9215']}
               tintColor="#EA9215"
@@ -225,23 +218,25 @@ const Home = () => {
           <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
             <View style={tw`h-48`}>
               <Image
-                source={require('./../assets/bible.png')}
+                source={{
+                  uri: `https://ezra-seminary.mybese.tech/images/${lastCourse.image}`,
+                }}
                 style={tw`w-full h-full rounded-3`}
               />
             </View>
             <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-              የአጠናን ዘዴዎች
+              {lastCourse.title}
             </Text>
             <Text
               style={[
                 tw`font-nokia-bold text-secondary-6 text-2xl`,
                 darkMode ? tw`text-primary-3` : null,
               ]}>
-              ፍሬያማ የመጽሃፍ ቅዱስ አጠናን ዘዴዎች
+              {lastCourse.title}
             </Text>
             <TouchableOpacity
               style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-              onPress={handleButtonPress}>
+              onPress={() => handleButtonPress(lastCourse._id)}>
               <Text
                 style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                 ኮርሱን ክፈት
