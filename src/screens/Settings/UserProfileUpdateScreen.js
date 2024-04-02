@@ -145,7 +145,13 @@ const UserProfileUpdateScreen = ({navigation}) => {
           <View style={tw`flex-col w-full justify-center items-center my-4`}>
             <Image
               style={tw`w-24 h-24 rounded-full border border-accent-6 my-2`}
-              source={require('./../../assets/day1.jpeg')}
+              source={
+                currentUser && currentUser.user.avatar
+                  ? {
+                      uri: `https://ezra-seminary.mybese.tech/images/${currentUser.user.avatar}`,
+                    }
+                  : require('./../../assets/default-avatar.png') // replace with the actual path to your default avatar
+              }
             />
             <Text
               style={[
