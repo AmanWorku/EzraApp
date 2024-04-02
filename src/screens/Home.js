@@ -16,6 +16,7 @@ import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
+import {useGetCoursesQuery} from '../redux/api-slices/apiSlice';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
@@ -32,6 +33,13 @@ const Home = () => {
     refetch,
     error,
   } = useGetDevotionsQuery();
+  const {
+    courseData: courses = [],
+    courseIsFetching,
+    courseRefetch,
+    courseError,
+  } = useGetCoursesQuery();
+
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
