@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Animated,
 } from 'react-native';
 import {User, CaretCircleDown} from 'phosphor-react-native';
 import tw from './../../tailwind';
@@ -16,7 +17,7 @@ import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import ErrorScreen from '../components/ErrorScreen';
-import {ProgressBar, MD3Colors} from 'react-native-paper';
+import {ProgressBar} from 'react-native-paper';
 
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
@@ -177,8 +178,8 @@ const Course = () => {
                   </View>
                   {progressValue !== undefined && (
                     <ProgressBar
-                      progress={progressValue}
                       color={'#EA9215'}
+                      animatedValue={progressValue / 1000}
                       style={tw`mt-2 mx-2 h-2 rounded-full`}
                     />
                   )}

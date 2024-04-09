@@ -52,8 +52,8 @@ const CourseContent = ({route}) => {
 
   const currentChapterIndex = userProgress?.currentChapter ?? 0;
 
-  const [activeIndex, setActiveIndex] = currentChapterIndex;
-  const [unlockedIndex, setUnlockedIndex] = currentChapterIndex;
+  const [activeIndex, setActiveIndex] = useState(currentChapterIndex);
+  const [unlockedIndex, setUnlockedIndex] = useState(currentChapterIndex);
 
   useEffect(() => {
     if (userProgress?.currentChapter !== undefined) {
@@ -179,7 +179,9 @@ const CourseContent = ({route}) => {
                 darkMode ? tw`bg-secondary-8` : null,
               ]}>
               <View style={tw`p-1 bg-accent-6 rounded-1`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>10%</Text>
+                <Text style={tw`font-nokia-bold text-primary-1`}>
+                  {progressValue()}%
+                </Text>
               </View>
               <Text
                 style={[
