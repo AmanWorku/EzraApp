@@ -96,7 +96,7 @@ const FullScreenMenu = ({
           styles.closeButton,
           tw` flex flex-row justify-between items-center`,
         ]}>
-        <Text style={tw`font-nokia-bold text-primary-1 text-xl`}>
+        <Text style={tw`font-nokia-bold text-primary-1 text-xl w-[90%]`}>
           {chapter.chapter}
         </Text>
         <TouchableOpacity onPress={onClose} style={tw``}>
