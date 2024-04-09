@@ -166,15 +166,23 @@ const Course = () => {
               const progressValue = getProgressValue(course._id);
               return (
                 <View
-                  style={tw`border border-accent-6 my-2 rounded-4 p-2`}
+                  style={tw`border border-accent-6 my-2 rounded-4 p-2 w-[100%]`}
                   key={index}>
-                  <View style={tw`h-48`}>
+                  <View style={tw`h-48 relative`}>
                     <Image
                       source={{
                         uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
                       }}
                       style={tw`w-full h-full rounded-3`}
                     />
+                    <View
+                      style={tw`absolute bottom-2 right-0 bg-white bg-opacity-60 p-2 rounded-l-2`}>
+                      <Text
+                        style={tw`font-nokia-bold text-secondary-8 text-xs`}>
+                        {progressValue !== undefined ? progressValue * 100 : 0}%
+                        Completed
+                      </Text>
+                    </View>
                   </View>
                   {progressValue !== undefined && (
                     <ProgressBar
