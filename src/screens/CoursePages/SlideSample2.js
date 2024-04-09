@@ -133,6 +133,8 @@ const SlideSample2 = ({route}) => {
         chapterId={chapterId}
         courseId={courseId}
         updateIndex={updateIndex}
+        unlockedIndex={unlockedIndex}
+        activeIndex={activeIndex}
       />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}

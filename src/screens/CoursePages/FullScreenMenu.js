@@ -25,9 +25,9 @@ const FullScreenMenu = ({
   courseId,
   chapterId,
   updateIndex,
+  unlockedIndex,
+  activeIndex,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
   const {
     data: courseData,
@@ -128,7 +128,7 @@ const FullScreenMenu = ({
               disabled={!isSlideUnlocked(index)}>
               <View
                 style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text style={tw`font-nokia-bold text-primary-1 text-s w-[90%]`}>
                   {slide.slide}
                 </Text>
                 {unlocked ? (
