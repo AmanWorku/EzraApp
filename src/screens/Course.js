@@ -66,7 +66,6 @@ const Course = () => {
   const userCourseId =
     currentUser?.progress?.map(progress => progress.courseId) ?? [];
   const totalChapter = filteredData.map(course => course.chapters.length);
-  console.log(currentUser);
   function getProgressValue(courseId) {
     const userProgress =
       currentUser &&
@@ -164,7 +163,6 @@ const Course = () => {
           {filteredData.length > 0 ? (
             filteredData.map((course, index) => {
               const progressValue = getProgressValue(course._id);
-              console.log(progressValue);
               return (
                 <View
                   style={tw`border border-accent-6 my-2 rounded-4 p-2`}
