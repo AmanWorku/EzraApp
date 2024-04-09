@@ -110,6 +110,11 @@ const SlideSample2 = ({route}) => {
     }
   };
 
+  const [hasCarouselReachedEnd, setHasCarouselReachedEnd] = useState(false);
+  const handleCarouselEndReached = () => {
+    setHasCarouselReachedEnd(true);
+  };
+
   if (isLoading) {
     return (
       <SafeAreaView>
