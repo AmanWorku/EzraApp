@@ -61,6 +61,32 @@ const Course = () => {
     setSortByLatest(prev => !prev);
   };
 
+  const currentUser = useSelector(state => state.auth);
+  const userCourseId =
+    currentUser?.progress?.map(progress => progress.courseId) ?? [];
+  const totalChapter = filteredData.map(course => course.chapters.length);
+
+  function getProgressValue(courseId) {
+    const userProgress =
+      currentUser &&
+      currentUser.progress &&
+      currentUser.progress.find(function (p) {
+        return p.courseId === courseId;
+      });
+
+    if (
+      userProgress &&
+      userProgress.currentChapter &&
+      userProgress.currentSlide
+    ) {
+      const progressDecimal =
+        (userProgress.currentChapter + 1) /
+        totalChapter[userCourseId.indexOf(courseId)];
+      return progressDecimal * 100;
+    }
+    return undefined;
+  }
+
   if (isLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
