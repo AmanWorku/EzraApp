@@ -10,16 +10,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {
-  ListBullets,
-  CheckCircle,
-  Circle,
-  XCircle,
-  Warning,
-} from 'phosphor-react-native';
+import {ListBullets, CheckCircle, Circle, XCircle} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
-import {useNavigation, useRoute} from '@react-navigation/core';
+import {useNavigation} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
 import ErrorScreen from '../../components/ErrorScreen';

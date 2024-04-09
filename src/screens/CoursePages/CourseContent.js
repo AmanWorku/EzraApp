@@ -243,11 +243,7 @@ const CourseContent = ({route}) => {
                           darkMode ? tw`text-primary-3` : null,
                         ]}>
                         {chapter.chapter}
-                        {/* <Text>ID</Text> {courseId} */}
                       </Text>
-                      {/* <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                        15/15 Slides
-                      </Text> */}
                     </View>
                     {unlocked ? (
                       <CheckCircle size={20} weight="fill" color={'#EA9215'} />
