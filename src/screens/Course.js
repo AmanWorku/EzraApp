@@ -16,6 +16,7 @@ import {useGetCoursesQuery} from './../services/api';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import ErrorScreen from '../components/ErrorScreen';
+import {ProgressBar, MD3Colors} from 'react-native-paper';
 
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
@@ -161,45 +162,55 @@ const Course = () => {
             </TouchableOpacity>
           </View>
           {filteredData.length > 0 ? (
-            filteredData.map((course, index) => (
-              <View
-                style={tw`border border-accent-6 my-2 rounded-4 p-2`}
-                key={index}>
-                <View style={tw`h-48`}>
-                  <Image
-                    source={{
-                      uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
-                    }}
-                    style={tw`w-full h-full rounded-3`}
-                  />
-                </View>
-                <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-                  የአጠናን ዘዴዎች
-                </Text>
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-secondary-6 text-2xl`,
-                    darkMode ? tw`text-primary-3` : null,
-                  ]}>
-                  {course.title}
-                </Text>
-                <View style={tw`flex flex-row items-center justify-between`}>
-                  <TouchableOpacity
-                    style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-                    onPress={() => handleButtonPress(course._id)}>
-                    <Text
-                      style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                      ኮርሱን ክፈት
-                    </Text>
-                  </TouchableOpacity>
-                  <View style={tw`flex flex-row items-center gap-1`}>
-                    <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
-                      {course.chapters.length} {''}Chapters
-                    </Text>
+            filteredData.map((course, index) => {
+              const progressValue = getProgressValue(course._id);
+              console.log(progressValue);
+              return (
+                <View
+                  style={tw`border border-accent-6 my-2 rounded-4 p-2`}
+                  key={index}>
+                  <View style={tw`h-48`}>
+                    <Image
+                      source={{
+                        uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
+                      }}
+                      style={tw`w-full h-full rounded-3`}
+                    />
+                  </View>
+                  {progressValue !== undefined && (
+                    <ProgressBar
+                      progress={progressValue}
+                      color={MD3Colors.error50}
+                    />
+                  )}
+                  <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
+                    የአጠናን ዘዴዎች
+                  </Text>
+                  <Text
+                    style={[
+                      tw`font-nokia-bold text-secondary-6 text-2xl`,
+                      darkMode ? tw`text-primary-3` : null,
+                    ]}>
+                    {course.title}
+                  </Text>
+                  <View style={tw`flex flex-row items-center justify-between`}>
+                    <TouchableOpacity
+                      style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
+                      onPress={() => handleButtonPress(course._id)}>
+                      <Text
+                        style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                        ኮርሱን ክፈት
+                      </Text>
+                    </TouchableOpacity>
+                    <View style={tw`flex flex-row items-center gap-1`}>
+                      <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
+                        {course.chapters.length} {''}Chapters
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))
+              );
+            })
           ) : (
             <Text
               style={tw`font-nokia-bold text-accent-6 text-lg text-center mt-4 h-full`}>
