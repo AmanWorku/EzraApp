@@ -26,6 +26,7 @@ const Course = () => {
   const [sortByLatest, setSortByLatest] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
   const navigation = useNavigation();
+  const currentUser = useSelector(state => state.auth.user);
 
   const onRefresh = useCallback(async () => {
     try {
@@ -63,7 +64,6 @@ const Course = () => {
     setSortByLatest(prev => !prev);
   };
 
-  const currentUser = useSelector(state => state.auth.user);
   const userCourseId =
     currentUser?.progress?.map(progress => progress.courseId) ?? [];
   const totalChapter = filteredData.map(course => course.chapters.length);
@@ -83,7 +83,7 @@ const Course = () => {
       const progressDecimal =
         (userProgress.currentChapter + 1) /
         totalChapter[userCourseId.indexOf(courseId)];
-      return progressDecimal * 100;
+      return progressDecimal;
     }
     return undefined;
   }
@@ -179,7 +179,7 @@ const Course = () => {
                   {progressValue !== undefined && (
                     <ProgressBar
                       color={'#EA9215'}
-                      animatedValue={progressValue / 1000}
+                      animatedValue={progressValue}
                       style={tw`mt-2 mx-2 h-2 rounded-full`}
                     />
                   )}
