@@ -64,9 +64,6 @@ const Course = () => {
     setSortByLatest(prev => !prev);
   };
 
-  const userCourseId =
-    currentUser?.progress?.map(progress => progress.courseId) ?? [];
-  const totalChapter = filteredData.map(course => course.chapters.length);
   function getProgressValue(courseId) {
     const userProgress =
       currentUser &&
@@ -75,15 +72,15 @@ const Course = () => {
         return p.courseId === courseId;
       });
 
-    if (
-      userProgress &&
-      userProgress.currentChapter &&
-      userProgress.currentSlide
-    ) {
-      const progressDecimal =
-        (userProgress.currentChapter + 1) /
-        totalChapter[userCourseId.indexOf(courseId)];
-      return progressDecimal;
+    const totalChapter = courses?.find(course => course._id === courseId)
+      ?.chapters.length;
+
+    //calculate the percentage
+    if (userProgress && totalChapter) {
+      const currentChapterCount = (userProgress.currentChapter ?? 0) + 1;
+      const progressDecimal = currentChapterCount / totalChapter;
+      const approximatedProgress = Math.round(progressDecimal * 100) / 100;
+      return approximatedProgress;
     }
     return undefined;
   }

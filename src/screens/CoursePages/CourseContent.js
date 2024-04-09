@@ -233,7 +233,9 @@ const CourseContent = ({route}) => {
                     });
                     updateIndex(index);
                   }}
-                  key={index}>
+                  key={index}
+                  // disabled={!unlocked}
+                >
                   <View
                     style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
                     <View style={tw`flex`}>
