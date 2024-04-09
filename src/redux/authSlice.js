@@ -9,6 +9,7 @@ const initialState = {
   lastName: null,
   token: null,
   isAuthReady: false,
+  progress: [], // Add an empty array for progress
 };
 
 const authSlice = createSlice({
@@ -35,12 +36,30 @@ const authSlice = createSlice({
       state.firstName = null;
       state.lastName = null;
       state.token = null;
+      state.progress = []; // Reset progress to an empty array
     },
     setAuthReady: (state, action) => {
       state.isAuthReady = action.payload;
     },
     updateUser: (state, action) => {
       state.user = action.payload;
+    },
+    setProgress: (state, action) => {
+      const {courseId, currentChapter, currentSlide} = action.payload;
+
+      // Find the index of the progress item for the specific course
+      const progressIndex = state.progress.findIndex(
+        p => p.courseId === courseId,
+      );
+
+      // If the course progress does not exist, initialize it
+      if (progressIndex === -1) {
+        state.progress.push({courseId, currentChapter, currentSlide});
+      } else {
+        // Update the current chapter and slide in the existing progress item
+        state.progress[progressIndex].currentChapter = currentChapter;
+        state.progress[progressIndex].currentSlide = currentSlide;
+      }
     },
   },
 });
@@ -60,7 +79,7 @@ export const logoutUser = () => async dispatch => {
   dispatch(authSlice.actions.logout());
 };
 
-export const {login, signup, logout, updateUser, setAuthReady} =
+export const {login, signup, logout, updateUser, setAuthReady, setProgress} =
   authSlice.actions;
 
 export default authSlice.reducer;
