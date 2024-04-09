@@ -147,7 +147,7 @@ const SlideSample2 = ({route}) => {
         />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
-            <View style={tw`flex flex-row items-center justify-between w-88%`}>
+            <View style={tw`flex flex-row items-center justify-between w-auto`}>
               <View style={tw`flex flex-row items-center gap-3`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
@@ -159,7 +159,7 @@ const SlideSample2 = ({route}) => {
                 <Text
                   ellipsizeMode="tail"
                   numberOfLines={1}
-                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink w-[57%]`}>
                   {chapter.chapter}
                 </Text>
               </View>
@@ -167,7 +167,7 @@ const SlideSample2 = ({route}) => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   {currentDataNumber}/{totalDataNumber}
                 </Text>
-                <TouchableOpacity onPress={toggleMenu}>
+                <TouchableOpacity onPress={toggleMenu} style={tw`self-end`}>
                   <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
                 </TouchableOpacity>
               </View>
