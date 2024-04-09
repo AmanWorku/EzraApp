@@ -62,11 +62,11 @@ const Course = () => {
     setSortByLatest(prev => !prev);
   };
 
-  const currentUser = useSelector(state => state.auth);
+  const currentUser = useSelector(state => state.auth.user);
   const userCourseId =
     currentUser?.progress?.map(progress => progress.courseId) ?? [];
   const totalChapter = filteredData.map(course => course.chapters.length);
-
+  console.log(currentUser);
   function getProgressValue(courseId) {
     const userProgress =
       currentUser &&
@@ -180,7 +180,8 @@ const Course = () => {
                   {progressValue !== undefined && (
                     <ProgressBar
                       progress={progressValue}
-                      color={MD3Colors.error50}
+                      color={'#EA9215'}
+                      style={tw`mt-2 mx-2 h-2 rounded-full`}
                     />
                   )}
                   <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
