@@ -34,7 +34,6 @@ const Setting = ({navigation}) => {
     navigation.navigate('Login');
   };
 
-  console.log(user);
   return (
     <SafeAreaView
       style={[

@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Text,
   View,
@@ -10,11 +11,14 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
+import jwt_decode from 'jwt-decode';
 import {
   CaretCircleLeft,
   CaretCircleRight,
   DotsThreeOutlineVertical,
 } from 'phosphor-react-native';
+import {useDispatch} from 'react-redux';
+import {setProgress} from '../../redux/authSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/core';
@@ -48,6 +52,10 @@ const SlideSample2 = ({route}) => {
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const currentUser = useSelector(state => state.auth.user);
+  const userId = useSelector(state => state.auth);
+  const dispatch = useDispatch();
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);
@@ -65,14 +73,16 @@ const SlideSample2 = ({route}) => {
       return () => StatusBar.setHidden(false);
     }, []),
   );
-
-  let chapter = courseData
-    ? courseData.chapters.find(chap => chap._id === chapterId)
-    : null;
-
+  const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
+  const chapterIndex = courseData?.chapters.findIndex(
+    chap => chap._id === chapterId,
+  );
+  // If the chapter is not found, handle accordingly
   if (!chapter) {
-    chapter = {slides: []};
+    return <p>Chapter not found</p>;
   }
+
+  // Setting the data to slides if the chapter is found
   const data = chapter.slides;
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
@@ -84,13 +94,15 @@ const SlideSample2 = ({route}) => {
     if (newIndex > unlockedIndex) {
       setUnlockedIndex(newIndex);
     }
+    updateProgress();
   };
   const onFirstSlide = activeIndex === 0;
   const onLastSlide = activeIndex === data.length - 1;
 
   const handleButtonPress = () => {
     if (onLastSlide) {
-      navigation.navigate('CourseContent', {courseId: courseId});
+      submitProgress();
+      // navigation.navigate('CourseContent', {courseId: courseId});
     } else {
       goToNextSlide();
     }
@@ -110,10 +122,61 @@ const SlideSample2 = ({route}) => {
     }
   };
 
-  const [hasCarouselReachedEnd, setHasCarouselReachedEnd] = useState(false);
-  const handleCarouselEndReached = () => {
-    setHasCarouselReachedEnd(true);
+  const courseID = courseData && courseData._id ? courseData._id : '';
+
+  const updateProgress = () => {
+    if (chapterIndex !== undefined && chapterIndex !== -1) {
+      dispatch(
+        setProgress({
+          courseId: courseID,
+          currentChapter: chapterIndex,
+          currentSlide: activeIndex,
+        }),
+      );
+    }
   };
+
+  const submitProgress = () => {
+    if (currentUser && currentUser.progress) {
+      setProgressLoading(true);
+      console.log('user id:', userId);
+      // fetch('http://localhost:5100/users/profile/' + userId, {
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${currentUser.token}`,
+      //   },
+      //   body: JSON.stringify({
+      //     userId: userId,
+      //     progress: currentUser.progress,
+      //   }),
+      // })
+      //   .then(response => response.json())
+      //   .then(responseData => {
+      //     console.log('Progress updated successfully:', responseData);
+      //     setProgressLoading(false);
+      //     navigation.navigate('Course', {
+      //       screen: 'CourseDetails',
+      //       params: {courseId: courseId},
+      //     }); // replace with the correct screen name and params
+      //   })
+      //   .catch(err => {
+      //     console.error('Error updating progress:', err.message);
+      //     setProgressLoading(false);
+      //   });
+    }
+  };
+
+  if (progressLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#707070" />
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#707070'}}>
+          Saving
+        </Text>
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (

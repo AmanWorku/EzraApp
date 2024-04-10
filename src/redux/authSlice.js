@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
+  _id: null,
   user: null,
   role: null,
   email: null,
@@ -17,6 +18,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
+      state._id = action.payload._id;
       state.user = action.payload;
       state.role = action.payload.role;
       state.firstName = action.payload.firstName;
@@ -24,6 +26,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
     },
     signup: (state, action) => {
+      state._id = action.payload._id;
       state.user = action.payload;
       state.role = action.payload.role;
       state.firstName = action.payload.firstName;
@@ -31,6 +34,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
     },
     logout: state => {
+      state._id = null;
       state.user = null;
       state.role = null;
       state.firstName = null;
