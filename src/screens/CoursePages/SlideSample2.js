@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Text,
@@ -11,7 +11,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import jwt_decode from 'jwt-decode';
 import {
   CaretCircleLeft,
   CaretCircleRight,
@@ -54,7 +53,6 @@ const SlideSample2 = ({route}) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [progressLoading, setProgressLoading] = useState(false);
   const currentUser = useSelector(state => state.auth.user);
-  const userId = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
   const handleImageLoad = () => {
@@ -73,6 +71,25 @@ const SlideSample2 = ({route}) => {
       return () => StatusBar.setHidden(false);
     }, []),
   );
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser !== null) {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.log('Error retrieving user from AsyncStorage:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+  console.log('user:', user);
+
   const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
   const chapterIndex = courseData?.chapters.findIndex(
     chap => chap._id === chapterId,
@@ -139,31 +156,32 @@ const SlideSample2 = ({route}) => {
   const submitProgress = () => {
     if (currentUser && currentUser.progress) {
       setProgressLoading(true);
-      console.log('user id:', userId);
-      // fetch('http://localhost:5100/users/profile/' + userId, {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${currentUser.token}`,
-      //   },
-      //   body: JSON.stringify({
-      //     userId: userId,
-      //     progress: currentUser.progress,
-      //   }),
-      // })
-      //   .then(response => response.json())
-      //   .then(responseData => {
-      //     console.log('Progress updated successfully:', responseData);
-      //     setProgressLoading(false);
-      //     navigation.navigate('Course', {
-      //       screen: 'CourseDetails',
-      //       params: {courseId: courseId},
-      //     }); // replace with the correct screen name and params
-      //   })
-      //   .catch(err => {
-      //     console.error('Error updating progress:', err.message);
-      //     setProgressLoading(false);
-      //   });
+      // console.log('current user:', currentUser);
+      console.log('user id:', currentUser?._id);
+      fetch('http://localhost:5100/users/profile/' + currentUser?._id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+        body: JSON.stringify({
+          userId: currentUser?._id,
+          progress: currentUser.progress,
+        }),
+      })
+        .then(response => response.json())
+        .then(responseData => {
+          console.log('Progress updated successfully:', responseData);
+          setProgressLoading(false);
+          navigation.navigate('Course', {
+            screen: 'CourseDetails',
+            params: {courseId: courseId},
+          }); // replace with the correct screen name and params
+        })
+        .catch(err => {
+          console.error('Error updating progress:', err.message);
+          setProgressLoading(false);
+        });
     }
   };
 

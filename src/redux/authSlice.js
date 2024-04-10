@@ -1,16 +1,10 @@
+// authSlice.js
 import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
-  _id: null,
   user: null,
-  role: null,
-  email: null,
-  firstName: null,
-  lastName: null,
-  token: null,
   isAuthReady: false,
-  progress: [], // Add an empty array for progress
 };
 
 const authSlice = createSlice({
@@ -18,56 +12,67 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state._id = action.payload._id;
       state.user = action.payload;
-      state.role = action.payload.role;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
-      state.token = action.payload.token;
+
+      // Store the token in localStorage
+      AsyncStorage.setItem('token', action.payload.token || '');
+      AsyncStorage.setItem('user', JSON.stringify(action.payload));
     },
     signup: (state, action) => {
-      state._id = action.payload._id;
       state.user = action.payload;
-      state.role = action.payload.role;
-      state.firstName = action.payload.firstName;
-      state.lastName = action.payload.lastName;
-      state.token = action.payload.token;
+    },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+
+      // Assuming the token is part of the payload, update it in local storage as well
+      if (action.payload.token) {
+        AsyncStorage.setItem('token', action.payload.token);
+      }
+
+      // Update the user details in local storage
+      AsyncStorage.setItem('user', JSON.stringify(action.payload));
     },
     logout: state => {
-      state._id = null;
       state.user = null;
-      state.role = null;
-      state.firstName = null;
-      state.lastName = null;
-      state.token = null;
-      state.progress = []; // Reset progress to an empty array
+
+      // Remove the token from localStorage
+      AsyncStorage.removeItem('token');
     },
     setAuthReady: (state, action) => {
       state.isAuthReady = action.payload;
     },
-    updateUser: (state, action) => {
-      state.user = action.payload;
-    },
     setProgress: (state, action) => {
       const {courseId, currentChapter, currentSlide} = action.payload;
 
-      // Find the index of the progress item for the specific course
-      const progressIndex = state.progress.findIndex(
-        p => p.courseId === courseId,
-      );
+      // Error handling for existence of user and progress array
+      if (state.user && state.user.progress) {
+        // Find the index of the progress item for the specific course
+        const progressIndex = state.user.progress.findIndex(
+          p => p.courseId === courseId,
+        );
 
-      // If the course progress does not exist, initialize it
-      if (progressIndex === -1) {
-        state.progress.push({courseId, currentChapter, currentSlide});
-      } else {
-        // Update the current chapter and slide in the existing progress item
-        state.progress[progressIndex].currentChapter = currentChapter;
-        state.progress[progressIndex].currentSlide = currentSlide;
+        // If the course progress does not exist, initialize it
+        if (progressIndex === -1) {
+          state.user.progress.push({courseId, currentChapter, currentSlide});
+        } else {
+          // Update the current chapter and slide in the existing progress item
+          state.user.progress[progressIndex].currentChapter = currentChapter;
+          state.user.progress[progressIndex].currentSlide = currentSlide;
+        }
+      } else if (state.user) {
+        // If user exists but has no progress, initialize progress with the current details
+        state.user.progress = [{courseId, currentChapter, currentSlide}];
       }
+    },
+
+    setUser: (state, action) => {
+      state.user = action.payload;
+
+      // Store the token in localStorage
+      AsyncStorage.setItem('token', action.payload.token || '');
     },
   },
 });
-
 export const loginUser = userData => async dispatch => {
   await AsyncStorage.setItem('token', userData.token);
   dispatch(authSlice.actions.login(userData));
@@ -83,7 +88,16 @@ export const logoutUser = () => async dispatch => {
   dispatch(authSlice.actions.logout());
 };
 
-export const {login, signup, logout, updateUser, setAuthReady, setProgress} =
-  authSlice.actions;
+export const {
+  login,
+  signup,
+  updateUser,
+  logout,
+  setAuthReady,
+  setProgress,
+  setUser,
+} = authSlice.actions;
+
+export const selectCurrentUser = state => state.auth.user;
 
 export default authSlice.reducer;
