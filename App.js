@@ -40,8 +40,6 @@ const MainTabNavigator = () => {
     }
   }, [dispatch, userData]);
 
-  console.log(userData);
-
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
   };

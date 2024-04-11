@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {
   Text,
   View,
@@ -152,40 +153,50 @@ const SlideSample2 = ({route}) => {
     }
   };
 
-  const submitProgress = () => {
-    if (currentUser && currentUser.progress) {
-      console.log('current user:', currentUser);
-      setProgressLoading(true);
-      fetch(
-        'https://ezra-seminary.mybese.tech/users/profile/' + currentUser._id,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${currentUser.token}`,
-          },
-          body: JSON.stringify({
-            userId: currentUser?._id,
-            progress: currentUser.progress,
+  const submitProgress = async () => {
+    if (currentUser) {
+      console.log('currentUser ID', currentUser._id);
+      try {
+        setProgressLoading(true);
+        // Get the token from AsyncStorage
+        const token = await AsyncStorage.getItem('token');
+        // Update the progress in the Redux store
+        dispatch(
+          setProgress({
+            courseId,
+            currentChapter: chapterIndex,
+            currentSlide: activeIndex,
           }),
-        },
-      )
-        .then(response => response.json())
-        .then(responseData => {
-          console.log('Progress updated successfully:', responseData);
-          setProgressLoading(false);
-          navigation.navigate('Course', {
-            screen: 'CourseDetails',
-            params: {courseId: courseId},
-          }); // replace with the correct screen name and params
-        })
-        .catch(err => {
-          console.error('Error updating progress:', err.message);
-          setProgressLoading(false);
+        );
+        // Send the updated progress to the server
+        const response = await axios.put(
+          `https://ezra-seminary.mybese.tech/users/profile/${currentUser._id}`,
+          {
+            userId: currentUser._id,
+            progress: currentUser.progress,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        console.log('Progress updated successfully:', response.data);
+        setProgressLoading(false);
+
+        // Navigate to the next screen or perform any other necessary actions
+        navigation.navigate('Course', {
+          screen: 'CourseContent',
+          params: {courseId: courseId},
         });
+      } catch (err) {
+        console.error('Error updating progress:', err.message);
+        setProgressLoading(false);
+      }
     }
   };
-
   if (progressLoading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
