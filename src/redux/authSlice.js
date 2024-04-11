@@ -14,7 +14,7 @@ const authSlice = createSlice({
     login: (state, action) => {
       state.user = action.payload;
 
-      // Store the token in localStorage
+      // Store the token in AsyncStorage
       AsyncStorage.setItem('token', action.payload.token || '');
       AsyncStorage.setItem('user', JSON.stringify(action.payload));
     },
@@ -35,7 +35,7 @@ const authSlice = createSlice({
     logout: state => {
       state.user = null;
 
-      // Remove the token from localStorage
+      // Remove the token from AsyncStorage
       AsyncStorage.removeItem('token');
     },
     setAuthReady: (state, action) => {
@@ -68,25 +68,11 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload;
 
-      // Store the token in localStorage
+      // Store the token in AsyncStorage
       AsyncStorage.setItem('token', action.payload.token || '');
     },
   },
 });
-export const loginUser = userData => async dispatch => {
-  await AsyncStorage.setItem('token', userData.token);
-  dispatch(authSlice.actions.login(userData));
-};
-
-export const signupUser = userData => async dispatch => {
-  await AsyncStorage.setItem('token', userData.token);
-  dispatch(authSlice.actions.signup(userData));
-};
-
-export const logoutUser = () => async dispatch => {
-  await AsyncStorage.removeItem('token');
-  dispatch(authSlice.actions.logout());
-};
 
 export const {
   login,
@@ -97,7 +83,18 @@ export const {
   setProgress,
   setUser,
 } = authSlice.actions;
-
+export const loginUser = userData => async dispatch => {
+  await AsyncStorage.setItem('token', userData.token);
+  dispatch(authSlice.actions.login(userData));
+};
+export const signupUser = userData => async dispatch => {
+  await AsyncStorage.setItem('token', userData.token);
+  dispatch(authSlice.actions.signup(userData));
+};
+export const logoutUser = () => async dispatch => {
+  await AsyncStorage.removeItem('token');
+  dispatch(authSlice.actions.logout());
+};
 export const selectCurrentUser = state => state.auth.user;
 
 export default authSlice.reducer;

@@ -33,9 +33,8 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: ['persist/PERSIST'],
-      },
+      immutableCheck: false,
+      serializableCheck: false,
     }).concat(SSLapi.middleware, apiSlice.middleware),
 });
 

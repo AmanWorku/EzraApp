@@ -16,14 +16,14 @@ import {
   CaretCircleRight,
   DotsThreeOutlineVertical,
 } from 'phosphor-react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setProgress} from '../../redux/authSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
-import {useSelector} from 'react-redux';
+import {selectCurrentUser} from '../../redux/authSlice';
 import List from './Types/List';
 import Slide from './Types/Slide';
 import Quiz from './Types/Quiz';
@@ -52,7 +52,7 @@ const SlideSample2 = ({route}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
   const [progressLoading, setProgressLoading] = useState(false);
-  const currentUser = useSelector(state => state.auth.user);
+  const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
 
   const handleImageLoad = () => {
@@ -88,7 +88,6 @@ const SlideSample2 = ({route}) => {
 
     fetchUser();
   }, []);
-  console.log('user:', user);
 
   const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
   const chapterIndex = courseData?.chapters.findIndex(
@@ -155,20 +154,22 @@ const SlideSample2 = ({route}) => {
 
   const submitProgress = () => {
     if (currentUser && currentUser.progress) {
+      console.log('current user:', currentUser);
       setProgressLoading(true);
-      // console.log('current user:', currentUser);
-      console.log('user id:', currentUser?._id);
-      fetch('http://localhost:5100/users/profile/' + currentUser?._id, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${currentUser.token}`,
+      fetch(
+        'https://ezra-seminary.mybese.tech/users/profile/' + currentUser._id,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${currentUser.token}`,
+          },
+          body: JSON.stringify({
+            userId: currentUser?._id,
+            progress: currentUser.progress,
+          }),
         },
-        body: JSON.stringify({
-          userId: currentUser?._id,
-          progress: currentUser.progress,
-        }),
-      })
+      )
         .then(response => response.json())
         .then(responseData => {
           console.log('Progress updated successfully:', responseData);

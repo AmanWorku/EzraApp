@@ -3,7 +3,7 @@ import {ActivityIndicator, Platform, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Provider, useSelector} from 'react-redux';
+import {Provider, useSelector, useDispatch} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
@@ -21,6 +21,8 @@ import CourseStack from './src/navigation/CourseStack';
 import HomeStack from './src/navigation/HomeStack';
 import DevotionalStack from './src/navigation/DevotionalStack';
 import SSLStack from './src/navigation/SSLStack';
+import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
+import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 const Stack = createNativeStackNavigator();
@@ -28,10 +30,25 @@ const Tab = createBottomTabNavigator();
 
 const MainTabNavigator = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
+  const dispatch = useDispatch();
+
+  const {data: userData, error: userError} = useGetCurrentUserQuery();
+  //save user data to redux
+  useEffect(() => {
+    if (userData) {
+      dispatch(login(userData)); // Dispatch the login action
+    }
+  }, [dispatch, userData]);
+
+  console.log(userData);
 
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
   };
+
+  if (userError) {
+    console.log(userError);
+  }
 
   if (Platform.OS === 'android') {
     StatusBar.setBackgroundColor(darkMode ? '#293239' : '#F1F1F1', true);

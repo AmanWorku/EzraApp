@@ -51,6 +51,9 @@ export const apiSlice = createApi({
         url: '/devotion/show',
       }),
     }),
+    getCurrentUser: builder.query({
+      query: () => '/users/current',
+    }),
     getCourses: builder.query({
       query: () => 'course/getall',
     }),
@@ -68,4 +71,5 @@ export const {
   useGetDevotionsQuery,
   useGetCoursesQuery,
   useGetCourseByIdQuery,
+  useGetCurrentUserQuery,
 } = apiSlice;
