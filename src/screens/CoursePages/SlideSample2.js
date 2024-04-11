@@ -198,11 +198,13 @@ const SlideSample2 = ({route}) => {
   };
   if (progressLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#EA2975" />
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#EA2975'}}>
-          Saving
-        </Text>
+      <View
+        style={[
+          tw`flex-1 items-center justify-center bg-primary-1`,
+          darkMode ? tw`bg-secondary-9` : null,
+        ]}>
+        <ActivityIndicator size="large" color="#EA9215" />
+        <Text style={tw`font-nokia-bold text-accent-6 text-xl`}>Saving</Text>
       </View>
     );
   }
