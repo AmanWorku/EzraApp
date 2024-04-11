@@ -1,4 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {
   Text,
   View,
@@ -15,12 +17,14 @@ import {
   CaretCircleRight,
   DotsThreeOutlineVertical,
 } from 'phosphor-react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {setProgress} from '../../redux/authSlice';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import FullScreenMenu from './FullScreenMenu';
-import {useSelector} from 'react-redux';
+import {selectCurrentUser} from '../../redux/authSlice';
 import List from './Types/List';
 import Slide from './Types/Slide';
 import Quiz from './Types/Quiz';
@@ -48,6 +52,9 @@ const SlideSample2 = ({route}) => {
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const currentUser = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);
@@ -66,13 +73,33 @@ const SlideSample2 = ({route}) => {
     }, []),
   );
 
-  let chapter = courseData
-    ? courseData.chapters.find(chap => chap._id === chapterId)
-    : null;
+  const [user, setUser] = useState(null);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser !== null) {
+          setUser(JSON.parse(storedUser));
+        }
+      } catch (error) {
+        console.log('Error retrieving user from AsyncStorage:', error);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
+  const chapterIndex = courseData?.chapters.findIndex(
+    chap => chap._id === chapterId,
+  );
+  // If the chapter is not found, handle accordingly
   if (!chapter) {
-    chapter = {slides: []};
+    return <p>Chapter not found</p>;
   }
+
+  // Setting the data to slides if the chapter is found
   const data = chapter.slides;
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
@@ -84,13 +111,15 @@ const SlideSample2 = ({route}) => {
     if (newIndex > unlockedIndex) {
       setUnlockedIndex(newIndex);
     }
+    updateProgress();
   };
   const onFirstSlide = activeIndex === 0;
   const onLastSlide = activeIndex === data.length - 1;
 
   const handleButtonPress = () => {
     if (onLastSlide) {
-      navigation.navigate('CourseContent', {courseId: courseId});
+      submitProgress();
+      // navigation.navigate('CourseContent', {courseId: courseId});
     } else {
       goToNextSlide();
     }
@@ -109,6 +138,74 @@ const SlideSample2 = ({route}) => {
       updateIndex(previousIndex);
     }
   };
+
+  const courseID = courseData && courseData._id ? courseData._id : '';
+
+  const updateProgress = () => {
+    if (chapterIndex !== undefined && chapterIndex !== -1) {
+      dispatch(
+        setProgress({
+          courseId: courseID,
+          currentChapter: chapterIndex,
+          currentSlide: activeIndex,
+        }),
+      );
+    }
+  };
+
+  const submitProgress = async () => {
+    if (currentUser) {
+      try {
+        setProgressLoading(true);
+        // Get the token from AsyncStorage
+        const token = await AsyncStorage.getItem('token');
+        // Update the progress in the Redux store
+        dispatch(
+          setProgress({
+            courseId,
+            currentChapter: chapterIndex,
+            currentSlide: activeIndex,
+          }),
+        );
+        // Send the updated progress to the server
+        const response = await axios.put(
+          `https://ezra-seminary.mybese.tech/users/profile/${currentUser._id}`,
+          {
+            userId: currentUser._id,
+            progress: currentUser.progress,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        console.log('Progress updated successfully:', response.data);
+        setProgressLoading(false);
+
+        // Navigate to the next screen or perform any other necessary actions
+        navigation.navigate('Course', {
+          screen: 'CourseContent',
+          params: {courseId: courseId},
+        });
+      } catch (err) {
+        console.error('Error updating progress:', err.message);
+        setProgressLoading(false);
+      }
+    }
+  };
+  if (progressLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#EA2975" />
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#EA2975'}}>
+          Saving
+        </Text>
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -133,6 +230,8 @@ const SlideSample2 = ({route}) => {
         chapterId={chapterId}
         courseId={courseId}
         updateIndex={updateIndex}
+        unlockedIndex={unlockedIndex}
+        activeIndex={activeIndex}
       />
       <ImageBackground
         source={require('./../../assets/bible6.jpeg')}
@@ -145,7 +244,7 @@ const SlideSample2 = ({route}) => {
         />
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
-            <View style={tw`flex flex-row items-center justify-between w-88%`}>
+            <View style={tw`flex flex-row items-center justify-between w-auto`}>
               <View style={tw`flex flex-row items-center gap-3`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
@@ -157,7 +256,7 @@ const SlideSample2 = ({route}) => {
                 <Text
                   ellipsizeMode="tail"
                   numberOfLines={1}
-                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink w-[57%]`}>
                   {chapter.chapter}
                 </Text>
               </View>
@@ -165,7 +264,7 @@ const SlideSample2 = ({route}) => {
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   {currentDataNumber}/{totalDataNumber}
                 </Text>
-                <TouchableOpacity onPress={toggleMenu}>
+                <TouchableOpacity onPress={toggleMenu} style={tw`self-end`}>
                   <DotsThreeOutlineVertical weight="fill" color="#EA9215" />
                 </TouchableOpacity>
               </View>

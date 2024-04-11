@@ -10,16 +10,10 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {
-  ListBullets,
-  CheckCircle,
-  Circle,
-  XCircle,
-  Warning,
-} from 'phosphor-react-native';
+import {ListBullets, CheckCircle, Circle, XCircle} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
-import {useNavigation, useRoute} from '@react-navigation/core';
+import {useNavigation} from '@react-navigation/core';
 import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
 import ErrorScreen from '../../components/ErrorScreen';
@@ -31,9 +25,9 @@ const FullScreenMenu = ({
   courseId,
   chapterId,
   updateIndex,
+  unlockedIndex,
+  activeIndex,
 }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [unlockedIndex, setUnlockedIndex] = useState(0);
   const navigation = useNavigation();
   const {
     data: courseData,
@@ -102,7 +96,7 @@ const FullScreenMenu = ({
           styles.closeButton,
           tw` flex flex-row justify-between items-center`,
         ]}>
-        <Text style={tw`font-nokia-bold text-primary-1 text-xl`}>
+        <Text style={tw`font-nokia-bold text-primary-1 text-xl w-[90%]`}>
           {chapter.chapter}
         </Text>
         <TouchableOpacity onPress={onClose} style={tw``}>
@@ -124,7 +118,10 @@ const FullScreenMenu = ({
           Slide {currentDataNumber}/{totalDataNumber}
         </Text>
       </View>
-      <ScrollView contentContainerStyle={tw`h-64`}>
+      <ScrollView
+        style={tw`h-64`}
+        contentContainerStyle={tw`pb-4`}
+        showsVerticalScrollIndicator={false}>
         {chapter.slides.map((slide, index) => {
           const unlocked = isSlideUnlocked(index);
           return (
@@ -134,7 +131,7 @@ const FullScreenMenu = ({
               disabled={!isSlideUnlocked(index)}>
               <View
                 style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
-                <Text style={tw`font-nokia-bold text-primary-1 text-sm`}>
+                <Text style={tw`font-nokia-bold text-primary-1 text-s w-[90%]`}>
                   {slide.slide}
                 </Text>
                 {unlocked ? (

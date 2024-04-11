@@ -2,7 +2,7 @@ import axios from 'axios';
 
 function createAxiosInstance(token) {
   const instance = axios.create({
-    // baseURL: "http://localhost:5100",
+    // baseURL: 'http://localhost:5100',
     baseURL: 'https://ezra-seminary.mybese.tech',
     headers: {
       Authorization: `Bearer ${token}`,

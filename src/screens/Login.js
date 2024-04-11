@@ -31,12 +31,9 @@ const Login = ({navigation}) => {
       if (!email || !password) {
         throw new Error('Please enter both email and password.');
       }
-
-      console.log('Trying to log in with', email, password);
       const result = await login({email, password}).unwrap({
         timeout: 5000, // Timeout set to 5 seconds (adjust as needed)
       });
-      console.log('Login Result:', result);
       if (result) {
         await AsyncStorage.setItem('user', JSON.stringify(result));
         dispatch(loginUser(result));

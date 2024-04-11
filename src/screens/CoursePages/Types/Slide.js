@@ -1,10 +1,16 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Dimensions, Text, View} from 'react-native';
 import tw from '../../../../tailwind';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 
-const Slide = ({value}) => {
+const Slide = ({value, onEndReached}) => {
   const [activeIndexCarousel, setActiveIndexCarousel] = useState(0);
+
+  useEffect(() => {
+    if (activeIndexCarousel === value.length - 1) {
+      onEndReached();
+    }
+  }, [activeIndexCarousel, value.length, onEndReached]);
 
   return (
     <View style={tw`items-center justify-center`}>

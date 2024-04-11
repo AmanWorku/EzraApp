@@ -59,7 +59,7 @@ const SlideSample1 = ({route}) => {
                 <Text
                   ellipsizeMode="tail"
                   numberOfLines={1}
-                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink`}>
+                  style={tw`font-nokia-bold text-primary-1 text-sm flex-shrink w-[70%]`}>
                   {chapterTitle}
                 </Text>
                 <View style={tw`flex flex-row items-center gap-1`}>

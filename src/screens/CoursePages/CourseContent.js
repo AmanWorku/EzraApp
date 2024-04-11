@@ -8,7 +8,7 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import tw from './../../../tailwind';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/native';
@@ -24,10 +24,10 @@ import ErrorScreen from '../../components/ErrorScreen';
 const CourseContent = ({route}) => {
   const {courseId} = route.params;
   const navigation = useNavigation();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [unlockedIndex, setUnlockedIndex] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
+  const currentUser = useSelector(state => state.auth.user);
+
   const {
     data: courseData,
     error,
@@ -45,6 +45,26 @@ const CourseContent = ({route}) => {
     }
   }, [refetch]);
   const data = courseData?.chapters || [];
+
+  const userProgress = currentUser?.progress?.find(
+    p => p.courseId === courseId,
+  );
+
+  const currentChapterIndex = userProgress?.currentChapter ?? 0;
+
+  const [activeIndex, setActiveIndex] = useState(currentChapterIndex);
+  const [unlockedIndex, setUnlockedIndex] = useState(currentChapterIndex);
+
+  useEffect(() => {
+    if (userProgress?.currentChapter !== undefined) {
+      const newActiveIndex = userProgress.currentChapter;
+      setActiveIndex(newActiveIndex);
+      if (newActiveIndex > unlockedIndex) {
+        setUnlockedIndex(newActiveIndex);
+      }
+    }
+  }, [userProgress, unlockedIndex]);
+
   const updateIndex = newIndex => {
     if (newIndex < 0) {
       newIndex = 0;
@@ -64,6 +84,50 @@ const CourseContent = ({route}) => {
   };
   const backButtonPress = () => {
     navigation.navigate('CourseHome');
+  };
+
+  const progressValue = () => {
+    if (userProgress && userProgress.currentChapter !== undefined) {
+      // the progressPercent should be calculated based on the index of chapter
+      // (adding 1 because index are zero-based) and the total number of chapters
+      const progressPercent =
+        ((userProgress.currentChapter + 1) / totalDataNumber) * 100;
+      // convert it to a fixed string to avoid too many decimals
+      return progressPercent.toFixed();
+    }
+    return '0'; // if there's no progress, return 0
+  };
+
+  // Check the status of the chapter
+  const getChapterStatus = chapterIndex => {
+    if (userProgress) {
+      const {currentChapter} = userProgress;
+
+      // Check if the chapter is completed
+      if (currentChapter && currentChapter > chapterIndex) {
+        return 'Completed';
+      }
+
+      // Check if the current chapter is the ongoing chapter
+      if (currentChapter === chapterIndex) {
+        return 'In Progress';
+      }
+    }
+
+    // Default to not started if no user progress is found
+    return 'Finish all slides to complete this lesson';
+  };
+
+  // Helper function to calculate the progress percent based on chapter status
+  const calculateProgressPercent = chapterStatus => {
+    switch (chapterStatus) {
+      case 'Completed':
+        return '100%';
+      case 'In Progress':
+        return '....';
+      default:
+        return '0%';
+    }
   };
 
   if (isLoading) {
@@ -115,7 +179,9 @@ const CourseContent = ({route}) => {
                 darkMode ? tw`bg-secondary-8` : null,
               ]}>
               <View style={tw`p-1 bg-accent-6 rounded-1`}>
-                <Text style={tw`font-nokia-bold text-primary-1`}>10%</Text>
+                <Text style={tw`font-nokia-bold text-primary-1`}>
+                  {progressValue()}%
+                </Text>
               </View>
               <Text
                 style={[
@@ -167,7 +233,9 @@ const CourseContent = ({route}) => {
                     });
                     updateIndex(index);
                   }}
-                  key={index}>
+                  key={index}
+                  // disabled={!unlocked}
+                >
                   <View
                     style={tw`flex flex-row justify-between px-4 py-2 items-center`}>
                     <View style={tw`flex`}>
@@ -177,11 +245,7 @@ const CourseContent = ({route}) => {
                           darkMode ? tw`text-primary-3` : null,
                         ]}>
                         {chapter.chapter}
-                        {/* <Text>ID</Text> {courseId} */}
                       </Text>
-                      {/* <Text style={tw`font-nokia-bold text-accent-6 text-xs`}>
-                        15/15 Slides
-                      </Text> */}
                     </View>
                     {unlocked ? (
                       <CheckCircle size={20} weight="fill" color={'#EA9215'} />
