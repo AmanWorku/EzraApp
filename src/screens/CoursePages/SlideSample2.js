@@ -155,7 +155,6 @@ const SlideSample2 = ({route}) => {
 
   const submitProgress = async () => {
     if (currentUser) {
-      console.log('currentUser ID', currentUser._id);
       try {
         setProgressLoading(true);
         // Get the token from AsyncStorage
@@ -200,8 +199,8 @@ const SlideSample2 = ({route}) => {
   if (progressLoading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#707070" />
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#707070'}}>
+        <ActivityIndicator size="large" color="#EA2975" />
+        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#EA2975'}}>
           Saving
         </Text>
       </View>
