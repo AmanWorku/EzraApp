@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import {useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
@@ -14,27 +14,43 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
 
-const CurrentSSL = () => {
+const CurrentSSL = ({
+  refetchLesson,
+  refetchQuarter,
+  lessonDetails,
+  quarterDetails,
+}) => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const navigation = useNavigation();
   const {
-    data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
+    refetch: lessonRefetch,
   } = useGetSSLOfDayQuery({path: quarter, id: week});
   const {
-    data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
+    refetch: refetch,
   } = useGetSSLOfQuarterQuery(quarter);
-
+  const onRefresh = useCallback(async () => {
+    try {
+      setIsRefreshing(true);
+      await refetchLesson();
+      await refetchQuarter();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetchLesson, refetchQuarter]);
   useEffect(() => {
     if (lessonDetails) {
       setBackgroundImage(lessonDetails.lesson.cover);
@@ -70,7 +86,17 @@ const CurrentSSL = () => {
     return <Text>Missing data...</Text>;
   }
   return (
-    <View style={tw`mb-3 rounded-2 overflow-hidden`}>
+    <ScrollView
+      style={tw`mb-3 rounded-2 overflow-hidden`}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={onRefresh}
+          colors={['#EA9215']}
+          tintColor="#EA9215"
+        />
+      }>
       <ImageBackground
         source={{
           uri: backgroundImage,
@@ -144,7 +170,7 @@ const CurrentSSL = () => {
           <YoutubeLogo size={20} weight="fill" color="#EA9215" />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,29 +9,61 @@ import {
   ActivityIndicator,
   RefreshControl,
   TextInput,
+  ImageBackground,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {useGetSSLsQuery} from '../../services/SabbathSchoolApi';
-import CurrentSSL from './CurrentSSL';
+import DateConverter from './DateConverter';
+import {
+  useGetSSLsQuery,
+  useGetSSLOfDayQuery,
+  useGetSSLOfQuarterQuery,
+} from '../../services/SabbathSchoolApi';
+import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
+import LinearGradient from 'react-native-linear-gradient';
+import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
 
 const SSLHome = () => {
+  const currentDate = new Date().toISOString().slice(0, 10);
+  const [quarter, week] = useCalculateLessonIndex(currentDate);
+  const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
-  const navigation = useNavigation();
-  const darkMode = useSelector(state => state.ui.darkMode);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    data: lessonDetails,
+    error: lessonError,
+    isLoading: lessonIsLoading,
+    refetch: lessonRefetch,
+  } = useGetSSLOfDayQuery({path: quarter, id: week});
+  const {
+    data: quarterDetails,
+    error: quarterError,
+    isLoading: quarterIsLoading,
+    refetch: quarterRefetch,
+  } = useGetSSLOfQuarterQuery(quarter);
+
+  useEffect(() => {
+    if (lessonDetails) {
+      setBackgroundImage(lessonDetails.lesson.cover);
+    }
+  }, [lessonDetails]);
 
   const onRefresh = useCallback(async () => {
     try {
       setIsRefreshing(true);
+      await lessonRefetch();
+      await quarterRefetch();
       await refetch();
     } finally {
       setIsRefreshing(false);
     }
-  }, [refetch]);
+  }, [lessonRefetch, quarterRefetch, refetch]);
+
+  const navigation = useNavigation();
+  const darkMode = useSelector(state => state.ui.darkMode);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = text => {
     setSearchTerm(text);
@@ -60,6 +92,34 @@ const SSLHome = () => {
     navigation.navigate('SSLQuarter', {sslId});
   };
 
+  const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
+  const gradientColor = '#222222';
+  const handleOpenButtonPress = () => {
+    navigation.navigate('SSLWeek', {
+      ssl: quarter,
+      weekId: week,
+    });
+  };
+
+  if (lessonIsLoading || quarterIsLoading) {
+    return <Text>Loading...</Text>;
+  }
+  if (lessonError) {
+    return (
+      <View style={tw`border border-accent-6 rounded mb-4`}>
+        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+          Wait for quarterly update!
+        </Text>
+      </View>
+    );
+  }
+  if (quarterError) {
+    return <Text> Error: {quarterError}</Text>;
+  }
+  if (!quarterDetails || !lessonDetails) {
+    return <Text>Missing data...</Text>;
+  }
+
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mb-50`}>
@@ -73,7 +133,81 @@ const SSLHome = () => {
               tintColor="#EA9215"
             />
           }>
-          <CurrentSSL />
+          <View style={tw`rounded overflow-hidden`}>
+            <ImageBackground
+              source={{
+                uri: backgroundImage,
+              }}
+              style={tw`w-full h-44 justify-end`}>
+              <LinearGradient
+                colors={[gradientColor, `${gradientColor}20`]}
+                style={tw`absolute inset-0`}
+                start={{x: 0.5, y: 1}}
+                end={{x: 0.5, y: 0.2}}
+              />
+              <View style={[tw`absolute inset-0 rounded-lg`]}>
+                <View style={tw`flex absolute bottom-0 left-0 p-4`}>
+                  <Text style={tw`font-nokia-bold text-primary-6`}>
+                    የዚህ ሳምንት ትምህርት
+                  </Text>
+                  <View style={tw`flex flex-row items-center`}>
+                    <DateConverter
+                      gregorianDate={lessonDetails.lesson.start_date}
+                      textStyle={textStyle}
+                    />
+                    <Text style={tw`font-nokia-bold text-primary-3`}> - </Text>
+                    <DateConverter
+                      gregorianDate={lessonDetails.lesson.end_date}
+                      textStyle={textStyle}
+                    />
+                  </View>
+                </View>
+              </View>
+            </ImageBackground>
+          </View>
+
+          <View style={tw`my-2`}>
+            <Text style={tw`font-nokia-bold text-accent-6`}>
+              {quarterDetails.quarterly.title}
+            </Text>
+            <Text
+              style={[
+                tw`font-nokia-bold text-secondary-6 text-2xl`,
+                darkMode ? tw`text-primary-1` : null,
+              ]}>
+              {lessonDetails.lesson.title}
+            </Text>
+            <Text style={tw`font-nokia-bold text-accent-6`}>
+              {quarterDetails.quarterly.human_date}
+            </Text>
+          </View>
+          <View style={tw`border-b border-accent-6 mb-1`} />
+          <Text
+            style={[
+              tw`font-nokia-bold text-secondary-6 text-justify`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
+            {'   '}
+            {quarterDetails.quarterly.description}
+          </Text>
+          <View style={tw`flex flex-row mx-auto gap-2 items-center my-2`}>
+            <TouchableOpacity
+              style={tw`bg-accent-6 px-3 py-1 rounded-full`}
+              onPress={handleOpenButtonPress}>
+              <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold text-secondary-6 items-center`,
+                  darkMode ? tw`text-primary-1` : null,
+                ]}>
+                Watch on YouTube
+              </Text>
+              <YoutubeLogo size={20} weight="fill" color="#EA9215" />
+            </TouchableOpacity>
+          </View>
           <TextInput
             placeholder="Search SSLs..."
             value={searchTerm}
