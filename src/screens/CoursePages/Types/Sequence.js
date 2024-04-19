@@ -1,19 +1,13 @@
-import {
-  Text,
-  Dimensions,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, TouchableOpacity} from 'react-native';
 import Carousel from '@eleva/react-native-reanimated-carousel';
 import tw from '../../../../tailwind';
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {ArrowCircleDown, ArrowCircleUp} from 'phosphor-react-native';
 
 const Sequence = ({value}) => {
   const carouselRef = useRef(null);
   const handlePrev = () => {
-    const currentIndex = carouselRef.current?.getCurrentIndex(); // Change 'const' to 'let'
+    const currentIndex = carouselRef.current?.getCurrentIndex();
     if (currentIndex > 0) {
       carouselRef.current?.scrollTo({
         index: currentIndex - 1,
@@ -23,7 +17,7 @@ const Sequence = ({value}) => {
   };
 
   const handleNext = () => {
-    const currentIndex = carouselRef.current?.getCurrentIndex(); // Change 'const' to 'let'
+    const currentIndex = carouselRef.current?.getCurrentIndex();
     if (currentIndex < value.length - 1) {
       carouselRef.current?.scrollTo({
         index: currentIndex + 1,
