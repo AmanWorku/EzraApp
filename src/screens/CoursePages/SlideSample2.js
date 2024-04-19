@@ -32,6 +32,7 @@ import Subtitle from './Types/Subtitle';
 import TextComponent from './Types/Text';
 import ImageComponent from './Types/Image';
 import Title from './Types/Title';
+import Sequence from './Types/Sequence';
 import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
 
@@ -313,6 +314,13 @@ const SlideSample2 = ({route}) => {
                           case 'slide':
                             return (
                               <Slide key={element._id} value={element.value} />
+                            );
+                          case 'sequence':
+                            return (
+                              <Sequence
+                                key={element._id}
+                                value={element.value}
+                              />
                             );
                           case 'img':
                             return (
