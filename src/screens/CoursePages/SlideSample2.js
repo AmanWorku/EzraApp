@@ -32,8 +32,10 @@ import Subtitle from './Types/Subtitle';
 import TextComponent from './Types/Text';
 import ImageComponent from './Types/Image';
 import Title from './Types/Title';
+import Sequence from './Types/Sequence';
 import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
+import Reveal from './Types/Reveal';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -198,11 +200,13 @@ const SlideSample2 = ({route}) => {
   };
   if (progressLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#EA2975" />
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: '#EA2975'}}>
-          Saving
-        </Text>
+      <View
+        style={[
+          tw`flex-1 items-center justify-center bg-primary-1`,
+          darkMode ? tw`bg-secondary-9` : null,
+        ]}>
+        <ActivityIndicator size="large" color="#EA9215" />
+        <Text style={tw`font-nokia-bold text-accent-6 text-xl`}>Saving</Text>
       </View>
     );
   }
@@ -311,6 +315,17 @@ const SlideSample2 = ({route}) => {
                           case 'slide':
                             return (
                               <Slide key={element._id} value={element.value} />
+                            );
+                          case 'sequence':
+                            return (
+                              <Sequence
+                                key={element._id}
+                                value={element.value}
+                              />
+                            );
+                          case 'reveal':
+                            return (
+                              <Reveal key={element._id} value={element.value} />
                             );
                           case 'img':
                             return (
