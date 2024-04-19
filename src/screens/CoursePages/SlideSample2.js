@@ -35,6 +35,7 @@ import Title from './Types/Title';
 import Sequence from './Types/Sequence';
 import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
+import Reveal from './Types/Reveal';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -321,6 +322,10 @@ const SlideSample2 = ({route}) => {
                                 key={element._id}
                                 value={element.value}
                               />
+                            );
+                          case 'reveal':
+                            return (
+                              <Reveal key={element._id} value={element.value} />
                             );
                           case 'img':
                             return (
