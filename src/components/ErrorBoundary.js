@@ -40,7 +40,7 @@ class ErrorBoundary extends Component {
       return (
         <View style={tw`flex-1 justify-center items-center bg-primary-1`}>
           <Warning size={64} color="#FFD700" weight="fill" />
-          <Text style={tw`text-2xl font-nokia-bold text-white mb-6`}>
+          <Text style={tw`text-2xl font-nokia-bold text-accent-6 mb-6`}>
             An error occurred: {error ? error.toString() : null}
           </Text>
           <TouchableOpacity
