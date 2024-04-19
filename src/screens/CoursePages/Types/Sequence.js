@@ -12,9 +12,8 @@ import {ArrowCircleDown, ArrowCircleUp} from 'phosphor-react-native';
 
 const Sequence = ({value}) => {
   const carouselRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const handlePrev = () => {
-    const currentIndex = carouselRef.current?.getCurrentIndex();
+    const currentIndex = carouselRef.current?.getCurrentIndex(); // Change 'const' to 'let'
     if (currentIndex > 0) {
       carouselRef.current?.scrollTo({
         index: currentIndex - 1,
@@ -24,7 +23,7 @@ const Sequence = ({value}) => {
   };
 
   const handleNext = () => {
-    const currentIndex = carouselRef.current?.getCurrentIndex();
+    const currentIndex = carouselRef.current?.getCurrentIndex(); // Change 'const' to 'let'
     if (currentIndex < value.length - 1) {
       carouselRef.current?.scrollTo({
         index: currentIndex + 1,
@@ -36,11 +35,7 @@ const Sequence = ({value}) => {
   return (
     <View style={{flex: 1}}>
       <TouchableOpacity onPress={handlePrev} style={tw`self-center`}>
-        <ArrowCircleUp
-          size={32}
-          color={currentIndex === 0 ? '#694209' : '#EA9521'}
-          weight="fill"
-        />
+        <ArrowCircleUp size={32} color="#EA9521" weight="fill" />
       </TouchableOpacity>
       <Carousel
         ref={carouselRef}
@@ -49,7 +44,6 @@ const Sequence = ({value}) => {
         vertical={true}
         data={value}
         scrollAnimationDuration={1000}
-        onScrollIndexChanged={index => setCurrentIndex(index)}
         renderItem={({item}) => (
           <View
             style={tw`flex-1 justify-center border border-accent-6 bg-accent-8 bg-opacity-50 rounded my-2`}>
@@ -61,11 +55,7 @@ const Sequence = ({value}) => {
         )}
       />
       <TouchableOpacity onPress={handleNext} style={tw`self-center`}>
-        <ArrowCircleDown
-          size={32}
-          color={currentIndex === value.length - 1 ? '#694209' : '#EA9521'}
-          weight="fill"
-        />
+        <ArrowCircleDown size={32} color="#EA9521" weight="fill" />
       </TouchableOpacity>
     </View>
   );
