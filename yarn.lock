@@ -6657,7 +6657,7 @@ react-native-reanimated-carousel@^3.5.1:
   resolved "https://registry.npmjs.org/react-native-reanimated-carousel/-/react-native-reanimated-carousel-3.5.1.tgz"
   integrity sha512-9BBQV6JAYSQm2lV7MFtT4mzapXmW4IZO6s38gfiJL84Jg23ivGB1UykcNQauKgtHyhtW2NuZJzItb1s42lM+hA==
 
-react-native-reanimated@^3.8.1, "react-native-reanimated@>= 1.0.0", react-native-reanimated@>=3.0.0:
+"react-native-reanimated@>= 1.0.0", react-native-reanimated@>=3.0.0:
   version "3.8.1"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.8.1.tgz"
   integrity sha512-EdM0vr3JEaNtqvstqESaPfOBy0gjYBkr1iEolWJ82Ax7io8y9OVUIphgsLKTB36CtR1XtmBw0RZVj7KArc7ZVA==
