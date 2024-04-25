@@ -4,7 +4,7 @@ import Slider from '@react-native-community/slider';
 import tw from '../../../../tailwind';
 
 const Range = () => {
-  const [value, setValue] = useState(value ?? 0);
+  const [value, setValue] = useState(value ?? 3);
   return (
     <View style={tw`flex-1 justify-center items-center w-100%`}>
       <View style={tw`bg-primary-1 rounded`}>
