@@ -15,6 +15,7 @@
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-camera-roll/camera-roll": "^7.4.3",
     "@react-native-community/push-notification-ios": "^1.11.0",
+    "@react-native-community/slider": "^4.5.2",
     "@react-native-masked-view/masked-view": "^0.2.8",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/drawer": "^6.6.11",

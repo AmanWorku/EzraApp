@@ -36,6 +36,7 @@ import Sequence from './Types/Sequence';
 import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
 import Reveal from './Types/Reveal';
+import Range from './Types/Range';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -357,6 +358,8 @@ const SlideSample2 = ({route}) => {
                                 value={element.value}
                               />
                             );
+                          case 'range':
+                            return <Range />;
                           default:
                             return null;
                         }
