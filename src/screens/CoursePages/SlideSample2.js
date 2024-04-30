@@ -37,6 +37,7 @@ import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
 import Reveal from './Types/Reveal';
 import Range from './Types/Range';
+import DND from './Types/DND';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -360,6 +361,10 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'range':
                             return <Range />;
+                          case 'dnd':
+                            return (
+                              <DND key={element._id} value={element.value} />
+                            );
                           default:
                             return null;
                         }
