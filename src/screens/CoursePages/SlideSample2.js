@@ -38,6 +38,8 @@ import ErrorScreen from '../../components/ErrorScreen';
 import Reveal from './Types/Reveal';
 import Range from './Types/Range';
 import DND from './Types/DND';
+import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -363,7 +365,9 @@ const SlideSample2 = ({route}) => {
                             return <Range />;
                           case 'dnd':
                             return (
-                              <DND key={element._id} value={element.value} />
+                              <GestureHandlerRootView style={{flex: 1}}>
+                                <DND key={element._id} value={element.value} />
+                              </GestureHandlerRootView>
                             );
                           default:
                             return null;

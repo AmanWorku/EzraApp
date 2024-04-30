@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {Text, TouchableOpacity, View, ScrollView} from 'react-native';
 import tw from '../../../../tailwind';
 import Toast from 'react-native-toast-message';
 import DraggableFlatList from 'react-native-draggable-flatlist';
@@ -33,7 +33,7 @@ const DND = ({value}) => {
       onLongPress={drag}
       disabled={isActive}
       style={[
-        tw`mb-2 border border-primary-1 rounded-lg p-2`,
+        tw`mr-2 border border-primary-1 rounded-lg p-2`,
         isActive ? tw`bg-primary-2 text-secondary-6` : null,
       ]}>
       <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
@@ -43,13 +43,13 @@ const DND = ({value}) => {
   );
 
   const renderDroppableArea = () => (
-    <View style={tw`mt-4 bg-primary-2 px-4 py-2 rounded-lg`}>
+    <View style={tw`my-4 border border-primary-1 px-8 py-4 rounded-lg`}>
       {droppedChoice ? (
         <Text style={tw`font-nokia-bold text-secondary-6`}>
           {droppedChoice.text}
         </Text>
       ) : (
-        <Text style={tw`font-nokia-bold text-secondary-6`}>Drop Here</Text>
+        <Text style={tw`font-nokia-bold text-primary-1`}>Drop Here</Text>
       )}
     </View>
   );
@@ -59,16 +59,19 @@ const DND = ({value}) => {
       <Text style={tw`font-nokia-bold text-lg text-primary-1 mb-4`}>
         {value.question}
       </Text>
-      <DraggableFlatList
-        data={choices}
-        renderItem={renderItem}
-        keyExtractor={(item, index) => `${item.text}-${index}`}
-        onDragEnd={({data}) => handleAnswerSelection(data)}
-      />
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <DraggableFlatList
+          data={choices}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => `${item.text}-${index}`}
+          onDragEnd={({data}) => handleAnswerSelection(data)}
+          horizontal
+        />
+      </ScrollView>
       {renderDroppableArea()}
       <TouchableOpacity
         onPress={checkAnswer}
-        style={tw`mt-4 bg-primary-2 px-4 py-2 rounded-lg`}
+        style={tw`mt-2 bg-primary-2 px-4 py-2 rounded-lg`}
         disabled={!droppedChoice || isAnswerChecked}>
         <Text style={tw`font-nokia-bold text-secondary-6`}>
           {isAnswerChecked ? 'Answer Checked' : 'Check Answer'}

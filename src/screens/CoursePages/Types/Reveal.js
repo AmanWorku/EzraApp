@@ -17,7 +17,7 @@ const Reveal = ({value}) => {
       {value.map((revealItem, index) => (
         <FlipCard
           key={index}
-          style={tw`w-full h-$half rounded-lg shadow`}
+          style={tw`w-full h-[50%] rounded-lg shadow`}
           friction={6}
           perspective={1000}
           flipHorizontal={false}
