@@ -107,7 +107,14 @@ const Home = () => {
   }
 
   if (!devotions || devotions.length === 0) {
-    return <Text>No devotions available</Text>;
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   const devotionToDisplay = selectedDevotion || devotions[0];

@@ -150,9 +150,7 @@ const SSLWeek = ({route}) => {
       return (
         <View
           key={index}
-          style={[
-            tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
-          ]}>
+          style={[tw`border-l-4 border-accent-6 pl-4 flex flex-row text-wrap`]}>
           {childrenWithStyles}
         </View>
       );
