@@ -13,6 +13,10 @@ const DND = ({value}) => {
     setDroppedChoice(answer);
   };
 
+  const onDragEnd = ({data}) => {
+    setChoices(data);
+  };
+
   const checkAnswer = () => {
     setIsAnswerChecked(true);
     if (droppedChoice.text === value.correctAnswer) {
@@ -63,8 +67,8 @@ const DND = ({value}) => {
         <DraggableFlatList
           data={choices}
           renderItem={renderItem}
-          keyExtractor={(item, index) => `${item.text}-${index}`}
-          onDragEnd={({data}) => handleAnswerSelection(data)}
+          keyExtractor={(item, index) => `draggable-item-${index}`}
+          onDragEnd={onDragEnd}
           horizontal
         />
       </ScrollView>

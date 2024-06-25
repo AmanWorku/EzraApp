@@ -25,6 +25,7 @@ import {
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
+import ErrorScreen from '../components/ErrorScreen';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -84,12 +85,12 @@ const Devotion = () => {
   }, [devotions, refetch]);
 
   if (!devotions || devotions.length === 0) {
-    return <Text>No devotions available</Text>;
+    return <ErrorScreen />;
   }
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+  const url = `https://ezra-seminary.me/images/${devotionToDisplay.image}`;
 
   if (isFetching) {
     return (
@@ -214,7 +215,7 @@ const Devotion = () => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
+                uri: `https://ezra-seminary.me/images/${devotionToDisplay.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -289,7 +290,7 @@ const Devotion = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
+                    uri: `https://ezra-seminary.me/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

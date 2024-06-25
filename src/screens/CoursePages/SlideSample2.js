@@ -175,7 +175,7 @@ const SlideSample2 = ({route}) => {
         );
         // Send the updated progress to the server
         const response = await axios.put(
-          `https://ezra-seminary.mybese.tech/users/profile/${currentUser._id}`,
+          `https://ezra-seminary.me/users/profile/${currentUser._id}`,
           {
             userId: currentUser._id,
             progress: currentUser.progress,

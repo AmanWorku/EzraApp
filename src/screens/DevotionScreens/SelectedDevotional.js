@@ -43,7 +43,7 @@ const SelectedDevotional = ({route}) => {
     scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
   }, [devotionalId]);
 
-  const imageURI = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
+  const imageURI = `https://ezra-seminary.me/images/${devotional.image}`;
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
@@ -161,7 +161,7 @@ const SelectedDevotional = ({route}) => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.tech/images/${devotional.image}`,
+                uri: `https://ezra-seminary.me/images/${devotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -244,7 +244,7 @@ const SelectedDevotional = ({route}) => {
                 }}>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
+                    uri: `https://ezra-seminary.me/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

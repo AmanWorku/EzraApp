@@ -125,7 +125,7 @@ const AllDevotionals = ({navigation}) => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
+                    uri: `https://ezra-seminary.me/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>
