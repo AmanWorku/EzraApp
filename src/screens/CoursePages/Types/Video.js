@@ -3,7 +3,15 @@ import {View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import tw from '../../../../tailwind';
 
+const getYoutubeVideoId = url => {
+  const regExp =
+    /^.*(youtu.be\/|v\/|\/u\/\w\/|embed\/|watch\?v=|\&v=|watch\?.+&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
 const VideoPlayer = ({value}) => {
+  const videoId = getYoutubeVideoId(value);
   const youtubePlayerHTML = `
     <!DOCTYPE html>
     <html>
@@ -11,16 +19,18 @@ const VideoPlayer = ({value}) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
           body {
-            margin: 0;
-            padding: 0;
-            background-color: transparent;
-          }
+          margin: 0;
+          padding: 0;
+          background-color: transparent;
+          
+        }
 
-          #player {
-            width: 100%;
-            height: 100%;
-            background-color: black;
-          }
+        #player {
+          width: 100%;
+          height: 12em;
+          background-color: black;
+          position: relative;
+        }
         </style>
       </head>
       <body>
@@ -36,7 +46,7 @@ const VideoPlayer = ({value}) => {
             player = new YT.Player('player', {
               height: '100%',
               width: '100%',
-              videoId: '${value}',
+              videoId: '${videoId}',
               events: {
                 'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange
@@ -45,7 +55,6 @@ const VideoPlayer = ({value}) => {
           }
           
           function onPlayerReady(event) {
-            event.target.playVideo();
           }
           
           function onPlayerStateChange(event) {
@@ -59,7 +68,7 @@ const VideoPlayer = ({value}) => {
   `;
 
   return (
-    <View style={tw`w-full h-36`}>
+    <View style={tw`w-full h-48`}>
       <WebView
         source={{html: youtubePlayerHTML}}
         javaScriptEnabled={true}
