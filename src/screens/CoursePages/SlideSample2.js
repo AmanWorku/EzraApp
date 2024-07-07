@@ -41,6 +41,7 @@ import DND from './Types/DND';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import VideoPlayer from './Types/Video';
+import AudioPlayer from './Types/Audio';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -367,6 +368,13 @@ const SlideSample2 = ({route}) => {
                           case 'video':
                             return (
                               <VideoPlayer
+                                key={element._id}
+                                value={element.value}
+                              />
+                            );
+                          case 'audio':
+                            return (
+                              <AudioPlayer
                                 key={element._id}
                                 value={element.value}
                               />

@@ -6888,6 +6888,11 @@ react-native-snap-carousel@^3.9.1:
     prop-types "^15.6.1"
     react-addons-shallow-compare "15.6.2"
 
+react-native-sound@^0.11.2:
+  version "0.11.2"
+  resolved "https://registry.npmjs.org/react-native-sound/-/react-native-sound-0.11.2.tgz"
+  integrity sha512-LmGc8lgOK3qecYMVQpyHvww/C+wgT6sWeMpVbOe4NCRGC2yKd4fo4U0KBUo9PO7AqKESO3I/2GZg1/C0+bwiiA==
+
 react-native-splash-screen@^3.3.0:
   version "3.3.0"
   resolved "https://registry.npmjs.org/react-native-splash-screen/-/react-native-splash-screen-3.3.0.tgz"
@@ -6958,7 +6963,7 @@ react-native-youtube-iframe@^2.3.0:
   dependencies:
     events "^3.2.0"
 
-react-native@*, react-native@^*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@>=0.33, react-native@>=0.50.1, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.6.0, react-native@>=0.60, react-native@>=0.60.0-rc.2, react-native@>=0.63.0, react-native@>=0.64.0, react-native@>=0.70.0, react-native@>=0.70.3, react-native@0.73.2:
+react-native@*, react-native@^*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@>=0.33, react-native@>=0.50.1, react-native@>=0.57, react-native@>=0.57.0, react-native@>=0.58.4, react-native@>=0.59, react-native@>=0.6.0, react-native@>=0.60, react-native@>=0.60.0-rc.2, react-native@>=0.63.0, react-native@>=0.64.0, react-native@>=0.70.0, react-native@>=0.70.3, react-native@>=0.8.0, react-native@0.73.2:
   version "0.73.2"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.73.2.tgz"
   integrity sha512-7zj9tcUYpJUBdOdXY6cM8RcXYWkyql4kMyGZflW99E5EuFPoC7Ti+ZQSl7LP9ZPzGD0vMfslwyDW0I4tPWUCFw==

@@ -50,6 +50,7 @@
     "react-native-share": "^10.0.2",
     "react-native-skeleton-placeholder": "^5.2.4",
     "react-native-snap-carousel": "^3.9.1",
+    "react-native-sound": "^0.11.2",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^14.1.0",
     "react-native-toast-message": "^2.2.0",
