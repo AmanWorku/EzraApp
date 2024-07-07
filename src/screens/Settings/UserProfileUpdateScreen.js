@@ -46,7 +46,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
       setPassword(currentUser.password || '');
       setAvatarPreview(
         currentUser.avatar
-          ? `https://ezra-seminary.me/images/${currentUser.avatar}`
+          ? `https://ezrabackend.online/images/${currentUser.avatar}`
           : bible,
       );
     }
@@ -148,7 +148,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
               source={
                 currentUser && currentUser.user.avatar
                   ? {
-                      uri: `https://ezra-seminary.me/images/${currentUser.user.avatar}`,
+                      uri: `https://ezrabackend.online/images/${currentUser.user.avatar}`,
                     }
                   : require('./../../assets/default-avatar.png') // replace with the actual path to your default avatar
               }

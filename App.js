@@ -117,20 +117,20 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={isAuthenticated ? 'MainTab' : 'Login'}>
+            initialRouteName={isAuthenticated ? 'MainTab' : 'Signup'}>
             <Stack.Screen
               name="Welcome"
               component={Welcome}
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="Login"
-              component={Login}
+              name="Signup"
+              component={Signup}
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="Signup"
-              component={Signup}
+              name="Login"
+              component={Login}
               options={{headerShown: false}}
             />
             <Stack.Screen

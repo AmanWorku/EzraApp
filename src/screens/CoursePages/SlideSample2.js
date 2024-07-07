@@ -40,6 +40,7 @@ import Range from './Types/Range';
 import DND from './Types/DND';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import VideoPlayer from './Types/Video';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -175,7 +176,7 @@ const SlideSample2 = ({route}) => {
         );
         // Send the updated progress to the server
         const response = await axios.put(
-          `https://ezra-seminary.me/users/profile/${currentUser._id}`,
+          `https://ezrabackend.online/users/profile/${currentUser._id}`,
           {
             userId: currentUser._id,
             progress: currentUser.progress,
@@ -362,7 +363,14 @@ const SlideSample2 = ({route}) => {
                               />
                             );
                           case 'range':
-                            return <Range />;
+                            return <Range key={element._id} />;
+                          case 'video':
+                            return (
+                              <VideoPlayer
+                                key={element._id}
+                                value={element.value}
+                              />
+                            );
                           case 'dnd':
                             return (
                               <GestureHandlerRootView style={{flex: 1}}>

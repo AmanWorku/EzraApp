@@ -24,6 +24,7 @@ import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
+import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
@@ -106,11 +107,14 @@ const SSLHome = () => {
   }
   if (lessonError) {
     return (
-      <View style={tw`border border-accent-6 rounded mb-4`}>
-        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
-          Wait for quarterly update!
-        </Text>
-      </View>
+      <>
+        <View style={tw`border border-accent-6 rounded mb-4`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+            Wait for quarterly update!
+          </Text>
+        </View>
+        {/* <CurrentSSL /> */}
+      </>
     );
   }
   if (quarterError) {

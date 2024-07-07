@@ -168,7 +168,7 @@ const Course = () => {
                   <View style={tw`h-48 relative`}>
                     <Image
                       source={{
-                        uri: `https://ezra-seminary.me/images/${course.image}`,
+                        uri: `https://ezrabackend.online/images/${course.image}`,
                       }}
                       style={tw`w-full h-full rounded-3`}
                     />

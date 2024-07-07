@@ -90,7 +90,7 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  const url = `https://ezra-seminary.me/images/${devotionToDisplay.image}`;
+  const url = `https://ezrabackend.online/images/${devotionToDisplay.image}`;
 
   if (isFetching) {
     return (
@@ -215,7 +215,7 @@ const Devotion = () => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.me/images/${devotionToDisplay.image}`,
+                uri: `https://ezrabackend.online/images/${devotionToDisplay.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -290,7 +290,7 @@ const Devotion = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.me/images/${item.image}`,
+                    uri: `https://ezrabackend.online/images/${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

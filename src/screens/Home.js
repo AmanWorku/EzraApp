@@ -227,7 +227,7 @@ const Home = () => {
               {lastCourse ? (
                 <Image
                   source={{
-                    uri: `https://ezra-seminary.me/images/${lastCourse.image}`,
+                    uri: `https://ezrabackend.online/images/${lastCourse.image}`,
                   }}
                   style={tw`w-full h-full rounded-3`}
                 />
@@ -305,7 +305,7 @@ const Home = () => {
                   }>
                   <ImageBackground
                     source={{
-                      uri: `https://ezra-seminary.me/images/${item.image}`,
+                      uri: `https://ezrabackend.online/images/${item.image}`,
                     }}
                     style={tw`w-full h-full justify-end `}
                     imageStyle={tw`rounded-lg`}>
