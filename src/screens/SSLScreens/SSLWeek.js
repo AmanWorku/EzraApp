@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
+  Modal,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -17,7 +18,7 @@ import {
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft, Warning} from 'phosphor-react-native';
+import {ArrowSquareLeft} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
@@ -29,6 +30,9 @@ const SSLWeek = ({route}) => {
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVerseKey, setSelectedVerseKey] = useState('');
+  const [selectedVerseContent, setSelectedVerseContent] = useState('');
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
@@ -51,14 +55,33 @@ const SSLWeek = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const onRefresh = useCallback(async () => {
-    try {
-      setIsRefreshing(true);
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
+  const handleVerseClick = verseKey => {
+    if (
+      sslWeek &&
+      sslWeek.bible &&
+      sslWeek.bible.length > 0 &&
+      sslWeek.bible[0].verses &&
+      sslWeek.bible[0].verses[verseKey]
+    ) {
+      setSelectedVerseKey(verseKey);
+      setSelectedVerseContent(sslWeek.bible[0].verses[verseKey]);
+      setIsModalOpen(true);
+    } else {
+      console.error(`Verse key "${verseKey}" not found`);
     }
-  }, [refetch]);
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedVerseKey('');
+    setSelectedVerseContent('');
+  };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   const onNextButtonClick = () => {
     const nextCheck = parseInt(check, 10) + 1;
@@ -102,8 +125,8 @@ const SSLWeek = ({route}) => {
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl`,
     p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2 flex-wrap`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2 flex-wrap`,
     blockquote: darkMode
       ? tw`text-primary-1 font-nokia-bold text-xl`
       : tw`text-secondary-6 font-nokia-bold text-xl`,
@@ -114,9 +137,27 @@ const SSLWeek = ({route}) => {
       color: '#EA9215',
     },
     strong: tw`text-xl`,
-    a: tw`text-accent-7`,
+    a: tw`text-accent-6`,
   });
+
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
+    if (node.name === 'a') {
+      const {class: className, verse: verseReference} = node.attribs;
+      if (className === 'verse' && verseReference) {
+        const onPress = () => handleVerseClick(verseReference);
+        return (
+          <Text key={index} style={styles.a} onPress={onPress}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+        );
+      }
+      return (
+        <Text key={index} style={styles.a}>
+          {defaultRenderer(node.children, node)}
+        </Text>
+      );
+    }
+
     if (node.name === 'blockquote') {
       const childrenWithStyles = node.children.map((child, childIndex) => {
         if (child.type === 'text') {
@@ -124,24 +165,11 @@ const SSLWeek = ({route}) => {
             <Text
               key={childIndex}
               style={[
-                tw` font-nokia-bold text-lg text-justify`,
+                tw`font-nokia-bold text-lg text-justify`,
                 darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
               ]}>
               {child.data}
             </Text>
-          );
-        } else if (child.name === 'a') {
-          const onPress = () => {};
-          return (
-            <TouchableOpacity key={childIndex} onPress={onPress}>
-              <Text
-                style={[
-                  tw`font-nokia-bold`,
-                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                ]}>
-                {defaultRenderer(child.children, child)}
-              </Text>
-            </TouchableOpacity>
           );
         } else {
           return defaultRenderer(child.children, child);
@@ -150,11 +178,15 @@ const SSLWeek = ({route}) => {
       return (
         <View
           key={index}
-          style={[tw`border-l-4 border-accent-6 pl-4 flex flex-row text-wrap`]}>
+          style={[
+            tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
+          ]}>
           {childrenWithStyles}
         </View>
       );
     }
+
+    return undefined;
   };
 
   const handleBackButtonPress = () => {
@@ -242,6 +274,37 @@ const SSLWeek = ({route}) => {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalOpen}
+        onRequestClose={onCloseModal}>
+        <View
+          style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-70`}>
+          <View
+            style={tw`max-h-80% bg-secondary-9 p-4 rounded-lg w-11/12 max-w-lg border border-accent-8`}>
+            <ScrollView>
+              <HTMLView
+                value={`<div>${selectedVerseContent}</div>`}
+                stylesheet={{
+                  p: tw`text-secondary-6 font-nokia-bold text-justify`,
+                  div: tw`text-primary-3 font-nokia-bold text-justify`,
+                  h2: tw`font-nokia-bold text-2xl text-accent-6`,
+                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-4`,
+                }}
+                addLineBreaks={true}
+              />
+            </ScrollView>
+            <TouchableOpacity
+              style={tw`bg-accent-6 mt-4 rounded-lg p-2`}
+              onPress={onCloseModal}>
+              <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
+                Close
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
