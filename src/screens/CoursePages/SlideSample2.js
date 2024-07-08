@@ -382,7 +382,14 @@ const SlideSample2 = ({route}) => {
                           case 'dnd':
                             return (
                               <GestureHandlerRootView style={{flex: 1}}>
-                                <DND key={element._id} value={element.value} />
+                                <DND
+                                  key={element._id}
+                                  value={element.value}
+                                  selectedAnswer={selectedAnswer}
+                                  setSelectedAnswer={setSelectedAnswer}
+                                  isAnswerChecked={isAnswerChecked}
+                                  setIsAnswerChecked={setIsAnswerChecked}
+                                />
                               </GestureHandlerRootView>
                             );
                           default:
