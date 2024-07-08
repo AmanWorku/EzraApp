@@ -10,6 +10,7 @@ import {
   RefreshControl,
   ImageBackground,
   Modal,
+  TextInput,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -23,6 +24,7 @@ import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -47,10 +49,38 @@ const SSLWeek = ({route}) => {
     id: weekId,
     day: check,
   });
+  const [notes, setNotes] = useState({});
+  const codeCounterRef = useRef(0);
+  const [temporaryNotes, setTemporaryNotes] = useState({});
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
   }, [check]);
+
+  const fetchNotes = async () => {
+    try {
+      const storedNotes = await AsyncStorage.getItem('notes');
+      if (storedNotes) {
+        setNotes(JSON.parse(storedNotes));
+      }
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const saveNote = async (key, noteContent) => {
+    const newNotes = {...notes, [key]: noteContent};
+    setNotes(newNotes);
+    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+  };
+
+  const handleBlur = noteKey => {
+    saveNote(noteKey, temporaryNotes[noteKey]);
+  };
 
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -60,11 +90,11 @@ const SSLWeek = ({route}) => {
       sslWeek &&
       sslWeek.bible &&
       sslWeek.bible.length > 0 &&
-      sslWeek.bible[0].verses &&
-      sslWeek.bible[0].verses[verseKey]
+      sslWeek.bible[[0]].verses &&
+      sslWeek.bible[[0]].verses[verseKey]
     ) {
       setSelectedVerseKey(verseKey);
-      setSelectedVerseContent(sslWeek.bible[0].verses[verseKey]);
+      setSelectedVerseContent(sslWeek.bible[[0]].verses[verseKey]);
       setIsModalOpen(true);
     } else {
       console.error(`Verse key "${verseKey}" not found`);
@@ -135,9 +165,12 @@ const SSLWeek = ({route}) => {
     code: {
       ...tw`font-nokia-bold`,
       color: '#EA9215',
+      backgroundColor: darkMode ? '#333' : '#f5f5f5',
+      padding: 4,
+      borderRadius: 4,
     },
     strong: tw`text-xl`,
-    a: tw`text-accent-6`,
+    a: tw`text-accent-6 underline`,
   });
 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
@@ -186,13 +219,36 @@ const SSLWeek = ({route}) => {
       );
     }
 
+    if (node.name === 'code') {
+      codeCounterRef.current += 1;
+      const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
+      return (
+        <View key={index}>
+          <Text style={styles.code}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+          <View style={tw`mt-2`}>
+            <TextInput
+              style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
+              placeholder="Add a note..."
+              placeholderTextColor="#9CA3AF"
+              value={temporaryNotes[noteKey] || notes[noteKey] || ''}
+              onChangeText={text =>
+                setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
+              }
+              onBlur={() => handleBlur(noteKey)}
+            />
+          </View>
+        </View>
+      );
+    }
+
     return undefined;
   };
 
   const handleBackButtonPress = () => {
     navigation.goBack();
   };
-
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
 
@@ -226,7 +282,7 @@ const SSLWeek = ({route}) => {
             />
             <View style={tw`absolute bottom-0 p-4`}>
               <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                {daysOfWeek[check % 7]}፣&nbsp;&nbsp;
+                {daysOfWeek[check % 7]}
                 <DateConverter
                   gregorianDate={sslWeek.date}
                   style={tw`text-2xl`}
@@ -234,7 +290,7 @@ const SSLWeek = ({route}) => {
                 />
               </Text>
               <Text
-                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 `}>
+                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1`}>
                 {sslWeek.title}
               </Text>
             </View>
@@ -259,10 +315,7 @@ const SSLWeek = ({route}) => {
               )}
               {check !== '07' && (
                 <TouchableOpacity
-                  style={[
-                    tw`mb-2`,
-                    check === '01' && tw`self-end`, // Align to the right if check is '01'
-                  ]}
+                  style={[tw`mb-2`, check === '01' && tw`self-end`]}
                   onPress={onNextButtonClick}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
@@ -282,15 +335,24 @@ const SSLWeek = ({route}) => {
         <View
           style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-70`}>
           <View
-            style={tw`max-h-80% bg-secondary-9 p-4 rounded-lg w-11/12 max-w-lg border border-accent-8`}>
+            style={[
+              tw`max-h-80% bg-primary-2 p-4 rounded-lg w-11/12 max-w-lg border border-accent-8`,
+              darkMode ? tw`bg-secondary-9` : null,
+            ]}>
             <ScrollView>
               <HTMLView
                 value={`<div>${selectedVerseContent}</div>`}
                 stylesheet={{
-                  p: tw`text-secondary-6 font-nokia-bold text-justify`,
-                  div: tw`text-primary-3 font-nokia-bold text-justify`,
+                  p: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
+                  div: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
                   h2: tw`font-nokia-bold text-2xl text-accent-6`,
-                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-4`,
+                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-6`,
                 }}
                 addLineBreaks={true}
               />

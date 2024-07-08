@@ -9,26 +9,20 @@ import {
   ActivityIndicator,
   RefreshControl,
   TextInput,
-  ImageBackground,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import DateConverter from './DateConverter';
 import {
   useGetSSLsQuery,
-  useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
 } from '../../services/SabbathSchoolApi';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
-import LinearGradient from 'react-native-linear-gradient';
-import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
 
 const CurrentSSL = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week] = useCalculateLessonIndex(currentDate);
-  const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
 
   const {
