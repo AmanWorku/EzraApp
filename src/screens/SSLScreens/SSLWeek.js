@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Modal,
   TextInput,
+  Image,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -171,6 +172,12 @@ const SSLWeek = ({route}) => {
     },
     strong: tw`text-xl`,
     a: tw`text-accent-6 underline`,
+    // Styles for table elements
+    table: tw`border border-gray-300 my-4`,
+    // tr: tw`border-b border-gray-300`,
+    td: tw`border-r border-gray-300 p-2`,
+    // 'tr:last-child': tw`border-b-0`,
+    // 'td:last-child': tw`border-r-0`,
   });
 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
@@ -239,6 +246,30 @@ const SSLWeek = ({route}) => {
               onBlur={() => handleBlur(noteKey)}
             />
           </View>
+        </View>
+      );
+    }
+
+    if (node.name === 'table') {
+      return (
+        <View key={index} style={styles.table}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    if (node.name === 'tr') {
+      return (
+        <View key={index} style={styles.tr}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    if (node.name === 'td') {
+      return (
+        <View key={index} style={styles.td}>
+          {defaultRenderer(node.children, node)}
         </View>
       );
     }
