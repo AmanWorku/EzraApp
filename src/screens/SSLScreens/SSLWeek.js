@@ -226,29 +226,29 @@ const SSLWeek = ({route}) => {
       );
     }
 
-    if (node.name === 'code') {
-      codeCounterRef.current += 1;
-      const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
-      return (
-        <View key={index}>
-          <Text style={styles.code}>
-            {defaultRenderer(node.children, node)}
-          </Text>
-          <View style={tw`mt-2`}>
-            <TextInput
-              style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
-              placeholder="Add a note..."
-              placeholderTextColor="#9CA3AF"
-              value={temporaryNotes[noteKey] || notes[noteKey] || ''}
-              onChangeText={text =>
-                setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
-              }
-              onBlur={() => handleBlur(noteKey)}
-            />
-          </View>
-        </View>
-      );
-    }
+    // if (node.name === 'code') {
+    //   codeCounterRef.current += 1;
+    //   const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
+    //   return (
+    //     <View key={index}>
+    //       <Text style={styles.code}>
+    //         {defaultRenderer(node.children, node)}
+    //       </Text>
+    //       <View style={tw`mt-2`}>
+    //         <TextInput
+    //           style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
+    //           placeholder="Add a note..."
+    //           placeholderTextColor="#9CA3AF"
+    //           value={temporaryNotes[noteKey] || notes[noteKey] || ''}
+    //           onChangeText={text =>
+    //             setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
+    //           }
+    //           onBlur={() => handleBlur(noteKey)}
+    //         />
+    //       </View>
+    //     </View>
+    //   );
+    // }
 
     if (node.name === 'table') {
       return (

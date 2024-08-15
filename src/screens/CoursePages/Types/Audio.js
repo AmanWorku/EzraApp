@@ -1,25 +1,55 @@
 import React, {useEffect, useState} from 'react';
-import {View, Button, Text} from 'react-native';
+import {View, Button, Text, Image, Platform} from 'react-native';
 import Sound from 'react-native-sound';
 import tw from '../../../../tailwind';
 
-const AudioPlayer = ({audioUrl}) => {
+const AudioPlayer = ({value}) => {
   const [sound, setSound] = useState(null);
   const [error, setError] = useState(null);
-  console.log(audioUrl);
+
   useEffect(() => {
+    console.log('Received value:', value); // Check the received value
+
+    if (!value) {
+      setError('Audio URL is missing');
+      return;
+    }
+
+    // Encode URL if it is a remote URL
+    const encodedValue = encodeURI(value);
+
     // Set the sound category for playback
     Sound.setCategory('Playback');
 
-    // Load the sound file
-    const newSound = new Sound(audioUrl, null, err => {
-      if (err) {
-        setError('Failed to load the sound');
-        console.error('Failed to load the sound', err);
-        return;
+    let newSound;
+
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      if (encodedValue.startsWith('http') || encodedValue.startsWith('https')) {
+        newSound = new Sound(encodedValue, null, err => {
+          if (err) {
+            setError(`Failed to load the sound: ${err.message}`);
+            console.error('Failed to load the sound', err);
+            return;
+          }
+          setSound(newSound);
+        });
+      } else {
+        newSound = new Sound(
+          require('./assets/Juniors_program_2nd_song.mp3'),
+          Sound.MAIN_BUNDLE,
+          err => {
+            if (err) {
+              setError(`Failed to load the sound: ${err.message}`);
+              console.error('Failed to load the sound', err);
+              return;
+            }
+            setSound(newSound);
+          },
+        );
       }
-      setSound(newSound);
-    });
+    } else {
+      setError('Unsupported platform');
+    }
 
     // Cleanup on component unmount
     return () => {
@@ -27,7 +57,7 @@ const AudioPlayer = ({audioUrl}) => {
         newSound.release();
       }
     };
-  }, [audioUrl]);
+  }, [value]);
 
   const playAudio = () => {
     if (sound) {

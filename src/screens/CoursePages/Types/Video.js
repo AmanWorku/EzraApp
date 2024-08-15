@@ -11,6 +11,7 @@ const getYoutubeVideoId = url => {
 };
 
 const VideoPlayer = ({value}) => {
+  console.log(value);
   const videoId = getYoutubeVideoId(value);
   const youtubePlayerHTML = `
     <!DOCTYPE html>
