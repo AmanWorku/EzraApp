@@ -1,10 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Dimensions, Text, View} from 'react-native';
 import tw from '../../../../tailwind';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 
-const Slide = ({value}) => {
-  const [activeIndexCarousel, setActiveIndexCarousel] = useState(0);
+const Slide = ({value, setIsSlideComplete}) => {
+  const [activeIndexCarousel, setActiveIndexCarousel] = useState(-1);
+
+  const handleSnapToItem = index => {
+    setActiveIndexCarousel(index);
+
+    // Check if the user has reached the last slide
+    if (index === value.length - 1) {
+      setIsSlideComplete(true);
+    }
+  };
 
   return (
     <View style={tw`items-center justify-center`}>
@@ -22,7 +31,7 @@ const Slide = ({value}) => {
         sliderWidth={Dimensions.get('window').width}
         itemWidth={Dimensions.get('window').width - 100}
         windowSize={1}
-        onSnapToItem={index => setActiveIndexCarousel(index)}
+        onSnapToItem={handleSnapToItem}
       />
       <Pagination
         dotsLength={value.length}

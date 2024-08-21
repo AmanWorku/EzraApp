@@ -142,7 +142,10 @@ const SlideSample2 = ({route}) => {
       isRangeComplete ||
       isAnswerChecked;
 
-    if (shouldShowButton !== isNextButtonVisible) {
+    // Ensure the button is visible on the last slide
+    if (onLastSlide) {
+      setIsNextButtonVisible(true);
+    } else if (shouldShowButton !== isNextButtonVisible) {
       setIsNextButtonVisible(shouldShowButton);
     }
   }, [
@@ -155,7 +158,7 @@ const SlideSample2 = ({route}) => {
     isRangeComplete,
     isAnswerChecked,
     onLastSlide,
-    isNextButtonVisible, // Include this dependency to check against
+    isNextButtonVisible,
   ]);
 
   const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
@@ -254,7 +257,6 @@ const SlideSample2 = ({route}) => {
         console.log('Progress updated successfully:', response.data);
         setProgressLoading(false);
 
-        // Navigate to the next screen or perform any other necessary actions
         navigation.navigate('Course', {
           screen: 'CourseContent',
           params: {courseId: courseId},
@@ -263,6 +265,8 @@ const SlideSample2 = ({route}) => {
         console.error('Error updating progress:', err.message);
         setProgressLoading(false);
       }
+    } else {
+      navigation.navigate('CourseContent', {courseId: courseId});
     }
   };
   if (progressLoading) {
@@ -316,7 +320,7 @@ const SlideSample2 = ({route}) => {
         <View style={tw`flex-1 justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
             <View style={tw`flex flex-row items-center justify-between w-auto`}>
-              <View style={tw`flex flex-row items-center gap-3`}>
+              <View style={tw`flex flex-row items-center gap-2`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
                     source={require('./../../assets/LogoSmall.png')}
@@ -331,7 +335,7 @@ const SlideSample2 = ({route}) => {
                   {chapter.chapter}
                 </Text>
               </View>
-              <View style={tw`flex flex-row items-center gap-1`}>
+              <View style={tw`flex flex-row items-center gap-1 mr-2`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   {currentDataNumber}/{totalDataNumber}
                 </Text>

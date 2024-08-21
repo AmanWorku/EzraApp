@@ -10,6 +10,7 @@ import {
   RefreshControl,
   TextInput,
   ImageBackground,
+  Linking,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -45,12 +46,18 @@ const SSLHome = () => {
     refetch: quarterRefetch,
   } = useGetSSLOfQuarterQuery(quarter);
 
-  const {
-    data: videoLink,
-    error: videoError,
-    isLoading: videoLoading,
-    refetch: videoRefetch,
-  } = useGetVideoLinkQuery({year, quarter, week});
+  const lastDigitQuarter = quarter.slice(-1); // Get the last digit of the quarter
+  const weekNumber = parseInt(week, 10); // Convert week to a number, removing leading zeros
+
+  const {data: videoLink} = useGetVideoLinkQuery({
+    year: year,
+    quarter: lastDigitQuarter,
+    week: weekNumber,
+  });
+
+  // const videoCheck = 'https://www.youtube.com/watch?v=qG5fuX39Ygs&t=2s';
+
+  console.log(year, lastDigitQuarter, weekNumber, videoLink);
 
   useEffect(() => {
     if (lessonDetails) {
@@ -100,8 +107,6 @@ const SSLHome = () => {
   const handleSSLOpen = sslId => {
     navigation.navigate('SSLQuarter', {sslId});
   };
-
-  console.log(year, quarter, week, videoLink);
 
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
@@ -211,7 +216,14 @@ const SSLHome = () => {
               <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}>
+              style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
+              onPress={() => {
+                if (videoLink) {
+                  Linking.openURL(videoLink);
+                } else {
+                  alert('Video link not available');
+                }
+              }}>
               <Text
                 style={[
                   tw`font-nokia-bold text-secondary-6 items-center`,
