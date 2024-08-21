@@ -10,8 +10,7 @@ const getYoutubeVideoId = url => {
   return match && match[2].length === 11 ? match[2] : null;
 };
 
-const VideoPlayer = ({value}) => {
-  console.log(value);
+const VideoPlayer = ({value, setIsVideoPlayed}) => {
   const videoId = getYoutubeVideoId(value);
   const youtubePlayerHTML = `
     <!DOCTYPE html>
@@ -20,18 +19,17 @@ const VideoPlayer = ({value}) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
           body {
-          margin: 0;
-          padding: 0;
-          background-color: transparent;
-          
-        }
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+          }
 
-        #player {
-          width: 100%;
-          height: 12em;
-          background-color: black;
-          position: relative;
-        }
+          #player {
+            width: 100%;
+            height: 12em;
+            background-color: black;
+            position: relative;
+          }
         </style>
       </head>
       <body>
@@ -59,8 +57,8 @@ const VideoPlayer = ({value}) => {
           }
           
           function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
-              console.log('video has finished playing!');
+            if (event.data === YT.PlayerState.PLAYING) {
+              window.ReactNativeWebView.postMessage('videoPlayed');
             }
           }
         </script>
@@ -68,12 +66,19 @@ const VideoPlayer = ({value}) => {
     </html>
   `;
 
+  const onMessage = event => {
+    if (event.nativeEvent.data === 'videoPlayed') {
+      setIsVideoPlayed(true);
+    }
+  };
+
   return (
     <View style={tw`w-full h-48`}>
       <WebView
         source={{html: youtubePlayerHTML}}
         javaScriptEnabled={true}
         domStorageEnabled={true}
+        onMessage={onMessage}
       />
     </View>
   );

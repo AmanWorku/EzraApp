@@ -3,27 +3,30 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import tw from '../../../../tailwind';
 import Toast from 'react-native-toast-message';
 
-const DND = ({value}) => {
-  console.log(value);
+const DND = ({value, setIsAnswerChecked}) => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+  const [isAnswerChecked, setLocalIsAnswerChecked] = useState(false);
 
   const handleAnswerSelection = answer => {
     setSelectedAnswer(answer);
   };
 
   const checkAnswer = () => {
-    setIsAnswerChecked(true);
-    if (selectedAnswer.text === value.correctDndAnswer) {
-      return Toast.show({
-        type: 'success',
-        text1: 'Correct Answer!',
-      });
-    } else {
-      return Toast.show({
-        type: 'error',
-        text1: 'Wrong Answer!',
-      });
+    if (selectedAnswer) {
+      setLocalIsAnswerChecked(true);
+      setIsAnswerChecked(true); // This updates the parent component's state
+
+      if (selectedAnswer.text === value.correctAnswer) {
+        return Toast.show({
+          type: 'success',
+          text1: 'Correct Answer!',
+        });
+      } else {
+        return Toast.show({
+          type: 'error',
+          text1: 'Wrong Answer!',
+        });
+      }
     }
   };
 

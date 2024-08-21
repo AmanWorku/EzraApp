@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {View, Button, Text, Image, Platform} from 'react-native';
+import {View, Button, Text, Platform} from 'react-native';
 import Sound from 'react-native-sound';
 import tw from '../../../../tailwind';
 
-const AudioPlayer = ({value}) => {
+const AudioPlayer = ({value, setIsAudioPlayed}) => {
   const [sound, setSound] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('Received value:', value); // Check the received value
-
     if (!value) {
       setError('Audio URL is missing');
       return;
@@ -60,6 +58,9 @@ const AudioPlayer = ({value}) => {
   }, [value]);
 
   const playAudio = () => {
+    if (setIsAudioPlayed) {
+      setIsAudioPlayed(true);
+    }
     if (sound) {
       sound.play(success => {
         if (success) {
@@ -69,6 +70,8 @@ const AudioPlayer = ({value}) => {
           console.error('Playback failed due to audio decoding errors');
         }
       });
+
+      // Call the setIsAudioPlayed callback when audio starts playing
     } else {
       setError('Sound is not loaded yet');
     }

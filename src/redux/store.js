@@ -5,6 +5,7 @@ import authReducer from './authSlice';
 import uiReducer from './uiSlice';
 import {apiSlice} from './api-slices/apiSlice';
 import {SSLapi} from '../services/SabbathSchoolApi';
+import {videoLinksApi} from '../services/videoLinksApi'; // Import the videoLinksApi
 import {combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   [SSLapi.reducerPath]: SSLapi.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
+  [videoLinksApi.reducerPath]: videoLinksApi.reducer, // Add the videoLinksApi reducer
 });
 
 const persistConfig = {
@@ -35,7 +37,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       immutableCheck: false,
       serializableCheck: false,
-    }).concat(SSLapi.middleware, apiSlice.middleware),
+    }).concat(SSLapi.middleware, apiSlice.middleware, videoLinksApi.middleware), // Add the videoLinksApi middleware
 });
 
 export const persistor = persistStore(store, null, () => {

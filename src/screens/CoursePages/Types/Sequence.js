@@ -4,7 +4,7 @@ import tw from '../../../../tailwind';
 import React, {useRef} from 'react';
 import {ArrowCircleDown, ArrowCircleUp} from 'phosphor-react-native';
 
-const Sequence = ({value}) => {
+const Sequence = ({value, setIsSequenceComplete}) => {
   const carouselRef = useRef(null);
   const handlePrev = () => {
     const currentIndex = carouselRef.current?.getCurrentIndex();
@@ -23,6 +23,8 @@ const Sequence = ({value}) => {
         index: currentIndex + 1,
         animated: true,
       });
+    } else {
+      setIsSequenceComplete(true);
     }
   };
 

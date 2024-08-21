@@ -20,6 +20,7 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
 } from '../../services/SabbathSchoolApi';
+import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
@@ -28,7 +29,7 @@ import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
-  const [quarter, week] = useCalculateLessonIndex(currentDate);
+  const [year, quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
   const {
@@ -43,6 +44,13 @@ const SSLHome = () => {
     isLoading: quarterIsLoading,
     refetch: quarterRefetch,
   } = useGetSSLOfQuarterQuery(quarter);
+
+  const {
+    data: videoLink,
+    error: videoError,
+    isLoading: videoLoading,
+    refetch: videoRefetch,
+  } = useGetVideoLinkQuery({year, quarter, week});
 
   useEffect(() => {
     if (lessonDetails) {
@@ -92,6 +100,8 @@ const SSLHome = () => {
   const handleSSLOpen = sslId => {
     navigation.navigate('SSLQuarter', {sslId});
   };
+
+  console.log(year, quarter, week, videoLink);
 
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';

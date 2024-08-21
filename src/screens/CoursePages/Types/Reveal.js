@@ -1,9 +1,9 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import FlipCard from 'react-native-flip-card';
 import tw from '../../../../tailwind';
 
-const Reveal = ({value}) => {
+const Reveal = ({value, setIsRevealComplete}) => {
   const [flip, setFlip] = useState(value.map(() => false));
 
   const handleFlip = index => {
@@ -11,6 +11,12 @@ const Reveal = ({value}) => {
       prevFlip.map((isFlipped, i) => (i === index ? !isFlipped : isFlipped)),
     );
   };
+
+  useEffect(() => {
+    if (flip.every(isFlipped => isFlipped)) {
+      setIsRevealComplete(true);
+    }
+  }, [flip, setIsRevealComplete]);
 
   return (
     <>

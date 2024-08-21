@@ -64,6 +64,15 @@ const SlideSample2 = ({route}) => {
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
 
+  const [isSlideComplete, setIsSlideComplete] = useState(false);
+  const [isSequenceComplete, setIsSequenceComplete] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isVideoPlayed, setIsVideoPlayed] = useState(false);
+  const [isAudioPlayed, setIsAudioPlayed] = useState(false);
+  const [isRevealComplete, setIsRevealComplete] = useState(false);
+  const [isRangeComplete, setIsRangeComplete] = useState(false);
+  const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
+
   const handleImageLoad = () => {
     setIsImageLoaded(true);
   };
@@ -98,6 +107,57 @@ const SlideSample2 = ({route}) => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    setIsNextButtonVisible(false);
+    // Reset all interaction states for the new slide
+    setIsSlideComplete(false);
+    setIsSequenceComplete(false);
+    setIsAccordionExpanded(false);
+    setIsVideoPlayed(false);
+    setIsAudioPlayed(false);
+    setIsRevealComplete(false);
+    setIsRangeComplete(false);
+    setIsAnswerChecked(false);
+
+    // Additional logic to check if the slide is non-interactive
+    const nonInteractiveTypes = ['title', 'sub', 'text', 'img'];
+    const allNonInteractive = data[activeIndex]?.elements.every(element =>
+      nonInteractiveTypes.includes(element.type),
+    );
+
+    if (allNonInteractive) {
+      setIsSlideComplete(true);
+      setIsNextButtonVisible(true); // Automatically show the "Next" button if all elements are non-interactive
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    const shouldShowButton =
+      (!onLastSlide && isSlideComplete) ||
+      isSequenceComplete ||
+      isAccordionExpanded ||
+      isVideoPlayed ||
+      isAudioPlayed ||
+      isRevealComplete ||
+      isRangeComplete ||
+      isAnswerChecked;
+
+    if (shouldShowButton !== isNextButtonVisible) {
+      setIsNextButtonVisible(shouldShowButton);
+    }
+  }, [
+    isSlideComplete,
+    isSequenceComplete,
+    isAccordionExpanded,
+    isVideoPlayed,
+    isAudioPlayed,
+    isRevealComplete,
+    isRangeComplete,
+    isAnswerChecked,
+    onLastSlide,
+    isNextButtonVisible, // Include this dependency to check against
+  ]);
+
   const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
   const chapterIndex = courseData?.chapters.findIndex(
     chap => chap._id === chapterId,
@@ -129,6 +189,7 @@ const SlideSample2 = ({route}) => {
       submitProgress();
       // navigation.navigate('CourseContent', {courseId: courseId});
     } else {
+      setIsNextButtonVisible(false);
       goToNextSlide();
     }
   };
@@ -320,18 +381,27 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'slide':
                             return (
-                              <Slide key={element._id} value={element.value} />
+                              <Slide
+                                key={element._id}
+                                value={element.value}
+                                setIsSlideComplete={setIsSlideComplete}
+                              />
                             );
                           case 'sequence':
                             return (
                               <Sequence
                                 key={element._id}
                                 value={element.value}
+                                setIsSequenceComplete={setIsSequenceComplete}
                               />
                             );
                           case 'reveal':
                             return (
-                              <Reveal key={element._id} value={element.value} />
+                              <Reveal
+                                key={element._id}
+                                value={element.value}
+                                setIsRevealComplete={setIsRevealComplete}
+                              />
                             );
                           case 'img':
                             return (
@@ -350,9 +420,6 @@ const SlideSample2 = ({route}) => {
                               <Quiz
                                 key={element._id}
                                 value={element.value}
-                                selectedAnswer={selectedAnswer}
-                                setSelectedAnswer={setSelectedAnswer}
-                                isAnswerChecked={isAnswerChecked}
                                 setIsAnswerChecked={setIsAnswerChecked}
                               />
                             );
@@ -361,15 +428,22 @@ const SlideSample2 = ({route}) => {
                               <AccordionComponent
                                 key={element._id}
                                 value={element.value}
+                                setIsAccordionExpanded={setIsAccordionExpanded}
                               />
                             );
                           case 'range':
-                            return <Range key={element._id} />;
+                            return (
+                              <Range
+                                key={element._id}
+                                setIsRangeComplete={setIsRangeComplete}
+                              />
+                            );
                           case 'video':
                             return (
                               <VideoPlayer
                                 key={element._id}
                                 value={element.value}
+                                setIsVideoPlayed={setIsVideoPlayed}
                               />
                             );
                           case 'audio':
@@ -377,6 +451,7 @@ const SlideSample2 = ({route}) => {
                               <AudioPlayer
                                 key={element._id}
                                 value={`https://ezrabackend.online/images/${element.value}`}
+                                setIsAudioPlayed={setIsAudioPlayed}
                               />
                             );
                           case 'dnd':
@@ -415,17 +490,20 @@ const SlideSample2 = ({route}) => {
                   </Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity
-                style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
-                  onFirstSlide ? 'mx-auto' : ''
-                }`}
-                onPress={handleButtonPress}>
-                <Text
-                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                  {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
-                </Text>
-                <CaretCircleRight size={18} weight="fill" color="white" />
-              </TouchableOpacity>
+
+              {isNextButtonVisible && (
+                <TouchableOpacity
+                  style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
+                    onFirstSlide ? 'mx-auto' : ''
+                  }`}
+                  onPress={handleButtonPress}>
+                  <Text
+                    style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                    {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
+                  </Text>
+                  <CaretCircleRight size={18} weight="fill" color="white" />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
         </View>
