@@ -12,6 +12,7 @@ import {
   Modal,
   TextInput,
   Image,
+  Linking,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -52,6 +53,24 @@ const SSLWeek = ({route}) => {
     id: weekId,
     day: check,
   });
+
+  const year = ssl.substring(0, 4);
+  const quarter = ssl.substring(5, 7);
+
+  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
+    year: year,
+    quarter: quarter,
+    lesson: weekId,
+  });
+
+  const handleWatchYouTube = () => {
+    if (videoLink && videoLink.videoUrl) {
+      Linking.openURL(videoLink.videoUrl);
+    } else {
+      alert('Video link not available');
+    }
+  };
+
   const [notes, setNotes] = useState({});
   const codeCounterRef = useRef(0);
   const [temporaryNotes, setTemporaryNotes] = useState({});
@@ -308,7 +327,7 @@ const SSLWeek = ({route}) => {
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleBackButtonPress}
+              onPress={handleWatchYouTube}
               style={{
                 zIndex: 1,
                 marginTop: 42,
@@ -325,7 +344,7 @@ const SSLWeek = ({route}) => {
             />
             <View style={tw`absolute bottom-0 p-4`}>
               <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                {daysOfWeek[check % 7]}
+                {daysOfWeek[check % 7]} &nbsp;
                 <DateConverter
                   gregorianDate={sslWeek.date}
                   style={tw`text-2xl`}
