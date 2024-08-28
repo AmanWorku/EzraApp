@@ -303,6 +303,7 @@ const SSLWeek = ({route}) => {
   };
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
+  const modifiedContent = selectedVerseContent.replace(/<h2>/g, '<br><h2>');
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -371,7 +372,7 @@ const SSLWeek = ({route}) => {
                   onPress={onPreviousButtonClick}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
-                    Back
+                    ተመለስ
                   </Text>
                 </TouchableOpacity>
               )}
@@ -381,7 +382,7 @@ const SSLWeek = ({route}) => {
                   onPress={onNextButtonClick}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
-                    Next
+                    ቀጥል
                   </Text>
                 </TouchableOpacity>
               )}
@@ -403,7 +404,7 @@ const SSLWeek = ({route}) => {
             ]}>
             <ScrollView>
               <HTMLView
-                value={`<div>${selectedVerseContent}</div>`}
+                value={`<div>${modifiedContent}</div>`}
                 stylesheet={{
                   p: [
                     tw`text-secondary-6 font-nokia-bold text-justify`,
@@ -423,7 +424,7 @@ const SSLWeek = ({route}) => {
               style={tw`bg-accent-6 mt-4 rounded-lg p-2`}
               onPress={onCloseModal}>
               <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
-                Close
+                ዝጋ
               </Text>
             </TouchableOpacity>
           </View>

@@ -135,7 +135,7 @@ const Course = () => {
           </View>
           <View>
             <TextInput
-              placeholder="Search courses..."
+              placeholder="ትምህርቶችን ፈልግ..."
               value={searchTerm}
               onChangeText={handleSearch}
               style={[
@@ -147,13 +147,13 @@ const Course = () => {
           </View>
           <View style={tw`flex flex-row justify-between mt-3 items-center`}>
             <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
-              Popular Courses
+              ተወዳጅ ትምህርቶች
             </Text>
             <TouchableOpacity
               style={tw`flex flex-row justify-between items-center gap-2`}
               onPress={toggleSortOrder}>
               <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
-                {sortByLatest ? 'Latest' : 'Oldest'}
+                {sortByLatest ? 'የበፊት' : 'የቅርብ'}
               </Text>
               <CaretCircleDown size={24} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
@@ -177,7 +177,7 @@ const Course = () => {
                       <Text
                         style={tw`font-nokia-bold text-secondary-8 text-xs`}>
                         {progressValue !== undefined ? progressValue * 100 : 0}%
-                        Completed
+                        አጠናቅቀዋል
                       </Text>
                     </View>
                   </View>
@@ -209,7 +209,7 @@ const Course = () => {
                     </TouchableOpacity>
                     <View style={tw`flex flex-row items-center gap-1`}>
                       <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
-                        {course.chapters.length} {''}Chapters
+                        {course.chapters.length} {''}ምዕራፎች
                       </Text>
                     </View>
                   </View>

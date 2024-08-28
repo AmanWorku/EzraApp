@@ -11,6 +11,7 @@ import {ArrowSquareDown, ArrowSquareUp} from 'phosphor-react-native';
 
 const AccordionComponent = ({value, setIsAccordionExpanded}) => {
   const [expandedIndices, setExpandedIndices] = useState([]);
+  const [expandedOnceIndices, setExpandedOnceIndices] = useState(new Set());
 
   const toggleAccordion = index => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -22,13 +23,20 @@ const AccordionComponent = ({value, setIsAccordionExpanded}) => {
 
     setExpandedIndices(newExpandedIndices);
 
-    // Check if all accordions are expanded
-    if (newExpandedIndices.length === value.length) {
-      setIsAccordionExpanded(true); // Notify parent that all accordions are expanded
+    // Update the set of expanded indices at least once
+    if (!expandedOnceIndices.has(index)) {
+      setExpandedOnceIndices(prev => new Set(prev).add(index));
+    }
+  };
+
+  useEffect(() => {
+    // Check if all accordions have been expanded at least once
+    if (expandedOnceIndices.size === value.length) {
+      setIsAccordionExpanded(true);
     } else {
       setIsAccordionExpanded(false);
     }
-  };
+  }, [expandedOnceIndices, value.length, setIsAccordionExpanded]);
 
   const renderAccordionContent = (item, index) => {
     const isExpanded = expandedIndices.includes(index);

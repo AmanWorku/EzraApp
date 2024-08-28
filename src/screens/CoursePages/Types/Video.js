@@ -1,5 +1,5 @@
-import React from 'react';
-import {View} from 'react-native';
+import React, {useState} from 'react';
+import {View, ActivityIndicator, StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
 import tw from '../../../../tailwind';
 
@@ -11,7 +11,9 @@ const getYoutubeVideoId = url => {
 };
 
 const VideoPlayer = ({value, setIsVideoPlayed}) => {
+  const [loading, setLoading] = useState(true); // State to manage loading indicator
   const videoId = getYoutubeVideoId(value);
+
   const youtubePlayerHTML = `
     <!DOCTYPE html>
     <html>
@@ -54,6 +56,7 @@ const VideoPlayer = ({value, setIsVideoPlayed}) => {
           }
           
           function onPlayerReady(event) {
+            window.ReactNativeWebView.postMessage('videoReady');
           }
           
           function onPlayerStateChange(event) {
@@ -69,19 +72,34 @@ const VideoPlayer = ({value, setIsVideoPlayed}) => {
   const onMessage = event => {
     if (event.nativeEvent.data === 'videoPlayed') {
       setIsVideoPlayed(true);
+    } else if (event.nativeEvent.data === 'videoReady') {
+      setLoading(false); // Hide loading indicator when video is ready
     }
   };
 
   return (
     <View style={tw`w-full h-48`}>
+      {loading && (
+        <View style={[styles.loadingContainer]}>
+          <ActivityIndicator size="large" color="#EA9215" />
+        </View>
+      )}
       <WebView
         source={{html: youtubePlayerHTML}}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         onMessage={onMessage}
+        onLoadStart={() => setLoading(true)}
+        onLoadEnd={() => setLoading(false)}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    ...tw`absolute inset-0 flex justify-center items-center bg-black`,
+  },
+});
 
 export default VideoPlayer;

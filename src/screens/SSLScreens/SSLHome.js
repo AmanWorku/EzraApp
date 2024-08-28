@@ -48,7 +48,11 @@ const SSLHome = () => {
 
   const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
 
-  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
+  const {
+    data: videoLink,
+    error: videoError,
+    isLoading: videoLoading,
+  } = useGetVideoLinkQuery({
     year: year,
     quarter: lastDigitQuarter,
     lesson: week,
@@ -122,8 +126,15 @@ const SSLHome = () => {
     });
   };
 
-  if (lessonIsLoading || quarterIsLoading) {
-    return <Text>Loading...</Text>;
+  if (lessonIsLoading || quarterIsLoading || videoLoading) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
   if (lessonError) {
     return (
@@ -146,10 +157,6 @@ const SSLHome = () => {
 
   if (videoError) {
     return <Text>Error fetching video link: {videoError.message}</Text>;
-  }
-
-  if (!videoLink) {
-    return <Text>Loading video link...</Text>;
   }
 
   return (
@@ -252,14 +259,14 @@ const SSLHome = () => {
             placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
           />
           <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
-            Explore quarterly lessons
+            የሩብ አመት ትምህርቶች
           </Text>
           <Text
             style={[
               tw`font-nokia-bold text-secondary-6 text-xl`,
               darkMode ? tw`text-primary-1` : null,
             ]}>
-            Lessons of previous quarters
+            ያለፉ የሩብ አመት ትምህርቶች
           </Text>
           <View style={tw`border-b border-accent-6 my-1`} />
           <View style={tw`flex flex-col`}>
