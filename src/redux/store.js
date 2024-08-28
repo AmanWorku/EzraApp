@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   [SSLapi.reducerPath]: SSLapi.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
-  [videoLinksApi.reducerPath]: videoLinksApi.reducer, // Add the videoLinksApi reducer
+  [videoLinksApi.reducerPath]: videoLinksApi.reducer,
 });
 
 const persistConfig = {

@@ -19,8 +19,9 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
+import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft} from 'phosphor-react-native';
+import {ArrowSquareLeft, YoutubeLogo} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
@@ -40,6 +41,7 @@ const SSLWeek = ({route}) => {
     path: ssl,
     id: weekId,
   });
+
   const {
     data: sslWeek,
     isLoading,
@@ -304,6 +306,16 @@ const SSLWeek = ({route}) => {
               onPress={handleBackButtonPress}
               style={{zIndex: 1, marginTop: 12}}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleBackButtonPress}
+              style={{
+                zIndex: 1,
+                marginTop: 42,
+                position: 'absolute',
+                right: 20,
+              }}>
+              <YoutubeLogo size={36} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
             <LinearGradient
               colors={[gradientColor, `${gradientColor}20`]}

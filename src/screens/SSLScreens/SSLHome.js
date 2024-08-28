@@ -46,18 +46,13 @@ const SSLHome = () => {
     refetch: quarterRefetch,
   } = useGetSSLOfQuarterQuery(quarter);
 
-  const lastDigitQuarter = quarter.slice(-1); // Get the last digit of the quarter
-  const weekNumber = parseInt(week, 10); // Convert week to a number, removing leading zeros
+  const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
 
-  const {data: videoLink} = useGetVideoLinkQuery({
+  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
     year: year,
     quarter: lastDigitQuarter,
-    week: weekNumber,
+    lesson: week,
   });
-
-  // const videoCheck = 'https://www.youtube.com/watch?v=qG5fuX39Ygs&t=2s';
-
-  console.log(year, lastDigitQuarter, weekNumber, videoLink);
 
   useEffect(() => {
     if (lessonDetails) {
@@ -100,6 +95,16 @@ const SSLHome = () => {
     );
   }
 
+  const handleWatchYouTube = () => {
+    if (videoLink && videoLink.videoUrl) {
+      Linking.openURL(videoLink.videoUrl);
+    } else {
+      alert('Video link not available');
+    }
+  };
+
+  console.log('Video Link Data:', videoLink);
+
   if (error) {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
@@ -137,6 +142,14 @@ const SSLHome = () => {
   }
   if (!quarterDetails || !lessonDetails) {
     return <Text>Missing data...</Text>;
+  }
+
+  if (videoError) {
+    return <Text>Error fetching video link: {videoError.message}</Text>;
+  }
+
+  if (!videoLink) {
+    return <Text>Loading video link...</Text>;
   }
 
   return (
@@ -217,13 +230,7 @@ const SSLHome = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
-              onPress={() => {
-                if (videoLink) {
-                  Linking.openURL(videoLink);
-                } else {
-                  alert('Video link not available');
-                }
-              }}>
+              onPress={handleWatchYouTube}>
               <Text
                 style={[
                   tw`font-nokia-bold text-secondary-6 items-center`,
