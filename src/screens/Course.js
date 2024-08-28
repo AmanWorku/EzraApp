@@ -41,21 +41,26 @@ const Course = () => {
     setSearchTerm(text);
   };
 
-  let filteredData = courses
-    ?.filter(course => {
-      return course.title.includes(searchTerm) && course.published;
-    })
-    .slice();
+  let filteredData = courses?.slice(); // Initialize filteredData as a copy of courses array
 
   if (courses) {
     filteredData = courses.filter(course => {
-      return course.title.includes(searchTerm) && course.published;
+      // Check if the user is an admin
+      if (currentUser.role === 'Admin') {
+        // Admin sees all courses
+        return course.title.includes(searchTerm);
+      } else {
+        // Non-admin sees only published courses
+        return course.title.includes(searchTerm) && course.published;
+      }
     });
 
+    // Sort the courses based on the sortByLatest flag
     if (!sortByLatest) {
       filteredData = [...filteredData].reverse();
     }
   }
+
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id});
   };

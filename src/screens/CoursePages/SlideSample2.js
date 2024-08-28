@@ -317,7 +317,7 @@ const SlideSample2 = ({route}) => {
             darkMode ? tw`bg-secondary-9 bg-opacity-85` : null,
           ]}
         />
-        <View style={tw`flex-1 justify-between pt-8 px-2`}>
+        <View style={tw`h-100% justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
             <View style={tw`flex flex-row items-center justify-between w-auto`}>
               <View style={tw`flex flex-row items-center gap-2`}>
