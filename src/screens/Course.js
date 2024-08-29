@@ -45,12 +45,9 @@ const Course = () => {
 
   if (courses) {
     filteredData = courses.filter(course => {
-      // Check if the user is an admin
-      if (currentUser.role === 'Admin') {
-        // Admin sees all courses
+      if (currentUser && currentUser.role === 'Admin') {
         return course.title.includes(searchTerm);
       } else {
-        // Non-admin sees only published courses
         return course.title.includes(searchTerm) && course.published;
       }
     });

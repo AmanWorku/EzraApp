@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import NetInfo from '@react-native-community/netinfo';
 import {
   Text,
   View,
@@ -42,6 +43,7 @@ import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import VideoPlayer from './Types/Video';
 import AudioPlayer from './Types/Audio';
+import Toast from 'react-native-toast-message';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -189,8 +191,28 @@ const SlideSample2 = ({route}) => {
 
   const handleButtonPress = () => {
     if (onLastSlide) {
-      submitProgress();
-      // navigation.navigate('CourseContent', {courseId: courseId});
+      NetInfo.fetch().then(state => {
+        if (state.isConnected) {
+          if (currentUser) {
+            submitProgress();
+          } else {
+            Toast.show({
+              type: 'info',
+              text1: 'Login Required',
+              text2: 'Login or create an account to save your progress.',
+            });
+            navigation.navigate('CourseContent', {courseId: courseId});
+          }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'No Internet Connection',
+            text2:
+              'Progress is not saved because there is no internet connection.',
+          });
+          navigation.navigate('CourseContent', {courseId: courseId});
+        }
+      });
     } else {
       setIsNextButtonVisible(false);
       goToNextSlide();
@@ -226,47 +248,43 @@ const SlideSample2 = ({route}) => {
   };
 
   const submitProgress = async () => {
-    if (currentUser) {
-      try {
-        setProgressLoading(true);
-        // Get the token from AsyncStorage
-        const token = await AsyncStorage.getItem('token');
-        // Update the progress in the Redux store
-        dispatch(
-          setProgress({
-            courseId,
-            currentChapter: chapterIndex,
-            currentSlide: activeIndex,
-          }),
-        );
-        // Send the updated progress to the server
-        const response = await axios.put(
-          `https://ezrabackend.online/users/profile/${currentUser._id}`,
-          {
-            userId: currentUser._id,
-            progress: currentUser.progress,
+    try {
+      setProgressLoading(true);
+      // Get the token from AsyncStorage
+      const token = await AsyncStorage.getItem('token');
+      // Update the progress in the Redux store
+      dispatch(
+        setProgress({
+          courseId,
+          currentChapter: chapterIndex,
+          currentSlide: activeIndex,
+        }),
+      );
+      // Send the updated progress to the server
+      const response = await axios.put(
+        `https://ezrabackend.online/users/profile/${currentUser._id}`,
+        {
+          userId: currentUser._id,
+          progress: currentUser.progress,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        },
+      );
 
-        console.log('Progress updated successfully:', response.data);
-        setProgressLoading(false);
+      console.log('Progress updated successfully:', response.data);
+      setProgressLoading(false);
 
-        navigation.navigate('Course', {
-          screen: 'CourseContent',
-          params: {courseId: courseId},
-        });
-      } catch (err) {
-        console.error('Error updating progress:', err.message);
-        setProgressLoading(false);
-      }
-    } else {
-      navigation.navigate('CourseContent', {courseId: courseId});
+      navigation.navigate('Course', {
+        screen: 'CourseContent',
+        params: {courseId: courseId},
+      });
+    } catch (err) {
+      console.error('Error updating progress:', err.message);
+      setProgressLoading(false);
     }
   };
   if (progressLoading) {
@@ -481,6 +499,7 @@ const SlideSample2 = ({route}) => {
               }
             })}
           </ScrollView>
+          <View style={tw`border-b border-accent-6 mt-2`} />
           <View style={tw`flex-none`}>
             <View style={tw`flex-row justify-between px-4 my-2`}>
               {!onFirstSlide && (
