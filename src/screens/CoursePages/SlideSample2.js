@@ -44,6 +44,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import VideoPlayer from './Types/Video';
 import AudioPlayer from './Types/Audio';
 import Toast from 'react-native-toast-message';
+import ScrollMix from './Types/ScrollMix';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -122,7 +123,7 @@ const SlideSample2 = ({route}) => {
     setIsAnswerChecked(false);
 
     // Additional logic to check if the slide is non-interactive
-    const nonInteractiveTypes = ['title', 'sub', 'text', 'img'];
+    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix'];
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
     );
@@ -378,6 +379,7 @@ const SlideSample2 = ({route}) => {
                     </Text>
                     <View key={slides._id} style={tw`flex gap-4`}>
                       {slides.elements.map(element => {
+                        console.log(element);
                         switch (element.type) {
                           case 'title':
                             return (
@@ -395,6 +397,18 @@ const SlideSample2 = ({route}) => {
                               <TextComponent
                                 key={element._id}
                                 value={element.value}
+                              />
+                            );
+                          case 'mix':
+                            return (
+                              <ScrollMix
+                                key={element._id}
+                                value={element.value}
+                                toggleModal={toggleModal}
+                                isModalVisible={isModalVisible}
+                                isImageLoaded={isImageLoaded}
+                                handleImageLoad={handleImageLoad}
+                                darkMode={darkMode}
                               />
                             );
                           case 'list':
@@ -509,7 +523,7 @@ const SlideSample2 = ({route}) => {
                   <CaretCircleLeft size={18} weight="fill" color="white" />
                   <Text
                     style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                    Back
+                    ተመለስ
                   </Text>
                 </TouchableOpacity>
               )}

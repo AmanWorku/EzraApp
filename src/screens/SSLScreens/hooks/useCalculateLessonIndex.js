@@ -31,7 +31,7 @@ function useCalculateLessonIndex(currentDate) {
   // Just call the function without memoizing
   const lessonIndex = calculateLessonIndex();
 
-  return [lessonIndex.year, lessonIndex.quarter, lessonIndex.week];
+  return [lessonIndex.quarter, lessonIndex.week, lessonIndex.year];
 }
 
 export default useCalculateLessonIndex;

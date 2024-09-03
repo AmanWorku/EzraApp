@@ -30,7 +30,7 @@ import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
-  const [year, quarter, week] = useCalculateLessonIndex(currentDate);
+  const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
   const {
@@ -155,10 +155,6 @@ const SSLHome = () => {
     return <Text>Missing data...</Text>;
   }
 
-  if (videoError) {
-    return <Text>Error fetching video link: {videoError.message}</Text>;
-  }
-
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
       <SafeAreaView style={tw`flex mb-50`}>
@@ -235,18 +231,21 @@ const SSLHome = () => {
               onPress={handleOpenButtonPress}>
               <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
-              onPress={handleWatchYouTube}>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-6 items-center`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}>
-                Watch on YouTube
-              </Text>
-              <YoutubeLogo size={20} weight="fill" color="#EA9215" />
-            </TouchableOpacity>
+
+            {videoLink && (
+              <TouchableOpacity
+                style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
+                onPress={handleWatchYouTube}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-secondary-6 items-center`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ]}>
+                  Watch on YouTube
+                </Text>
+                <YoutubeLogo size={20} weight="fill" color="#EA9215" />
+              </TouchableOpacity>
+            )}
           </View>
           <TextInput
             placeholder="Search SSLs..."
