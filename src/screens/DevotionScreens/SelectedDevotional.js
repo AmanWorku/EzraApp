@@ -43,7 +43,7 @@ const SelectedDevotional = ({route}) => {
     scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
   }, [devotionalId]);
 
-  const imageURI = `https://ezrabackend.online/images/${devotional.image}`;
+  const imageURI = `${devotional.image}`;
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
@@ -161,7 +161,7 @@ const SelectedDevotional = ({route}) => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezrabackend.online/images/${devotional.image}`,
+                uri: `${devotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -244,7 +244,7 @@ const SelectedDevotional = ({route}) => {
                 }}>
                 <ImageBackground
                   source={{
-                    uri: `https://ezrabackend.online/images/${item.image}`,
+                    uri: `${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

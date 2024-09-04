@@ -307,7 +307,7 @@ const Home = () => {
                   }>
                   <ImageBackground
                     source={{
-                      uri: `https://ezrabackend.online/images/${item.image}`,
+                      uri: `${item.image}`,
                     }}
                     style={tw`w-full h-full justify-end `}
                     imageStyle={tw`rounded-lg`}>
