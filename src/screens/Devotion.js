@@ -90,7 +90,9 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  const url = `https://ezrabackend.online/images/${devotionToDisplay.image}`;
+  console.log(devotionToDisplay);
+
+  const url = `${devotionToDisplay.image}`;
 
   if (isFetching) {
     return (
@@ -215,7 +217,7 @@ const Devotion = () => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezrabackend.online/images/${devotionToDisplay.image}`,
+                uri: `${devotionToDisplay.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -290,7 +292,7 @@ const Devotion = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezrabackend.online/images/${item.image}`,
+                    uri: `${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

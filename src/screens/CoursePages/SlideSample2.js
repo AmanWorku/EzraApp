@@ -123,7 +123,7 @@ const SlideSample2 = ({route}) => {
     setIsAnswerChecked(false);
 
     // Additional logic to check if the slide is non-interactive
-    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix'];
+    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix', 'list'];
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
     );
@@ -145,7 +145,6 @@ const SlideSample2 = ({route}) => {
       isRangeComplete ||
       isAnswerChecked;
 
-    // Ensure the button is visible on the last slide
     if (onLastSlide) {
       setIsNextButtonVisible(true);
     } else if (shouldShowButton !== isNextButtonVisible) {

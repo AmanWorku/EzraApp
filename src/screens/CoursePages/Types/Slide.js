@@ -9,11 +9,14 @@ const Slide = ({value, setIsSlideComplete}) => {
   const handleSnapToItem = index => {
     setActiveIndexCarousel(index);
 
-    // Check if the user has reached the last slide
     if (index === value.length - 1) {
       setIsSlideComplete(true);
     }
   };
+
+  if (value.length < 2) {
+    setIsSlideComplete(true);
+  }
 
   return (
     <View style={tw`items-center justify-center`}>

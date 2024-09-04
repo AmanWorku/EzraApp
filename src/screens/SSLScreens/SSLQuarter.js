@@ -120,7 +120,7 @@ const SSLQuarter = ({route}) => {
                 </Text>
                 <TouchableOpacity onPress={handleMorePress}>
                   <Text
-                    style={tw`font-nokia-bold text-primary-3 border border-primary-3 px-2 w-18 text-center mt-2 rounded py-1`}>
+                    style={tw`font-nokia-bold text-primary-3 border border-primary-3 px-2 w-24 text-center mt-2 rounded py-1`}>
                     ተጨማሪ
                   </Text>
                 </TouchableOpacity>
@@ -158,7 +158,7 @@ const SSLQuarter = ({route}) => {
                           <XCircle
                             weight="bold"
                             size={24}
-                            style={tw`text-red-600`}
+                            style={tw`text-accent-6`}
                           />
                         </TouchableOpacity>
                       </View>

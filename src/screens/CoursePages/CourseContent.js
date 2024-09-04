@@ -28,6 +28,8 @@ const CourseContent = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const currentUser = useSelector(state => state.auth.user);
 
+  console.log(currentUser);
+
   const {
     data: courseData,
     error,
@@ -36,6 +38,7 @@ const CourseContent = ({route}) => {
   } = useGetCourseByIdQuery(courseId, {
     skip: !courseId,
   });
+
   const onRefresh = useCallback(async () => {
     try {
       setIsRefreshing(true);
@@ -44,8 +47,10 @@ const CourseContent = ({route}) => {
       setIsRefreshing(false);
     }
   }, [refetch]);
+
   const data = courseData?.chapters || [];
 
+  // Find user progress for the specific course
   const userProgress = currentUser?.progress?.find(
     p => p.courseId === courseId,
   );
@@ -53,17 +58,13 @@ const CourseContent = ({route}) => {
   const currentChapterIndex = userProgress?.currentChapter ?? 0;
 
   const [activeIndex, setActiveIndex] = useState(currentChapterIndex);
-  const [unlockedIndex, setUnlockedIndex] = useState(currentChapterIndex);
 
   useEffect(() => {
     if (userProgress?.currentChapter !== undefined) {
       const newActiveIndex = userProgress.currentChapter;
       setActiveIndex(newActiveIndex);
-      if (newActiveIndex > unlockedIndex) {
-        setUnlockedIndex(newActiveIndex);
-      }
     }
-  }, [userProgress, unlockedIndex]);
+  }, [userProgress]);
 
   const updateIndex = newIndex => {
     if (newIndex < 0) {
@@ -71,63 +72,29 @@ const CourseContent = ({route}) => {
     } else if (newIndex >= data.length) {
       newIndex = data.length - 1;
     }
-    if (newIndex > unlockedIndex) {
-      setUnlockedIndex(newIndex);
-    }
     setActiveIndex(newIndex);
   };
+
   const currentDataNumber = activeIndex + 1;
   const totalDataNumber = data.length;
 
+  // Helper function to determine if a chapter is unlocked
   const isSlideUnlocked = index => {
-    return index <= unlockedIndex;
+    if (!userProgress) return false; // No progress data, chapter is locked
+    return index <= userProgress.currentChapter; // Check if the chapter index is less than or equal to the current chapter
   };
+
   const backButtonPress = () => {
     navigation.navigate('CourseHome');
   };
 
   const progressValue = () => {
     if (userProgress && userProgress.currentChapter !== undefined) {
-      // the progressPercent should be calculated based on the index of chapter
-      // (adding 1 because index are zero-based) and the total number of chapters
       const progressPercent =
         ((userProgress.currentChapter + 1) / totalDataNumber) * 100;
-      // convert it to a fixed string to avoid too many decimals
       return progressPercent.toFixed();
     }
     return '0'; // if there's no progress, return 0
-  };
-
-  // Check the status of the chapter
-  const getChapterStatus = chapterIndex => {
-    if (userProgress) {
-      const {currentChapter} = userProgress;
-
-      // Check if the chapter is completed
-      if (currentChapter && currentChapter > chapterIndex) {
-        return 'Completed';
-      }
-
-      // Check if the current chapter is the ongoing chapter
-      if (currentChapter === chapterIndex) {
-        return 'In Progress';
-      }
-    }
-
-    // Default to not started if no user progress is found
-    return 'Finish all slides to complete this lesson';
-  };
-
-  // Helper function to calculate the progress percent based on chapter status
-  const calculateProgressPercent = chapterStatus => {
-    switch (chapterStatus) {
-      case 'Completed':
-        return '100%';
-      case 'In Progress':
-        return '....';
-      default:
-        return '0%';
-    }
   };
 
   if (isLoading) {
