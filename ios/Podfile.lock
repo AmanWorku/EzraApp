@@ -1149,8 +1149,6 @@ PODS:
     - React-Core
   - RNCMaskedView (0.2.8):
     - React-Core
-  - RNCPushNotificationIOS (1.11.0):
-    - React-Core
   - RNFS (2.20.0):
     - React-Core
   - RNGestureHandler (2.16.1):
@@ -1270,7 +1268,6 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
-  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -1419,8 +1416,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
-  RNCPushNotificationIOS:
-    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNFS:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
@@ -1514,7 +1509,6 @@ SPEC CHECKSUMS:
   ReactCommon: 45b5d4f784e869c44a6f5a8fad5b114ca8f78c53
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
-  RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 73c6f550a659dada33d43ad732df3370777f4444
   RNPermissions: e8d5f054c1d7e704220028b2b2b13b64b1bc28c9

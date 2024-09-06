@@ -78,7 +78,7 @@ const Setting = ({navigation}) => {
               source={
                 user && user.user && user.user.avatar
                   ? {
-                      uri: `https://ezrabackend.online/images/${user.user.avatar}`,
+                      uri: `${user.user.avatar}`,
                     }
                   : require('./../assets/default-avatar.png') // replace with the actual path to your default avatar
               }

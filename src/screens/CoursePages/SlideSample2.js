@@ -485,7 +485,7 @@ const SlideSample2 = ({route}) => {
                             return (
                               <AudioPlayer
                                 key={element._id}
-                                value={`https://ezrabackend.online/images/${element.value}`}
+                                value={`${element.value}`}
                                 setIsAudioPlayed={setIsAudioPlayed}
                               />
                             );

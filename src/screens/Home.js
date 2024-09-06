@@ -57,7 +57,10 @@ const Home = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
 
   const handleButtonPress = id => {
-    navigation.navigate('CourseContent', {courseId: id});
+    navigation.navigate('Course', {
+      screen: 'CourseContent',
+      params: {courseId: id},
+    });
   };
 
   const onRefresh = useCallback(async () => {
@@ -229,7 +232,7 @@ const Home = () => {
               <View style={tw`h-48`}>
                 <Image
                   source={{
-                    uri: `https://ezrabackend.online/images/${lastCourse.image}`,
+                    uri: `${lastCourse.image}`,
                   }}
                   style={tw`w-full h-full rounded-3`}
                 />

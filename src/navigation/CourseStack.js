@@ -10,7 +10,10 @@ const Stack = createNativeStackNavigator();
 
 const CourseStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        lazy: true,
+      }}>
       <Stack.Screen
         name="CourseHome"
         component={Course}

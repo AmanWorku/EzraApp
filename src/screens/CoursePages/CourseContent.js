@@ -128,7 +128,7 @@ const CourseContent = ({route}) => {
           <View style={tw`flex-1 h-70`}>
             <ImageBackground
               source={{
-                uri: `https://ezrabackend.online/images/${courseData.image}`,
+                uri: `${courseData.image}`,
               }}
               style={tw`flex-5`}>
               <TouchableOpacity onPress={backButtonPress}>

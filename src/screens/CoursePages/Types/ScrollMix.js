@@ -38,7 +38,7 @@ function ScrollMix({
         )}
         <TouchableOpacity onPress={toggleModal}>
           <Image
-            source={{uri: `https://ezrabackend.online/images/${value.file}`}}
+            source={{uri: `${value.file}`}}
             style={[
               tw`w-full h-full items-center`,
               isImageLoaded ? tw`opacity-100` : tw`opacity-0`,
@@ -66,7 +66,7 @@ function ScrollMix({
               darkMode ? tw`bg-secondary-9` : null,
             ]}>
             <Image
-              source={{uri: `https://ezrabackend.online/images/${value.file}`}}
+              source={{uri: `${value.file}`}}
               style={tw`w-80 h-80 rounded-2`}
             />
             <TouchableOpacity
