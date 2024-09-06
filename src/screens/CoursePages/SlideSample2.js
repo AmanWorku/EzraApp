@@ -378,7 +378,7 @@ const SlideSample2 = ({route}) => {
                     </Text>
                     <View key={slides._id} style={tw`flex gap-4`}>
                       {slides.elements.map(element => {
-                        console.log(element);
+                        // console.log(element);
                         switch (element.type) {
                           case 'title':
                             return (

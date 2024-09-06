@@ -45,7 +45,7 @@ const MainTabNavigator = () => {
   };
 
   if (userError) {
-    console.log(userError);
+    // console.log(userError);
   }
 
   if (Platform.OS === 'android') {

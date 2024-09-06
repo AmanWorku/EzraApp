@@ -44,7 +44,8 @@ const AccordionComponent = ({value, setIsAccordionExpanded}) => {
 
     return isExpanded ? (
       <Animated.View style={[tw`overflow-hidden`, {height: contentHeight}]}>
-        <Text style={tw`py-2 px-4 font-nokia-bold text-primary-1`}>
+        <Text
+          style={tw`py-2 px-4 font-nokia-bold text-primary-1 border border-accent-6 rounded`}>
           {item.content}
         </Text>
       </Animated.View>
@@ -57,11 +58,11 @@ const AccordionComponent = ({value, setIsAccordionExpanded}) => {
         <View key={index} style={tw`mb-2 overflow-hidden`}>
           <TouchableOpacity
             style={[
-              tw`flex flex-row bg-accent-6 w-full items-center justify-between px-4 rounded`,
+              tw`flex flex-row bg-accent-7 w-full items-center justify-between px-4 rounded`,
               expandedIndices.includes(index) && tw`mb-2`,
             ]}
             onPress={() => toggleAccordion(index)}>
-            <Text style={tw`font-nokia-bold text-lg text-primary-1 py-3`}>
+            <Text style={tw`font-nokia-bold text-lg text-primary-1 py-3 mr-4`}>
               {item.title}
             </Text>
             {expandedIndices.includes(index) ? (

@@ -36,6 +36,21 @@ const Devotion = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
 
+  const [imageHeight, setImageHeight] = useState(null);
+  const [imageWidth, setImageWidth] = useState(null);
+
+  const handleImageLayout = ({nativeEvent}) => {
+    const {width, height} = nativeEvent.layout;
+    setImageWidth(width);
+    if (devotionToDisplay.image) {
+      const {width: imageWidth, height: imageHeight} = Image.resolveAssetSource(
+        {uri: devotionToDisplay.image},
+      );
+      const newHeight = (height * imageHeight) / imageWidth;
+      setImageHeight(newHeight);
+    }
+  };
+
   const onRefresh = useCallback(async () => {
     try {
       setIsRefreshing(true);
@@ -90,7 +105,7 @@ const Devotion = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  console.log(devotionToDisplay);
+  // console.log(devotionToDisplay);
 
   const url = `${devotionToDisplay.image}`;
 

@@ -41,7 +41,7 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store, null, () => {
-  console.log('Rehydration complete:', store.getState());
+  const Rehydration = store.getState();
 });
 
 setupListeners(store.dispatch);

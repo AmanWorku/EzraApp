@@ -107,7 +107,7 @@ const SSLHome = () => {
     }
   };
 
-  console.log('Video Link Data:', videoLink);
+  // console.log('Video Link Data:', videoLink);
 
   if (error) {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
@@ -156,7 +156,7 @@ const SSLHome = () => {
   }
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
+    <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView style={tw`flex mb-50`}>
         <ScrollView
           showsVerticalScrollIndicator={false}

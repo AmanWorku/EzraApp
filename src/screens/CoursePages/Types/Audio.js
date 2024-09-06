@@ -64,7 +64,7 @@ const AudioPlayer = ({value, setIsAudioPlayed}) => {
     if (sound) {
       sound.play(success => {
         if (success) {
-          console.log('Successfully finished playing');
+          // console.log('Successfully finished playing');
         } else {
           setError('Playback failed due to audio decoding errors');
           console.error('Playback failed due to audio decoding errors');

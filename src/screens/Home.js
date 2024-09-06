@@ -57,7 +57,7 @@ const Home = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
 
   const handleButtonPress = id => {
-    navigation.navigate('Course', {
+    navigation.navigate('CourseHome', {
       screen: 'CourseContent',
       params: {courseId: id},
     });

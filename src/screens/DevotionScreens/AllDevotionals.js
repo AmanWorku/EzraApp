@@ -43,7 +43,7 @@ const AllDevotionals = ({navigation}) => {
     }
   }, [refetch]);
 
-  console.log('Devotionals: ', originalDevotionals);
+  // console.log('Devotionals: ', originalDevotionals);
 
   const toggleMonth = month => {
     // Set the expanded month to the clicked month or null if the same month is clicked

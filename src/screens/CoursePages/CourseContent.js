@@ -28,7 +28,7 @@ const CourseContent = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const currentUser = useSelector(state => state.auth.user);
 
-  console.log(currentUser);
+  // console.log(currentUser);
 
   const {
     data: courseData,
