@@ -21,6 +21,7 @@ import {
   ArrowSquareUpRight,
 } from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
+import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
 
@@ -38,6 +39,19 @@ const SelectedDevotional = ({route}) => {
   const [isSharing, setIsSharing] = useState(false);
   const scrollViewRef = useRef();
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
+
+  const tailwindStyles = {
+    p: {
+      ...tw`text-primary-2 text-sm leading-snug font-nokia-bold text-justify`, // Customize this as needed
+    },
+    a: {
+      ...tw`text-blue-500 underline`, // Example for links
+    },
+    h1: {
+      ...tw`text-2xl font-bold`, // Example for h1
+    },
+    // Add more styles as needed
+  };
 
   useEffect(() => {
     scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
@@ -132,20 +146,12 @@ const SelectedDevotional = ({route}) => {
               {devotional.verse}
             </Text>
           </View>
-          <View style={tw`mt-2`}>
-            {devotional.body.map((paragraph, paragraphIndex) => {
-              return (
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ]}
-                  key={paragraphIndex}>
-                  {'  '}
-                  {paragraph}
-                </Text>
-              );
-            })}
+          <View style={tw`mt-6`}>
+            <HTMLView
+              value={devotional.body[0]} // Assuming body[0] contains HTML string
+              stylesheet={tailwindStyles}
+              linebreak={false}
+            />
           </View>
           <View
             style={[
