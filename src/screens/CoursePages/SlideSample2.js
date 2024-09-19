@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import NetInfo from '@react-native-community/netinfo';
 import {
   Text,
   View,
@@ -36,6 +37,14 @@ import Sequence from './Types/Sequence';
 import AccordionComponent from './Types/AccordionComponent';
 import ErrorScreen from '../../components/ErrorScreen';
 import Reveal from './Types/Reveal';
+import Range from './Types/Range';
+import DND from './Types/DND';
+import 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import VideoPlayer from './Types/Video';
+import AudioPlayer from './Types/Audio';
+import Toast from 'react-native-toast-message';
+import ScrollMix from './Types/ScrollMix';
 
 const SlideSample2 = ({route}) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -57,6 +66,59 @@ const SlideSample2 = ({route}) => {
   const [progressLoading, setProgressLoading] = useState(false);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
+
+  const [isSlideComplete, setIsSlideComplete] = useState(false);
+  const [isSequenceComplete, setIsSequenceComplete] = useState(false);
+  const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
+  const [isVideoPlayed, setIsVideoPlayed] = useState(false);
+  const [isAudioPlayed, setIsAudioPlayed] = useState(false);
+  const [isRevealComplete, setIsRevealComplete] = useState(false);
+  const [isRangeComplete, setIsRangeComplete] = useState(false);
+  const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
+  const [message, setMessage] = useState('');
+  const [showMessage, setShowMessage] = useState('');
+
+  const interactionMessages = {
+    slide: 'Please slide through all the slide elements.',
+    quiz: 'Please complete the quiz before proceeding.',
+    video: 'Please watch the video before continuing.',
+    audio: 'Please listen to the audio before moving on.',
+    dnd: 'Please complete the drag-and-drop activity.',
+    // Add other interaction types as needed
+  };
+
+  const handleNextButtonPress = () => {
+    const currentSlides = data[activeIndex].elements;
+    const incompleteInteractions = currentSlides.some(element => {
+      switch (element.type) {
+        case 'slide':
+          return !isSlideComplete;
+        case 'quiz':
+          return !isAnswerChecked;
+        case 'video':
+          return !isVideoPlayed;
+        case 'audio':
+          return !isAudioPlayed;
+        case 'dnd':
+          return !selectedAnswer; // Adjust this condition based on your logic
+        // Add other cases as needed
+        default:
+          return false;
+      }
+    });
+
+    if (incompleteInteractions) {
+      // Show message balloon (you can use a state variable to manage visibility)
+      setMessage(
+        interactionMessages[currentSlides[0].type] ||
+          'Please complete the required interaction.',
+      );
+      setShowMessage(true);
+    } else {
+      // Proceed to the next slide
+      handleButtonPress();
+    }
+  };
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);
@@ -92,6 +154,59 @@ const SlideSample2 = ({route}) => {
     fetchUser();
   }, []);
 
+  useEffect(() => {
+    setIsNextButtonVisible(false);
+    // Reset all interaction states for the new slide
+    setIsSlideComplete(false);
+    setIsSequenceComplete(false);
+    setIsAccordionExpanded(false);
+    setIsVideoPlayed(false);
+    setIsAudioPlayed(false);
+    setIsRevealComplete(false);
+    setIsRangeComplete(false);
+    setIsAnswerChecked(false);
+
+    // Additional logic to check if the slide is non-interactive
+    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix', 'list'];
+    const allNonInteractive = data[activeIndex]?.elements.every(element =>
+      nonInteractiveTypes.includes(element.type),
+    );
+
+    if (allNonInteractive) {
+      setIsSlideComplete(true);
+      setIsNextButtonVisible(true); // Automatically show the "Next" button if all elements are non-interactive
+    }
+  }, [activeIndex]);
+
+  useEffect(() => {
+    const shouldShowButton =
+      (!onLastSlide && isSlideComplete) ||
+      isSequenceComplete ||
+      isAccordionExpanded ||
+      isVideoPlayed ||
+      isAudioPlayed ||
+      isRevealComplete ||
+      isRangeComplete ||
+      isAnswerChecked;
+
+    if (onLastSlide) {
+      setIsNextButtonVisible(true);
+    } else if (shouldShowButton !== isNextButtonVisible) {
+      setIsNextButtonVisible(shouldShowButton);
+    }
+  }, [
+    isSlideComplete,
+    isSequenceComplete,
+    isAccordionExpanded,
+    isVideoPlayed,
+    isAudioPlayed,
+    isRevealComplete,
+    isRangeComplete,
+    isAnswerChecked,
+    onLastSlide,
+    isNextButtonVisible,
+  ]);
+
   const chapter = courseData?.chapters.find(chap => chap._id === chapterId);
   const chapterIndex = courseData?.chapters.findIndex(
     chap => chap._id === chapterId,
@@ -120,9 +235,30 @@ const SlideSample2 = ({route}) => {
 
   const handleButtonPress = () => {
     if (onLastSlide) {
-      submitProgress();
-      // navigation.navigate('CourseContent', {courseId: courseId});
+      NetInfo.fetch().then(state => {
+        if (state.isConnected) {
+          if (currentUser) {
+            submitProgress();
+          } else {
+            Toast.show({
+              type: 'info',
+              text1: 'Login Required',
+              text2: 'Login or create an account to save your progress.',
+            });
+            navigation.navigate('CourseContent', {courseId: courseId});
+          }
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'No Internet Connection',
+            text2:
+              'Progress is not saved because there is no internet connection.',
+          });
+          navigation.navigate('CourseContent', {courseId: courseId});
+        }
+      });
     } else {
+      setIsNextButtonVisible(false);
       goToNextSlide();
     }
   };
@@ -156,46 +292,43 @@ const SlideSample2 = ({route}) => {
   };
 
   const submitProgress = async () => {
-    if (currentUser) {
-      try {
-        setProgressLoading(true);
-        // Get the token from AsyncStorage
-        const token = await AsyncStorage.getItem('token');
-        // Update the progress in the Redux store
-        dispatch(
-          setProgress({
-            courseId,
-            currentChapter: chapterIndex,
-            currentSlide: activeIndex,
-          }),
-        );
-        // Send the updated progress to the server
-        const response = await axios.put(
-          `https://ezra-seminary.mybese.tech/users/profile/${currentUser._id}`,
-          {
-            userId: currentUser._id,
-            progress: currentUser.progress,
+    try {
+      setProgressLoading(true);
+      // Get the token from AsyncStorage
+      const token = await AsyncStorage.getItem('token');
+      // Update the progress in the Redux store
+      dispatch(
+        setProgress({
+          courseId,
+          currentChapter: chapterIndex,
+          currentSlide: activeIndex,
+        }),
+      );
+      // Send the updated progress to the server
+      const response = await axios.put(
+        `https://ezrabackend.online/users/profile/${currentUser._id}`,
+        {
+          userId: currentUser._id,
+          progress: currentUser.progress,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        },
+      );
 
-        console.log('Progress updated successfully:', response.data);
-        setProgressLoading(false);
+      console.log('Progress updated successfully:', response.data);
+      setProgressLoading(false);
 
-        // Navigate to the next screen or perform any other necessary actions
-        navigation.navigate('Course', {
-          screen: 'CourseContent',
-          params: {courseId: courseId},
-        });
-      } catch (err) {
-        console.error('Error updating progress:', err.message);
-        setProgressLoading(false);
-      }
+      navigation.navigate('Course', {
+        screen: 'CourseContent',
+        params: {courseId: courseId},
+      });
+    } catch (err) {
+      console.error('Error updating progress:', err.message);
+      setProgressLoading(false);
     }
   };
   if (progressLoading) {
@@ -246,10 +379,10 @@ const SlideSample2 = ({route}) => {
             darkMode ? tw`bg-secondary-9 bg-opacity-85` : null,
           ]}
         />
-        <View style={tw`flex-1 justify-between pt-8 px-2`}>
+        <View style={tw`h-100% justify-between pt-8 px-2`}>
           <View style={tw`flex-none`}>
             <View style={tw`flex flex-row items-center justify-between w-auto`}>
-              <View style={tw`flex flex-row items-center gap-3`}>
+              <View style={tw`flex flex-row items-center gap-2`}>
                 <View style={tw`pr-2 border-r border-primary-1`}>
                   <Image
                     source={require('./../../assets/LogoSmall.png')}
@@ -264,7 +397,7 @@ const SlideSample2 = ({route}) => {
                   {chapter.chapter}
                 </Text>
               </View>
-              <View style={tw`flex flex-row items-center gap-1`}>
+              <View style={tw`flex flex-row items-center gap-1 mr-2`}>
                 <Text style={tw`font-nokia-bold text-primary-1 text-lg`}>
                   {currentDataNumber}/{totalDataNumber}
                 </Text>
@@ -289,6 +422,7 @@ const SlideSample2 = ({route}) => {
                     </Text>
                     <View key={slides._id} style={tw`flex gap-4`}>
                       {slides.elements.map(element => {
+                        // console.log(element);
                         switch (element.type) {
                           case 'title':
                             return (
@@ -306,6 +440,19 @@ const SlideSample2 = ({route}) => {
                               <TextComponent
                                 key={element._id}
                                 value={element.value}
+                                darkMode={darkMode}
+                              />
+                            );
+                          case 'mix':
+                            return (
+                              <ScrollMix
+                                key={element._id}
+                                value={element.value}
+                                toggleModal={toggleModal}
+                                isModalVisible={isModalVisible}
+                                isImageLoaded={isImageLoaded}
+                                handleImageLoad={handleImageLoad}
+                                darkMode={darkMode}
                               />
                             );
                           case 'list':
@@ -314,18 +461,27 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'slide':
                             return (
-                              <Slide key={element._id} value={element.value} />
+                              <Slide
+                                key={element._id}
+                                value={element.value}
+                                setIsSlideComplete={setIsSlideComplete}
+                              />
                             );
                           case 'sequence':
                             return (
                               <Sequence
                                 key={element._id}
                                 value={element.value}
+                                setIsSequenceComplete={setIsSequenceComplete}
                               />
                             );
                           case 'reveal':
                             return (
-                              <Reveal key={element._id} value={element.value} />
+                              <Reveal
+                                key={element._id}
+                                value={element.value}
+                                setIsRevealComplete={setIsRevealComplete}
+                              />
                             );
                           case 'img':
                             return (
@@ -344,9 +500,6 @@ const SlideSample2 = ({route}) => {
                               <Quiz
                                 key={element._id}
                                 value={element.value}
-                                selectedAnswer={selectedAnswer}
-                                setSelectedAnswer={setSelectedAnswer}
-                                isAnswerChecked={isAnswerChecked}
                                 setIsAnswerChecked={setIsAnswerChecked}
                               />
                             );
@@ -355,7 +508,44 @@ const SlideSample2 = ({route}) => {
                               <AccordionComponent
                                 key={element._id}
                                 value={element.value}
+                                setIsAccordionExpanded={setIsAccordionExpanded}
                               />
+                            );
+                          case 'range':
+                            return (
+                              <Range
+                                key={element._id}
+                                setIsRangeComplete={setIsRangeComplete}
+                              />
+                            );
+                          case 'video':
+                            return (
+                              <VideoPlayer
+                                key={element._id}
+                                value={element.value}
+                                setIsVideoPlayed={setIsVideoPlayed}
+                              />
+                            );
+                          case 'audio':
+                            return (
+                              <AudioPlayer
+                                key={element._id}
+                                value={`${element.value}`}
+                                setIsAudioPlayed={setIsAudioPlayed}
+                              />
+                            );
+                          case 'dnd':
+                            return (
+                              <GestureHandlerRootView style={{flex: 1}}>
+                                <DND
+                                  key={element._id}
+                                  value={element.value}
+                                  selectedAnswer={selectedAnswer}
+                                  setSelectedAnswer={setSelectedAnswer}
+                                  isAnswerChecked={isAnswerChecked}
+                                  setIsAnswerChecked={setIsAnswerChecked}
+                                />
+                              </GestureHandlerRootView>
                             );
                           default:
                             return null;
@@ -367,6 +557,7 @@ const SlideSample2 = ({route}) => {
               }
             })}
           </ScrollView>
+          <View style={tw`border-b border-accent-6 mt-2`} />
           <View style={tw`flex-none`}>
             <View style={tw`flex-row justify-between px-4 my-2`}>
               {!onFirstSlide && (
@@ -376,22 +567,31 @@ const SlideSample2 = ({route}) => {
                   <CaretCircleLeft size={18} weight="fill" color="white" />
                   <Text
                     style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                    Back
+                    ተመለስ
                   </Text>
                 </TouchableOpacity>
               )}
-              <TouchableOpacity
-                style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
-                  onFirstSlide ? 'mx-auto' : ''
-                }`}
-                onPress={handleButtonPress}>
-                <Text
-                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                  {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
-                </Text>
-                <CaretCircleRight size={18} weight="fill" color="white" />
-              </TouchableOpacity>
+
+              {isNextButtonVisible && (
+                <TouchableOpacity
+                  style={tw`flex flex-row items-center ${
+                    !setIsNextButtonVisible ? 'bg-accent-8' : 'bg-accent-6'
+                  } px-4 rounded-full gap-2 h-10`}
+                  onPress={handleNextButtonPress}>
+                  <Text
+                    style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                    {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
+                  </Text>
+                  <CaretCircleRight size={18} weight="fill" color="white" />
+                </TouchableOpacity>
+              )}
             </View>
+            {showMessage && (
+              <View
+                style={tw`absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow`}>
+                <Text style={tw`text-black`}>{message}</Text>
+              </View>
+            )}
           </View>
         </View>
       </ImageBackground>

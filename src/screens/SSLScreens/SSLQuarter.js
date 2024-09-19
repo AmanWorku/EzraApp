@@ -120,48 +120,59 @@ const SSLQuarter = ({route}) => {
                 </Text>
                 <TouchableOpacity onPress={handleMorePress}>
                   <Text
-                    style={tw`font-nokia-bold text-primary-3 border border-primary-3 px-2 w-14 text-center mt-2 rounded py-1`}>
-                    More
+                    style={tw`font-nokia-bold text-primary-3 border border-primary-3 px-2 w-24 text-center mt-2 rounded py-1`}>
+                    ተጨማሪ
                   </Text>
                 </TouchableOpacity>
               </View>
               <Modal visible={showModal} transparent animationType="fade">
                 <View
-                  style={tw`flex-1 justify-center items-center bg-secondary-10 bg-opacity-50 `}>
-                  <ScrollView
-                    contentContainerStyle={tw`p-4`}
+                  style={tw`flex-1 justify-center items-center bg-secondary-10 bg-opacity-50`}>
+                  <View
                     style={[
-                      tw`bg-primary-1 rounded-lg w-80% my-20 rounded`,
+                      tw`bg-primary-1 rounded-lg w-90% my-20 rounded`,
                       darkMode ? tw`bg-secondary-6` : null,
                     ]}>
-                    <View
-                      style={tw`flex flex-row justify-between border-b border-accent-6 mb-4`}>
-                      <Text
+                    <View style={tw`p-4`}>
+                      <View
                         style={[
-                          tw`font-nokia-bold text-lg text-secondary-6 text-center mb-2`,
-                          darkMode ? tw`text-primary-1` : null,
+                          tw`flex flex-row justify-between border-b border-accent-6 mb-4`,
+                          {
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            zIndex: 1,
+                            padding: 16,
+                            backgroundColor: darkMode ? '#313C44' : '#FFFFFF',
+                          },
                         ]}>
-                        ሙሉ መግለጫ
-                      </Text>
-                      <TouchableOpacity onPress={closeModal} style={tw``}>
-                        <XCircle
-                          weight="bold"
-                          size={20}
+                        <Text
                           style={[
-                            tw`text-secondary-6`,
+                            tw`font-nokia-bold text-lg text-secondary-6 text-center`,
                             darkMode ? tw`text-primary-1` : null,
-                          ]}
-                        />
-                      </TouchableOpacity>
+                          ]}>
+                          ሙሉ መግለጫ
+                        </Text>
+                        <TouchableOpacity onPress={closeModal}>
+                          <XCircle
+                            weight="bold"
+                            size={24}
+                            style={tw`text-accent-6`}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <ScrollView contentContainerStyle={{paddingTop: 56}}>
+                        <Text
+                          style={[
+                            tw`font-nokia-bold text-sm text-secondary-6 text-justify`,
+                            darkMode ? tw`text-primary-1` : null,
+                          ]}>
+                          {fullDescription}
+                        </Text>
+                      </ScrollView>
                     </View>
-                    <Text
-                      style={[
-                        tw`font-nokia-bold text-sm text-secondary-6 text-justify`,
-                        darkMode ? tw`text-primary-1` : null,
-                      ]}>
-                      {fullDescription}
-                    </Text>
-                  </ScrollView>
+                  </View>
                 </View>
               </Modal>
             </View>

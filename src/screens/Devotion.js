@@ -3,7 +3,7 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
-  TextInput,
+  StyleSheet,
   Image,
   TouchableOpacity,
   ImageBackground,
@@ -25,6 +25,8 @@ import {
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
+import HTMLView from 'react-native-htmlview';
+import ErrorScreen from '../components/ErrorScreen';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -34,6 +36,39 @@ const Devotion = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
+
+  const [imageHeight, setImageHeight] = useState(null);
+  const [imageWidth, setImageWidth] = useState(null);
+
+  const handleImageLayout = ({nativeEvent}) => {
+    const {width, height} = nativeEvent.layout;
+    setImageWidth(width);
+    if (devotionToDisplay.image) {
+      const {width: imageWidth, height: imageHeight} = Image.resolveAssetSource(
+        {uri: devotionToDisplay.image},
+      );
+      const newHeight = (height * imageHeight) / imageWidth;
+      setImageHeight(newHeight);
+    }
+  };
+
+  const tailwindStyles = StyleSheet.create({
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`,
+    a: {
+      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
+    },
+    h1: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+  });
 
   const onRefresh = useCallback(async () => {
     try {
@@ -84,12 +119,14 @@ const Devotion = () => {
   }, [devotions, refetch]);
 
   if (!devotions || devotions.length === 0) {
-    return <Text>No devotions available</Text>;
+    return <ErrorScreen />;
   }
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  const url = `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`;
+  // console.log(devotionToDisplay);
+
+  const url = `${devotionToDisplay.image}`;
 
   if (isFetching) {
     return (
@@ -185,20 +222,12 @@ const Devotion = () => {
               {devotionToDisplay.verse}
             </Text>
           </View>
-          <View style={tw`mt-2`}>
-            {devotionToDisplay.body.map((paragraph, paragraphIndex) => {
-              return (
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ]}
-                  key={paragraphIndex}>
-                  {'  '}
-                  {paragraph}
-                </Text>
-              );
-            })}
+          <View style={tw`mt-6`}>
+            <HTMLView
+              value={devotionToDisplay.body[0]} // Assuming body[0] contains HTML string
+              stylesheet={tailwindStyles}
+              linebreak={false}
+            />
           </View>
           <View
             style={[
@@ -214,7 +243,7 @@ const Devotion = () => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.tech/images/${devotionToDisplay.image}`,
+                uri: `${devotionToDisplay.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -289,7 +318,7 @@ const Devotion = () => {
                 }>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
+                    uri: `${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

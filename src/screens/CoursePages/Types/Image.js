@@ -29,7 +29,7 @@ const ImageComponent = ({
       )}
       <TouchableOpacity onPress={toggleModal}>
         <Image
-          source={{uri: `https://ezra-seminary.mybese.tech/images/${value}`}}
+          source={{uri: `${value}`}}
           style={[
             tw`w-full h-full items-center`,
             isImageLoaded ? tw`opacity-100` : tw`opacity-0`,
@@ -56,10 +56,7 @@ const ImageComponent = ({
             tw`bg-accent-8 p-4 rounded-2`,
             darkMode ? tw`bg-secondary-9` : null,
           ]}>
-          <Image
-            source={{uri: `https://ezra-seminary.mybese.tech/images/${value}`}}
-            style={tw`w-80 h-80 rounded-2`}
-          />
+          <Image source={{uri: `${value}`}} style={tw`w-80 h-80 rounded-2`} />
           <TouchableOpacity
             title="Close"
             onPress={toggleModal}

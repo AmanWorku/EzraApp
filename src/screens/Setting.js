@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  Share,
 } from 'react-native';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
@@ -34,6 +35,27 @@ const Setting = ({navigation}) => {
     navigation.navigate('Login');
   };
 
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          'Check out this amazing app on the Google Play Store: https://play.google.com/store/apps/details?id=com.ezraapp&pcampaignid=web_share',
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Shared with activity type of result.activityType
+        } else {
+          // Shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Dismissed
+      }
+    } catch (error) {
+      console.error('Error sharing the app link:', error);
+    }
+  };
+
   return (
     <SafeAreaView
       style={[
@@ -56,7 +78,7 @@ const Setting = ({navigation}) => {
               source={
                 user && user.user && user.user.avatar
                   ? {
-                      uri: `https://ezra-seminary.mybese.tech/images/${user.user.avatar}`,
+                      uri: `${user.user.avatar}`,
                     }
                   : require('./../assets/default-avatar.png') // replace with the actual path to your default avatar
               }
@@ -128,7 +150,8 @@ const Setting = ({navigation}) => {
         </View>
         <View style={tw`py-4 border-b border-accent-6`}>
           <TouchableOpacity
-            style={tw`flex-row w-full justify-between items-center`}>
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={handleShare}>
             <View style={tw`flex-row items-center`}>
               <ShareNetwork
                 size={20}

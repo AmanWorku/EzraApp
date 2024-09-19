@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "542115569833",
+    "project_id": "ezra-seminary-dbf24",
+    "storage_bucket": "ezra-seminary-dbf24.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542115569833:android:cc33f87d0d2403bb8a09b8",
+        "android_client_info": {
+          "package_name": "com.ezraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB220P2ZJ4kmpwyYD6TAytKLg6WIASCFAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

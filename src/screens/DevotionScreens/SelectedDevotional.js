@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -21,6 +22,7 @@ import {
   ArrowSquareUpRight,
 } from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
+import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
 
@@ -39,14 +41,32 @@ const SelectedDevotional = ({route}) => {
   const scrollViewRef = useRef();
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
+  const tailwindStyles = StyleSheet.create({
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`,
+    a: {
+      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
+    },
+    h1: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+  });
+
   useEffect(() => {
     scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
   }, [devotionalId]);
 
-  const imageURI = `https://ezra-seminary.mybese.tech/images/${devotional.image}`;
+  const imageURI = `${devotional.image}`;
   if (isFetching) {
     return (
-      <SafeAreaView style={darkMode ? tw`bg-secondary-9` : null}>
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
           Loading
@@ -132,20 +152,11 @@ const SelectedDevotional = ({route}) => {
               {devotional.verse}
             </Text>
           </View>
-          <View style={tw`mt-2`}>
-            {devotional.body.map((paragraph, paragraphIndex) => {
-              return (
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ]}
-                  key={paragraphIndex}>
-                  {'  '}
-                  {paragraph}
-                </Text>
-              );
-            })}
+          <View style={tw`mt-6`}>
+            <HTMLView
+              value={devotional.body[0]} // Assuming body[0] contains HTML string
+              stylesheet={tailwindStyles}
+            />
           </View>
           <View
             style={[
@@ -161,7 +172,7 @@ const SelectedDevotional = ({route}) => {
             style={tw`border border-accent-6 rounded-4 mt-4 overflow-hidden`}>
             <Image
               source={{
-                uri: `https://ezra-seminary.mybese.tech/images/${devotional.image}`,
+                uri: `${devotional.image}`,
               }}
               style={tw`w-full h-96`}
               resizeMode="cover"
@@ -244,7 +255,7 @@ const SelectedDevotional = ({route}) => {
                 }}>
                 <ImageBackground
                   source={{
-                    uri: `https://ezra-seminary.mybese.tech/images/${item.image}`,
+                    uri: `${item.image}`,
                   }}
                   style={tw`w-full h-full justify-end `}
                   imageStyle={tw`rounded-lg`}>

@@ -49,6 +49,7 @@ const HomeCurrentSSL = () => {
   if (lessonIsLoading || quarterIsLoading) {
     return <Text>Loading...</Text>;
   }
+
   if (lessonError) {
     return (
       <View style={tw`border border-accent-6 rounded my-2`}>

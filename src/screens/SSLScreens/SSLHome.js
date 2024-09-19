@@ -10,6 +10,7 @@ import {
   RefreshControl,
   TextInput,
   ImageBackground,
+  Linking,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -20,14 +21,16 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
 } from '../../services/SabbathSchoolApi';
+import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
+import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
-  const [quarter, week] = useCalculateLessonIndex(currentDate);
+  const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
   const {
@@ -42,6 +45,18 @@ const SSLHome = () => {
     isLoading: quarterIsLoading,
     refetch: quarterRefetch,
   } = useGetSSLOfQuarterQuery(quarter);
+
+  const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
+
+  const {
+    data: videoLink,
+    error: videoError,
+    isLoading: videoLoading,
+  } = useGetVideoLinkQuery({
+    year: year,
+    quarter: lastDigitQuarter,
+    lesson: week,
+  });
 
   useEffect(() => {
     if (lessonDetails) {
@@ -84,6 +99,16 @@ const SSLHome = () => {
     );
   }
 
+  const handleWatchYouTube = () => {
+    if (videoLink && videoLink.videoUrl) {
+      Linking.openURL(videoLink.videoUrl);
+    } else {
+      alert('Video link not available');
+    }
+  };
+
+  // console.log('Video Link Data:', videoLink);
+
   if (error) {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
@@ -101,16 +126,26 @@ const SSLHome = () => {
     });
   };
 
-  if (lessonIsLoading || quarterIsLoading) {
-    return <Text>Loading...</Text>;
+  if (lessonIsLoading || quarterIsLoading || videoLoading) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
   }
   if (lessonError) {
     return (
-      <View style={tw`border border-accent-6 rounded mb-4`}>
-        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
-          Wait for quarterly update!
-        </Text>
-      </View>
+      <>
+        <View style={tw`border border-accent-6 rounded mb-4`}>
+          <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+            Wait for quarterly update!
+          </Text>
+        </View>
+        {/* <CurrentSSL /> */}
+      </>
     );
   }
   if (quarterError) {
@@ -121,7 +156,7 @@ const SSLHome = () => {
   }
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
+    <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
       <SafeAreaView style={tw`flex mb-50`}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -196,17 +231,21 @@ const SSLHome = () => {
               onPress={handleOpenButtonPress}>
               <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-6 items-center`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}>
-                Watch on YouTube
-              </Text>
-              <YoutubeLogo size={20} weight="fill" color="#EA9215" />
-            </TouchableOpacity>
+
+            {videoLink && (
+              <TouchableOpacity
+                style={tw`flex flex-row border border-accent-6 px-3 py-1 rounded-full gap-1`}
+                onPress={handleWatchYouTube}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-secondary-6 items-center`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ]}>
+                  Watch on YouTube
+                </Text>
+                <YoutubeLogo size={20} weight="fill" color="#EA9215" />
+              </TouchableOpacity>
+            )}
           </View>
           <TextInput
             placeholder="Search SSLs..."
@@ -219,14 +258,14 @@ const SSLHome = () => {
             placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
           />
           <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
-            Explore quarterly lessons
+            የሩብ አመት ትምህርቶች
           </Text>
           <Text
             style={[
               tw`font-nokia-bold text-secondary-6 text-xl`,
               darkMode ? tw`text-primary-1` : null,
             ]}>
-            Lessons of previous quarters
+            ያለፉ የሩብ አመት ትምህርቶች
           </Text>
           <View style={tw`border-b border-accent-6 my-1`} />
           <View style={tw`flex flex-col`}>

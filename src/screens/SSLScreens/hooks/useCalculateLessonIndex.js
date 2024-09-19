@@ -25,13 +25,13 @@ function useCalculateLessonIndex(currentDate) {
     );
     const week = Math.floor(diffDays / 7) + 1;
 
-    return {quarter, week: week.toString().padStart(2, '0')};
+    return {year, quarter, week: week.toString().padStart(2, '0')};
   }
 
   // Just call the function without memoizing
   const lessonIndex = calculateLessonIndex();
 
-  return [lessonIndex.quarter, lessonIndex.week];
+  return [lessonIndex.quarter, lessonIndex.week, lessonIndex.year];
 }
 
 export default useCalculateLessonIndex;

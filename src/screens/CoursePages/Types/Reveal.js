@@ -1,23 +1,41 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import FlipCard from 'react-native-flip-card';
 import tw from '../../../../tailwind';
 
-const Reveal = ({value}) => {
+const Reveal = ({value, setIsRevealComplete}) => {
+  // State to track the current flip status of each card
   const [flip, setFlip] = useState(value.map(() => false));
 
+  // State to track if each card has ever been flipped at least once
+  const [hasBeenFlipped, setHasBeenFlipped] = useState(value.map(() => false));
+
+  // Handler function to flip the card and track if it has been flipped
   const handleFlip = index => {
     setFlip(prevFlip =>
       prevFlip.map((isFlipped, i) => (i === index ? !isFlipped : isFlipped)),
     );
+
+    // Update hasBeenFlipped state if the card is being flipped for the first time
+    setHasBeenFlipped(prevHasBeenFlipped =>
+      prevHasBeenFlipped.map((wasFlipped, i) =>
+        i === index ? true : wasFlipped,
+      ),
+    );
   };
+
+  // Effect to check if all cards have been flipped at least once
+  useEffect(() => {
+    const allHaveBeenFlipped = hasBeenFlipped.every(wasFlipped => wasFlipped);
+    setIsRevealComplete(allHaveBeenFlipped);
+  }, [hasBeenFlipped, setIsRevealComplete]);
 
   return (
     <>
       {value.map((revealItem, index) => (
         <FlipCard
           key={index}
-          style={tw`w-full h-$half rounded-lg shadow`}
+          style={tw`w-full h-[50%] rounded-lg shadow`}
           friction={6}
           perspective={1000}
           flipHorizontal={false}

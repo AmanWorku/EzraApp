@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 8.1.1" type="baseline" client="gradle" dependencies="false" name="AGP (8.1.1)" variant="all" version="8.1.1">
+
+    <issue
+        id="ScopedStorage"
+        message="WRITE_EXTERNAL_STORAGE is deprecated (and is not granted) when targeting Android 13+. If you need to write to shared storage, use the `MediaStore.createWriteRequest` intent."
+        errorLine1="&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; />"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="4"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="RedundantLabel"
+        message="Redundant label can be removed"
+        errorLine1="        android:label=&quot;@string/app_name&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="17"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-bom than 32.7.3 is available: 33.2.0"
+        errorLine1="    implementation platform(&apos;com.google.firebase:firebase-bom:32.7.3&apos;)"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="134"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of com.google.firebase:firebase-analytics than 17.4.1 is available: 22.1.0"
+        errorLine1="    implementation &apos;com.google.firebase:firebase-analytics:17.4.1&apos;"
+        errorLine2="                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle"
+            line="135"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/abc_edit_text_inset_horizontal_material` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="       android:insetLeft=&quot;@dimen/abc_edit_text_inset_horizontal_material&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="17"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/abc_edit_text_inset_horizontal_material` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="       android:insetRight=&quot;@dimen/abc_edit_text_inset_horizontal_material&quot;"
+        errorLine2="                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="18"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/abc_edit_text_inset_top_material` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="       android:insetTop=&quot;@dimen/abc_edit_text_inset_top_material&quot;"
+        errorLine2="                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="19"
+            column="26"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@dimen/abc_edit_text_inset_bottom_material` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="       android:insetBottom=&quot;@dimen/abc_edit_text_inset_bottom_material&quot;>"
+        errorLine2="                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="20"
+            column="29"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@drawable/abc_textfield_default_mtrl_alpha` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="        &lt;item android:state_enabled=&quot;false&quot; android:drawable=&quot;@drawable/abc_textfield_default_mtrl_alpha&quot;/>"
+        errorLine2="                                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="32"
+            column="63"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@drawable/abc_textfield_activated_mtrl_alpha` is marked as private in androidx.appcompat:appcompat:1.6.1"
+        errorLine1="        &lt;item android:drawable=&quot;@drawable/abc_textfield_activated_mtrl_alpha&quot;/>"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="33"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                Log.e(&quot;MainActivity&quot;, &quot;Update flow failed! Result code: $resultCode&quot;)"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/ezraapp/MainActivity.kt"
+            line="62"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="SystemPermissionTypo"
+        message="Did you mean `android.permission.READ_EXTERNAL_STORAGE`?"
+        errorLine1="&lt;uses-permission android:name=&quot;android.permission.READ EXTERNAL_STORAGE&quot; />"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="3"
+            column="32"/>
+    </issue>
+
+    <issue
+        id="DataExtractionRules"
+        message="The attribute `android:allowBackup` is deprecated from Android 12 and higher and may be removed in future versions. Consider adding the attribute `android:dataExtractionRules` specifying an `@xml` resource which configures cloud backups and device transfers on Android 12 and higher."
+        errorLine1="      android:allowBackup=&quot;false&quot;"
+        errorLine2="                           ~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="13"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.integer.react_native_dev_server_port` appears to be unused">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.integer.react_native_inspector_proxy_port` appears to be unused">
+        <location
+            file="build.gradle"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.node_modules_reactnavigation_elements_src_assets_backicon` appears to be unused">
+        <location
+            file="src/main/res/drawable-hdpi/node_modules_reactnavigation_elements_src_assets_backicon.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.node_modules_reactnavigation_elements_src_assets_backiconmask` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/node_modules_reactnavigation_elements_src_assets_backiconmask.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.rn_edit_text_material` appears to be unused"
+        errorLine1="&lt;inset xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/rn_edit_text_material.xml"
+            line="16"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_bible` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_bible.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_bible2` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_bible2.jpeg"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_bible6` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_bible6.jpeg"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_church` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_church.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_day1` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_day1.jpeg"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_day18` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_day18.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_day22` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_day22.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_day4` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_day4.jpeg"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_facebook` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_facebook.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_google` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_google.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_intro` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_intro.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_logo` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_logo.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_logosmall` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_logosmall.png"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.src_assets_worship` appears to be unused">
+        <location
+            file="src/main/res/drawable-mdpi/src_assets_worship.jpeg"/>
+    </issue>
+
+    <issue
+        id="IconDensities"
+        message="Missing the following drawables in `drawable-hdpi`: node_modules_reactnavigation_elements_src_assets_backiconmask.png, src_assets_bible.png, src_assets_bible2.jpeg, src_assets_bible6.jpeg, src_assets_church.png... (10 more)">
+        <location
+            file="src/main/res/drawable-hdpi"/>
+    </issue>
+
+    <issue
+        id="IconDensities"
+        message="Missing the following drawables in `drawable-xhdpi`: node_modules_reactnavigation_elements_src_assets_backiconmask.png, src_assets_bible.png, src_assets_bible2.jpeg, src_assets_bible6.jpeg, src_assets_church.png... (10 more)">
+        <location
+            file="src/main/res/drawable-xhdpi"/>
+    </issue>
+
+    <issue
+        id="IconDensities"
+        message="Missing the following drawables in `drawable-xxhdpi`: node_modules_reactnavigation_elements_src_assets_backiconmask.png, src_assets_bible.png, src_assets_bible2.jpeg, src_assets_bible6.jpeg, src_assets_church.png... (10 more)">
+        <location
+            file="src/main/res/drawable-xxhdpi"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher_monochrome.png">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_monochrome.png"/>
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_foreground.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher_monochrome.png">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_monochrome.png"/>
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_foreground.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher_monochrome.png">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png"/>
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_foreground.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher_monochrome.png">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png"/>
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher_foreground.png, ic_launcher_monochrome.png">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png"/>
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png"/>
+    </issue>
+
+</issues>

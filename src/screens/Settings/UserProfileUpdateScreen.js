@@ -44,11 +44,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
       setLastName(currentUser.lastName || '');
       setEmail(currentUser.user.email || '');
       setPassword(currentUser.password || '');
-      setAvatarPreview(
-        currentUser.avatar
-          ? `https://ezra-seminary.mybese.tech/images/${currentUser.avatar}`
-          : bible,
-      );
+      setAvatarPreview(currentUser.avatar ? `${currentUser.avatar}` : bible);
     }
   }, [currentUser]);
 
@@ -148,7 +144,7 @@ const UserProfileUpdateScreen = ({navigation}) => {
               source={
                 currentUser && currentUser.user.avatar
                   ? {
-                      uri: `https://ezra-seminary.mybese.tech/images/${currentUser.user.avatar}`,
+                      uri: `${currentUser.user.avatar}`,
                     }
                   : require('./../../assets/default-avatar.png') // replace with the actual path to your default avatar
               }

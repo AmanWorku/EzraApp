@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,10 @@ import {
   ActivityIndicator,
   RefreshControl,
   ImageBackground,
+  Modal,
+  TextInput,
+  Image,
+  Linking,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -16,12 +20,14 @@ import {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } from '../../services/SabbathSchoolApi';
+import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft, Warning} from 'phosphor-react-native';
+import {ArrowSquareLeft, YoutubeLogo} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -29,10 +35,14 @@ const SSLWeek = ({route}) => {
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedVerseKey, setSelectedVerseKey] = useState('');
+  const [selectedVerseContent, setSelectedVerseContent] = useState('');
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
   });
+
   const {
     data: sslWeek,
     isLoading,
@@ -44,21 +54,86 @@ const SSLWeek = ({route}) => {
     day: check,
   });
 
+  const year = ssl.substring(0, 4);
+  const quarter = ssl.substring(5, 7);
+
+  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
+    year: year,
+    quarter: quarter,
+    lesson: weekId,
+  });
+
+  const handleWatchYouTube = () => {
+    if (videoLink && videoLink.videoUrl) {
+      Linking.openURL(videoLink.videoUrl);
+    } else {
+      alert('Video link not available');
+    }
+  };
+
+  const [notes, setNotes] = useState({});
+  const codeCounterRef = useRef(0);
+  const [temporaryNotes, setTemporaryNotes] = useState({});
+
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
   }, [check]);
 
+  const fetchNotes = async () => {
+    try {
+      const storedNotes = await AsyncStorage.getItem('notes');
+      if (storedNotes) {
+        setNotes(JSON.parse(storedNotes));
+      }
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const saveNote = async (key, noteContent) => {
+    const newNotes = {...notes, [key]: noteContent};
+    setNotes(newNotes);
+    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+  };
+
+  const handleBlur = noteKey => {
+    saveNote(noteKey, temporaryNotes[noteKey]);
+  };
+
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const onRefresh = useCallback(async () => {
-    try {
-      setIsRefreshing(true);
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
+  const handleVerseClick = verseKey => {
+    if (
+      sslWeek &&
+      sslWeek.bible &&
+      sslWeek.bible.length > 0 &&
+      sslWeek.bible[[0]].verses &&
+      sslWeek.bible[[0]].verses[verseKey]
+    ) {
+      setSelectedVerseKey(verseKey);
+      setSelectedVerseContent(sslWeek.bible[[0]].verses[verseKey]);
+      setIsModalOpen(true);
+    } else {
+      console.error(`Verse key "${verseKey}" not found`);
     }
-  }, [refetch]);
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedVerseKey('');
+    setSelectedVerseContent('');
+  };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  };
 
   const onNextButtonClick = () => {
     const nextCheck = parseInt(check, 10) + 1;
@@ -102,8 +177,8 @@ const SSLWeek = ({route}) => {
       ? tw`font-nokia-bold text-primary-1 text-2xl`
       : tw`font-nokia-bold text-secondary-6 text-2xl`,
     p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2 flex-wrap`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2 flex-wrap`,
     blockquote: darkMode
       ? tw`text-primary-1 font-nokia-bold text-xl`
       : tw`text-secondary-6 font-nokia-bold text-xl`,
@@ -112,11 +187,38 @@ const SSLWeek = ({route}) => {
     code: {
       ...tw`font-nokia-bold`,
       color: '#EA9215',
+      backgroundColor: darkMode ? '#333' : '#f5f5f5',
+      padding: 4,
+      borderRadius: 4,
     },
     strong: tw`text-xl`,
-    a: tw`text-accent-7`,
+    a: tw`text-accent-6 underline`,
+    // Styles for table elements
+    table: tw`border border-gray-300 my-4`,
+    // tr: tw`border-b border-gray-300`,
+    td: tw`border-r border-gray-300 p-2`,
+    // 'tr:last-child': tw`border-b-0`,
+    // 'td:last-child': tw`border-r-0`,
   });
+
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
+    if (node.name === 'a') {
+      const {class: className, verse: verseReference} = node.attribs;
+      if (className === 'verse' && verseReference) {
+        const onPress = () => handleVerseClick(verseReference);
+        return (
+          <Text key={index} style={styles.a} onPress={onPress}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+        );
+      }
+      return (
+        <Text key={index} style={styles.a}>
+          {defaultRenderer(node.children, node)}
+        </Text>
+      );
+    }
+
     if (node.name === 'blockquote') {
       const childrenWithStyles = node.children.map((child, childIndex) => {
         if (child.type === 'text') {
@@ -124,24 +226,11 @@ const SSLWeek = ({route}) => {
             <Text
               key={childIndex}
               style={[
-                tw` font-nokia-bold text-lg text-justify`,
+                tw`font-nokia-bold text-lg text-justify`,
                 darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
               ]}>
               {child.data}
             </Text>
-          );
-        } else if (child.name === 'a') {
-          const onPress = () => {};
-          return (
-            <TouchableOpacity key={childIndex} onPress={onPress}>
-              <Text
-                style={[
-                  tw`font-nokia-bold`,
-                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                ]}>
-                {defaultRenderer(child.children, child)}
-              </Text>
-            </TouchableOpacity>
           );
         } else {
           return defaultRenderer(child.children, child);
@@ -157,14 +246,64 @@ const SSLWeek = ({route}) => {
         </View>
       );
     }
+
+    // if (node.name === 'code') {
+    //   codeCounterRef.current += 1;
+    //   const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
+    //   return (
+    //     <View key={index}>
+    //       <Text style={styles.code}>
+    //         {defaultRenderer(node.children, node)}
+    //       </Text>
+    //       <View style={tw`mt-2`}>
+    //         <TextInput
+    //           style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
+    //           placeholder="Add a note..."
+    //           placeholderTextColor="#9CA3AF"
+    //           value={temporaryNotes[noteKey] || notes[noteKey] || ''}
+    //           onChangeText={text =>
+    //             setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
+    //           }
+    //           onBlur={() => handleBlur(noteKey)}
+    //         />
+    //       </View>
+    //     </View>
+    //   );
+    // }
+
+    if (node.name === 'table') {
+      return (
+        <View key={index} style={styles.table}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    if (node.name === 'tr') {
+      return (
+        <View key={index} style={styles.tr}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    if (node.name === 'td') {
+      return (
+        <View key={index} style={styles.td}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    return undefined;
   };
 
   const handleBackButtonPress = () => {
     navigation.goBack();
   };
-
   const gradientColor = '#000000';
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
+  const modifiedContent = selectedVerseContent.replace(/<h2>/g, '<br><h2>');
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -188,6 +327,16 @@ const SSLWeek = ({route}) => {
               style={{zIndex: 1, marginTop: 12}}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleWatchYouTube}
+              style={{
+                zIndex: 1,
+                marginTop: 42,
+                position: 'absolute',
+                right: 20,
+              }}>
+              <YoutubeLogo size={36} weight="fill" color={'#EA9215'} />
+            </TouchableOpacity>
             <LinearGradient
               colors={[gradientColor, `${gradientColor}20`]}
               style={tw`absolute inset-0`}
@@ -196,7 +345,7 @@ const SSLWeek = ({route}) => {
             />
             <View style={tw`absolute bottom-0 p-4`}>
               <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                {daysOfWeek[check % 7]}፣&nbsp;&nbsp;
+                {daysOfWeek[check % 7]} &nbsp;
                 <DateConverter
                   gregorianDate={sslWeek.date}
                   style={tw`text-2xl`}
@@ -204,7 +353,7 @@ const SSLWeek = ({route}) => {
                 />
               </Text>
               <Text
-                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1 `}>
+                style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1`}>
                 {sslWeek.title}
               </Text>
             </View>
@@ -223,20 +372,17 @@ const SSLWeek = ({route}) => {
                   onPress={onPreviousButtonClick}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
-                    Back
+                    ተመለስ
                   </Text>
                 </TouchableOpacity>
               )}
               {check !== '07' && (
                 <TouchableOpacity
-                  style={[
-                    tw`mb-2`,
-                    check === '01' && tw`self-end`, // Align to the right if check is '01'
-                  ]}
+                  style={[tw`mb-2`, check === '01' && tw`self-end`]}
                   onPress={onNextButtonClick}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
-                    Next
+                    ቀጥል
                   </Text>
                 </TouchableOpacity>
               )}
@@ -244,6 +390,46 @@ const SSLWeek = ({route}) => {
           </View>
         </View>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalOpen}
+        onRequestClose={onCloseModal}>
+        <View
+          style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-70`}>
+          <View
+            style={[
+              tw`max-h-80% bg-primary-2 p-4 rounded-lg w-11/12 max-w-lg border border-accent-8`,
+              darkMode ? tw`bg-secondary-9` : null,
+            ]}>
+            <ScrollView>
+              <HTMLView
+                value={`<div>${modifiedContent}</div>`}
+                stylesheet={{
+                  p: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
+                  div: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
+                  h2: tw`font-nokia-bold text-2xl text-accent-6`,
+                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-6`,
+                }}
+                addLineBreaks={true}
+              />
+            </ScrollView>
+            <TouchableOpacity
+              style={tw`bg-accent-6 mt-4 rounded-lg p-2`}
+              onPress={onCloseModal}>
+              <Text style={tw`font-nokia-bold text-primary-1 text-center`}>
+                ዝጋ
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -41,21 +41,23 @@ const Course = () => {
     setSearchTerm(text);
   };
 
-  let filteredData = courses
-    ?.filter(course => {
-      return course.title.includes(searchTerm) && course.published;
-    })
-    .slice();
+  let filteredData = courses?.slice(); // Initialize filteredData as a copy of courses array
 
   if (courses) {
     filteredData = courses.filter(course => {
-      return course.title.includes(searchTerm) && course.published;
+      if (currentUser && currentUser.role === 'Admin') {
+        return course.title.includes(searchTerm);
+      } else {
+        return course.title.includes(searchTerm) && course.published;
+      }
     });
 
+    // Sort the courses based on the sortByLatest flag
     if (!sortByLatest) {
       filteredData = [...filteredData].reverse();
     }
   }
+
   const handleButtonPress = id => {
     navigation.navigate('CourseContent', {courseId: id});
   };
@@ -135,7 +137,7 @@ const Course = () => {
           </View>
           <View>
             <TextInput
-              placeholder="Search courses..."
+              placeholder="ትምህርቶችን ፈልግ..."
               value={searchTerm}
               onChangeText={handleSearch}
               style={[
@@ -147,13 +149,13 @@ const Course = () => {
           </View>
           <View style={tw`flex flex-row justify-between mt-3 items-center`}>
             <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
-              Popular Courses
+              ተወዳጅ ትምህርቶች
             </Text>
             <TouchableOpacity
               style={tw`flex flex-row justify-between items-center gap-2`}
               onPress={toggleSortOrder}>
               <Text style={tw`font-nokia-bold text-accent-6 text-lg`}>
-                {sortByLatest ? 'Latest' : 'Oldest'}
+                {sortByLatest ? 'የበፊት' : 'የቅርብ'}
               </Text>
               <CaretCircleDown size={24} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
@@ -168,7 +170,7 @@ const Course = () => {
                   <View style={tw`h-48 relative`}>
                     <Image
                       source={{
-                        uri: `https://ezra-seminary.mybese.tech/images/${course.image}`,
+                        uri: `${course.image}`,
                       }}
                       style={tw`w-full h-full rounded-3`}
                     />
@@ -177,7 +179,7 @@ const Course = () => {
                       <Text
                         style={tw`font-nokia-bold text-secondary-8 text-xs`}>
                         {progressValue !== undefined ? progressValue * 100 : 0}%
-                        Completed
+                        አጠናቅቀዋል
                       </Text>
                     </View>
                   </View>
@@ -209,7 +211,7 @@ const Course = () => {
                     </TouchableOpacity>
                     <View style={tw`flex flex-row items-center gap-1`}>
                       <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
-                        {course.chapters.length} {''}Chapters
+                        {course.chapters.length} {''}ምዕራፎች
                       </Text>
                     </View>
                   </View>
