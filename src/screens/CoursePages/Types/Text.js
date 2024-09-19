@@ -1,13 +1,26 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import tw from '../../../../tailwind';
+import HTMLView from 'react-native-htmlview';
 
-const TextComponent = ({value}) => (
-  <Text
-    style={tw`font-nokia-bold text-sm text-primary-1 text-justify leading-tight`}>
-    {'  '}
-    {value}
-  </Text>
-);
+const TextComponent = ({value, darkMode}) => {
+  const tailwindStyles = StyleSheet.create({
+    text: tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`,
+    p: tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`,
+    a: {
+      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
+    },
+    h1: tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`,
+  });
+  return (
+    <HTMLView
+      value={value} // Assuming body[0] contains HTML string
+      stylesheet={tailwindStyles}
+      linebreak={false}
+    />
+  );
+};
 
 export default TextComponent;

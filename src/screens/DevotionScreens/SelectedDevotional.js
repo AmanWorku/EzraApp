@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ImageBackground,
+  StyleSheet,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -40,18 +41,23 @@ const SelectedDevotional = ({route}) => {
   const scrollViewRef = useRef();
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
-  const tailwindStyles = {
-    p: {
-      ...tw`text-primary-2 text-sm leading-snug font-nokia-bold text-justify`, // Customize this as needed
-    },
+  const tailwindStyles = StyleSheet.create({
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`,
     a: {
-      ...tw`text-blue-500 underline`, // Example for links
+      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
     },
-    h1: {
-      ...tw`text-2xl font-bold`, // Example for h1
-    },
-    // Add more styles as needed
-  };
+    h1: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+  });
 
   useEffect(() => {
     scrollViewRef.current?.scrollTo({x: 0, y: 0, animated: false});
@@ -150,7 +156,6 @@ const SelectedDevotional = ({route}) => {
             <HTMLView
               value={devotional.body[0]} // Assuming body[0] contains HTML string
               stylesheet={tailwindStyles}
-              linebreak={false}
             />
           </View>
           <View

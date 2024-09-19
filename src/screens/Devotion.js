@@ -3,7 +3,7 @@ import {
   Text,
   ScrollView,
   SafeAreaView,
-  TextInput,
+  StyleSheet,
   Image,
   TouchableOpacity,
   ImageBackground,
@@ -25,6 +25,7 @@ import {
 import tw from './../../tailwind';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
+import HTMLView from 'react-native-htmlview';
 import ErrorScreen from '../components/ErrorScreen';
 
 const Devotion = () => {
@@ -50,6 +51,24 @@ const Devotion = () => {
       setImageHeight(newHeight);
     }
   };
+
+  const tailwindStyles = StyleSheet.create({
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`,
+    a: {
+      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
+    },
+    h1: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+  });
 
   const onRefresh = useCallback(async () => {
     try {
@@ -203,20 +222,12 @@ const Devotion = () => {
               {devotionToDisplay.verse}
             </Text>
           </View>
-          <View style={tw`mt-2`}>
-            {devotionToDisplay.body.map((paragraph, paragraphIndex) => {
-              return (
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-secondary-6 text-sm leading-snug text-justify my-2`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ]}
-                  key={paragraphIndex}>
-                  {'  '}
-                  {paragraph}
-                </Text>
-              );
-            })}
+          <View style={tw`mt-6`}>
+            <HTMLView
+              value={devotionToDisplay.body[0]} // Assuming body[0] contains HTML string
+              stylesheet={tailwindStyles}
+              linebreak={false}
+            />
           </View>
           <View
             style={[
