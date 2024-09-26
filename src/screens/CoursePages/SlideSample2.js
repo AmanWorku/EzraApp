@@ -587,9 +587,8 @@ const SlideSample2 = ({route}) => {
               )}
             </View>
             {showMessage && (
-              <View
-                style={tw`absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow`}>
-                <Text style={tw`text-black`}>{message}</Text>
+              <View style={tw`bg-white p-2 rounded shadow`}>
+                <Text style={tw`text-accent-6`}>{message}</Text>
               </View>
             )}
           </View>
