@@ -37,6 +37,7 @@ const authSlice = createSlice({
 
       // Remove the token from AsyncStorage
       AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('user');
     },
     setAuthReady: (state, action) => {
       state.isAuthReady = action.payload;
