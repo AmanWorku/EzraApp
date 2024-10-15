@@ -586,11 +586,11 @@ const SlideSample2 = ({route}) => {
                 </TouchableOpacity>
               )}
             </View>
-            {showMessage && (
+            {/* {showMessage && (
               <View style={tw`bg-white p-2 rounded shadow`}>
                 <Text style={tw`text-accent-6`}>{message}</Text>
               </View>
-            )}
+            )} */}
           </View>
         </View>
       </ImageBackground>

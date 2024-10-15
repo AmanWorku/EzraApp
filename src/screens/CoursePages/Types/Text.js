@@ -1,29 +1,121 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import tw from '../../../../tailwind';
-import HTMLView from 'react-native-htmlview';
+import parse, {domToReact} from 'html-react-parser';
 
-const TextComponent = ({value, darkMode}) => {
-  const tailwindStyles = StyleSheet.create({
-    text: tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`,
-    p: {
-      ...tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`,
-      marginVertical: -15,
+const TextComponent = ({value}) => {
+  const renderOptions = {
+    replace: domNode => {
+      const getAlignStyle = () => {
+        if (domNode.attribs && domNode.attribs.class) {
+          if (domNode.attribs.class.includes('ql-align-center')) {
+            return styles.center;
+          } else if (domNode.attribs.class.includes('ql-align-right')) {
+            return styles.right;
+          }
+        }
+        return styles.left; // Default to left alignment
+      };
+
+      const getFontSizeStyle = () => {
+        if (domNode.attribs && domNode.attribs.class) {
+          if (domNode.attribs.class.includes('ql-size-huge')) {
+            return styles.huge;
+          } else if (domNode.attribs.class.includes('ql-size-large')) {
+            return styles.large;
+          } else if (domNode.attribs.class.includes('ql-size-small')) {
+            return styles.small;
+          }
+        }
+        return styles.default; // Default to standard size
+      };
+
+      if (
+        domNode.name === 'p' ||
+        domNode.name === 'span' ||
+        domNode.name === 'strong' ||
+        domNode.name === 'em'
+      ) {
+        return (
+          <View style={getAlignStyle()}>
+            <Text style={[getFontSizeStyle(), styles.text]}>
+              {domToReact(domNode.children, renderOptions)}
+            </Text>
+          </View>
+        );
+      }
+
+      // Render lists
+      if (domNode.name === 'ol' || domNode.name === 'ul') {
+        return (
+          <View style={[styles.list, getAlignStyle()]}>
+            {domNode.children.map((item, index) => (
+              <View key={index} style={styles.listItem}>
+                <Text style={[styles.listItemText, getFontSizeStyle()]}>
+                  {domNode.name === 'ol' ? `${index + 1}. ` : '• '}
+                  {domToReact(item.children, renderOptions)}
+                </Text>
+              </View>
+            ))}
+          </View>
+        );
+      }
+
+      if (domNode.name === 'u') {
+        return (
+          <View style={getAlignStyle()}>
+            <Text style={[styles.underline, styles.paragraphText]}>
+              {domToReact(domNode.children, renderOptions)}
+            </Text>
+          </View>
+        );
+      }
+
+      // Render list item
+      if (domNode.name === 'li') {
+        return (
+          <View style={[styles.listItem, getAlignStyle()]}>
+            <Text style={[styles.listItemText, getFontSizeStyle()]}>
+              {domToReact(domNode.children, renderOptions)}
+            </Text>
+          </View>
+        );
+      }
+
+      // Handle text nodes (fallback)
+      if (domNode.type === 'text') {
+        return (
+          <Text style={[styles.text, getAlignStyle()]}>{domNode.data}</Text>
+        );
+      }
     },
-    a: {
-      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
-      marginVertical: -15,
-    },
-    h1: tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`,
-    h2: tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`,
-    h3: tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`,
-  });
-  return (
-    <HTMLView
-      value={value} // Assuming body[0] contains HTML string
-      stylesheet={tailwindStyles}
-    />
-  );
+  };
+
+  return <View>{parse(value, renderOptions)}</View>;
 };
+
+const styles = StyleSheet.create({
+  text: tw`text-primary-1 font-nokia-bold leading-snug`,
+  paragraph: tw`text-primary-1 font-nokia-bold leading-snug`,
+  huge: tw`text-primary-1 font-nokia-bold text-3xl`,
+  large: tw`text-primary-1 font-nokia-bold text-2xl`,
+  small: tw`text-primary-1 font-nokia-bold text-sm`,
+  default: tw`text-primary-1 font-nokia-bold text-lg`,
+  bold: tw`font-nokia-bold`,
+  italic: tw`font-nokia-bold italic`,
+  underline: tw`underline`,
+  list: tw`my-2`,
+  listItem: tw`flex-row items-baseline`,
+  listItemText: tw`text-primary-1 font-nokia-bold`,
+  center: {
+    alignItems: 'center',
+  },
+  right: {
+    alignItems: 'flex-end',
+  },
+  left: {
+    alignItems: 'flex-start',
+  },
+});
 
 export default TextComponent;
