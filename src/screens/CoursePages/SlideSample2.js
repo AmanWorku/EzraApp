@@ -66,12 +66,10 @@ const SlideSample2 = ({route}) => {
   const [progressLoading, setProgressLoading] = useState(false);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
-
+  const [triggerNext, setTriggerNext] = useState(false);
   const [isSlideComplete, setIsSlideComplete] = useState(false);
   const [isSequenceComplete, setIsSequenceComplete] = useState(false);
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
-  const [isVideoPlayed, setIsVideoPlayed] = useState(false);
-  const [isAudioPlayed, setIsAudioPlayed] = useState(false);
   const [isRevealComplete, setIsRevealComplete] = useState(false);
   const [isRangeComplete, setIsRangeComplete] = useState(false);
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
@@ -116,14 +114,21 @@ const SlideSample2 = ({route}) => {
     setIsSlideComplete(false);
     setIsSequenceComplete(false);
     setIsAccordionExpanded(false);
-    setIsVideoPlayed(false);
-    setIsAudioPlayed(false);
     setIsRevealComplete(false);
     setIsRangeComplete(false);
     setIsAnswerChecked(false);
 
     // Additional logic to check if the slide is non-interactive
-    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix', 'list'];
+    const nonInteractiveTypes = [
+      'title',
+      'sub',
+      'text',
+      'img',
+      'mix',
+      'list',
+      'video',
+      'audio',
+    ];
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
     );
@@ -139,8 +144,6 @@ const SlideSample2 = ({route}) => {
       (!onLastSlide && isSlideComplete) ||
       isSequenceComplete ||
       isAccordionExpanded ||
-      isVideoPlayed ||
-      isAudioPlayed ||
       isRevealComplete ||
       isRangeComplete ||
       isAnswerChecked;
@@ -154,8 +157,6 @@ const SlideSample2 = ({route}) => {
     isSlideComplete,
     isSequenceComplete,
     isAccordionExpanded,
-    isVideoPlayed,
-    isAudioPlayed,
     isRevealComplete,
     isRangeComplete,
     isAnswerChecked,
@@ -190,6 +191,7 @@ const SlideSample2 = ({route}) => {
   const onLastSlide = activeIndex === data.length - 1;
 
   const handleButtonPress = () => {
+    setTriggerNext(true);
     if (onLastSlide) {
       NetInfo.fetch().then(state => {
         if (state.isConnected) {
@@ -227,6 +229,7 @@ const SlideSample2 = ({route}) => {
   };
 
   const goToPreviousSlide = () => {
+    setTriggerNext(true);
     const previousIndex = activeIndex - 1;
     if (previousIndex >= 0) {
       updateIndex(previousIndex);
@@ -478,7 +481,6 @@ const SlideSample2 = ({route}) => {
                               <VideoPlayer
                                 key={element._id}
                                 value={element.value}
-                                setIsVideoPlayed={setIsVideoPlayed}
                               />
                             );
                           case 'audio':
@@ -486,7 +488,7 @@ const SlideSample2 = ({route}) => {
                               <AudioPlayer
                                 key={element._id}
                                 value={`${element.value}`}
-                                setIsAudioPlayed={setIsAudioPlayed}
+                                onNext={triggerNext}
                               />
                             );
                           case 'dnd':
