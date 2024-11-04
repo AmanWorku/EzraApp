@@ -66,59 +66,13 @@ const SlideSample2 = ({route}) => {
   const [progressLoading, setProgressLoading] = useState(false);
   const currentUser = useSelector(selectCurrentUser);
   const dispatch = useDispatch();
-
+  const [triggerNext, setTriggerNext] = useState(false);
   const [isSlideComplete, setIsSlideComplete] = useState(false);
   const [isSequenceComplete, setIsSequenceComplete] = useState(false);
   const [isAccordionExpanded, setIsAccordionExpanded] = useState(false);
-  const [isVideoPlayed, setIsVideoPlayed] = useState(false);
-  const [isAudioPlayed, setIsAudioPlayed] = useState(false);
   const [isRevealComplete, setIsRevealComplete] = useState(false);
   const [isRangeComplete, setIsRangeComplete] = useState(false);
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
-  const [message, setMessage] = useState('');
-  const [showMessage, setShowMessage] = useState('');
-
-  const interactionMessages = {
-    slide: 'Please slide through all the slide elements.',
-    quiz: 'Please complete the quiz before proceeding.',
-    video: 'Please watch the video before continuing.',
-    audio: 'Please listen to the audio before moving on.',
-    dnd: 'Please complete the drag-and-drop activity.',
-    // Add other interaction types as needed
-  };
-
-  const handleNextButtonPress = () => {
-    const currentSlides = data[activeIndex].elements;
-    const incompleteInteractions = currentSlides.some(element => {
-      switch (element.type) {
-        case 'slide':
-          return !isSlideComplete;
-        case 'quiz':
-          return !isAnswerChecked;
-        case 'video':
-          return !isVideoPlayed;
-        case 'audio':
-          return !isAudioPlayed;
-        case 'dnd':
-          return !selectedAnswer; // Adjust this condition based on your logic
-        // Add other cases as needed
-        default:
-          return false;
-      }
-    });
-
-    if (incompleteInteractions) {
-      // Show message balloon (you can use a state variable to manage visibility)
-      setMessage(
-        interactionMessages[currentSlides[0].type] ||
-          'Please complete the required interaction.',
-      );
-      setShowMessage(true);
-    } else {
-      // Proceed to the next slide
-      handleButtonPress();
-    }
-  };
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);
@@ -160,14 +114,21 @@ const SlideSample2 = ({route}) => {
     setIsSlideComplete(false);
     setIsSequenceComplete(false);
     setIsAccordionExpanded(false);
-    setIsVideoPlayed(false);
-    setIsAudioPlayed(false);
     setIsRevealComplete(false);
     setIsRangeComplete(false);
     setIsAnswerChecked(false);
 
     // Additional logic to check if the slide is non-interactive
-    const nonInteractiveTypes = ['title', 'sub', 'text', 'img', 'mix', 'list'];
+    const nonInteractiveTypes = [
+      'title',
+      'sub',
+      'text',
+      'img',
+      'mix',
+      'list',
+      'video',
+      'audio',
+    ];
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
     );
@@ -183,8 +144,6 @@ const SlideSample2 = ({route}) => {
       (!onLastSlide && isSlideComplete) ||
       isSequenceComplete ||
       isAccordionExpanded ||
-      isVideoPlayed ||
-      isAudioPlayed ||
       isRevealComplete ||
       isRangeComplete ||
       isAnswerChecked;
@@ -198,8 +157,6 @@ const SlideSample2 = ({route}) => {
     isSlideComplete,
     isSequenceComplete,
     isAccordionExpanded,
-    isVideoPlayed,
-    isAudioPlayed,
     isRevealComplete,
     isRangeComplete,
     isAnswerChecked,
@@ -234,6 +191,7 @@ const SlideSample2 = ({route}) => {
   const onLastSlide = activeIndex === data.length - 1;
 
   const handleButtonPress = () => {
+    setTriggerNext(true);
     if (onLastSlide) {
       NetInfo.fetch().then(state => {
         if (state.isConnected) {
@@ -271,6 +229,7 @@ const SlideSample2 = ({route}) => {
   };
 
   const goToPreviousSlide = () => {
+    setTriggerNext(true);
     const previousIndex = activeIndex - 1;
     if (previousIndex >= 0) {
       updateIndex(previousIndex);
@@ -440,7 +399,6 @@ const SlideSample2 = ({route}) => {
                               <TextComponent
                                 key={element._id}
                                 value={element.value}
-                                darkMode={darkMode}
                               />
                             );
                           case 'mix':
@@ -523,7 +481,6 @@ const SlideSample2 = ({route}) => {
                               <VideoPlayer
                                 key={element._id}
                                 value={element.value}
-                                setIsVideoPlayed={setIsVideoPlayed}
                               />
                             );
                           case 'audio':
@@ -531,7 +488,7 @@ const SlideSample2 = ({route}) => {
                               <AudioPlayer
                                 key={element._id}
                                 value={`${element.value}`}
-                                setIsAudioPlayed={setIsAudioPlayed}
+                                onNext={triggerNext}
                               />
                             );
                           case 'dnd':
@@ -574,10 +531,10 @@ const SlideSample2 = ({route}) => {
 
               {isNextButtonVisible && (
                 <TouchableOpacity
-                  style={tw`flex flex-row items-center ${
-                    !setIsNextButtonVisible ? 'bg-accent-8' : 'bg-accent-6'
-                  } px-4 rounded-full gap-2 h-10`}
-                  onPress={handleNextButtonPress}>
+                  style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
+                    onFirstSlide ? 'mx-auto' : ''
+                  }`}
+                  onPress={handleButtonPress}>
                   <Text
                     style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
                     {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
@@ -586,12 +543,6 @@ const SlideSample2 = ({route}) => {
                 </TouchableOpacity>
               )}
             </View>
-            {showMessage && (
-              <View
-                style={tw`absolute bottom-10 left-1/2 transform -translate-x-1/2 bg-white p-2 rounded shadow`}>
-                <Text style={tw`text-black`}>{message}</Text>
-              </View>
-            )}
           </View>
         </View>
       </ImageBackground>

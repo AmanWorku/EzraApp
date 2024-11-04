@@ -90,14 +90,16 @@ const MainTabNavigator = () => {
 
 const App = () => {
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [initialRoute, setInitialRoute] = useState('Signup');
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const user = await AsyncStorage.getItem('user');
-        if (user) {
-          setIsAuthenticated(true);
+        const storedUser = await AsyncStorage.getItem('user');
+        if (storedUser) {
+          // Dispatch the login action with user data
+          store.dispatch(login(JSON.parse(storedUser)));
+          setInitialRoute('MainTab'); // User is authenticated
         }
       } catch (error) {
         console.error('Failed to get user details', error);
@@ -117,7 +119,7 @@ const App = () => {
       <PersistGate loading={null} persistor={persistor}>
         <NavigationContainer>
           <Stack.Navigator
-            initialRouteName={isAuthenticated ? 'MainTab' : 'Signup'}
+            initialRouteName={initialRoute}
             screenOptions={{
               lazy: true,
             }}>

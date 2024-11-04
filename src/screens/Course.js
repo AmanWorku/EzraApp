@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Animated,
 } from 'react-native';
 import {User, CaretCircleDown} from 'phosphor-react-native';
 import tw from './../../tailwind';

@@ -42,9 +42,12 @@ const SelectedDevotional = ({route}) => {
   const devotional = devotionals.find(item => item._id === devotionalId) || {};
 
   const tailwindStyles = StyleSheet.create({
-    p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
-      : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`,
+    p: {
+      ...(darkMode
+        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
+      marginVertical: -15,
+    },
     a: {
       ...tw`text-accent-6 font-nokia-bold text-sm underline`,
     },
@@ -153,10 +156,7 @@ const SelectedDevotional = ({route}) => {
             </Text>
           </View>
           <View style={tw`mt-6`}>
-            <HTMLView
-              value={devotional.body[0]} // Assuming body[0] contains HTML string
-              stylesheet={tailwindStyles}
-            />
+            <HTMLView value={devotional.body[0]} stylesheet={tailwindStyles} />
           </View>
           <View
             style={[

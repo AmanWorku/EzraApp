@@ -10,7 +10,7 @@ const getYoutubeVideoId = url => {
   return match && match[2].length === 11 ? match[2] : null;
 };
 
-const VideoPlayer = ({value, setIsVideoPlayed}) => {
+const VideoPlayer = ({value}) => {
   const [loading, setLoading] = useState(true); // State to manage loading indicator
   const videoId = getYoutubeVideoId(value);
 
@@ -71,7 +71,6 @@ const VideoPlayer = ({value, setIsVideoPlayed}) => {
 
   const onMessage = event => {
     if (event.nativeEvent.data === 'videoPlayed') {
-      setIsVideoPlayed(true);
     } else if (event.nativeEvent.data === 'videoReady') {
       setLoading(false); // Hide loading indicator when video is ready
     }
