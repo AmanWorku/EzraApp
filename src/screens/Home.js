@@ -129,6 +129,7 @@ const Home = () => {
 
   const publishedCourses = courses.filter(course => course.published);
   const lastCourse = publishedCourses[publishedCourses.length - 1];
+  console.log('navigation:', navigation.getState());
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -191,12 +192,13 @@ const Home = () => {
                 </View>
                 <TouchableOpacity
                   style={tw`bg-accent-6 px-4 py-1 rounded-full`}
-                  onPress={() =>
-                    navigation.navigate('Devotional', {
+                  onPress={() => {
+                    console.log('Navigating to SelectedDevotional');
+                    navigation.navigate('DevotionalStack', {
                       screen: 'SelectedDevotional',
                       params: {devotionalId: devotionToDisplay._id},
-                    })
-                  }>
+                    });
+                  }}>
                   <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
                     ክፈት
                   </Text>
