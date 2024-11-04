@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import tw from './../../../tailwind';
-import {ListBullets, CheckCircle, Circle, XCircle} from 'phosphor-react-native';
+import {ListBullets, CheckCircle, XCircle, Lock} from 'phosphor-react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {useGetCourseByIdQuery} from './../../services/api';
 import {useNavigation} from '@react-navigation/core';
@@ -137,7 +137,7 @@ const FullScreenMenu = ({
                 {unlocked ? (
                   <CheckCircle size={20} weight="fill" color={'#EA9215'} />
                 ) : (
-                  <Circle size={20} color={'#EA9215'} />
+                  <Lock size={20} color={'#EA9215'} />
                 )}
               </View>
               <View style={tw`border-b border-accent-6 h-1 flex-grow`} />

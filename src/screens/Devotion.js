@@ -10,13 +10,12 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import handleDownload from '../components/handleDownload';
 import {handleShare} from '../components/handleShare';
 import {
-  List,
   User,
   ArrowSquareUpRight,
   DownloadSimple,
@@ -27,6 +26,7 @@ import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {toEthiopian} from 'ethiopian-date';
 import HTMLView from 'react-native-htmlview';
 import ErrorScreen from '../components/ErrorScreen';
+import PreviousDevotions from './DevotionScreens/PreviousDevotions';
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -37,53 +37,8 @@ const Devotion = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
 
-  const [imageHeight, setImageHeight] = useState(null);
-  const [imageWidth, setImageWidth] = useState(null);
-
-  const handleImageLayout = ({nativeEvent}) => {
-    const {width, height} = nativeEvent.layout;
-    setImageWidth(width);
-    if (devotionToDisplay.image) {
-      const {width: imageWidth, height: imageHeight} = Image.resolveAssetSource(
-        {uri: devotionToDisplay.image},
-      );
-      const newHeight = (height * imageHeight) / imageWidth;
-      setImageHeight(newHeight);
-    }
-  };
-
-  const tailwindStyles = StyleSheet.create({
-    p: {
-      ...(darkMode
-        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
-        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
-      marginVertical: -15,
-    },
-    a: {
-      ...tw`text-accent-6 font-nokia-bold text-sm underline`,
-    },
-    h1: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
-      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
-    h2: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
-      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
-    h3: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
-      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
-  });
-
-  const onRefresh = useCallback(async () => {
-    try {
-      setIsRefreshing(true);
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [refetch]);
-
   const ethiopianMonths = [
-    '', // There is no month 0
+    '',
     'መስከረም',
     'ጥቅምት',
     'ህዳር',
@@ -96,18 +51,42 @@ const Devotion = () => {
     'ሰኔ',
     'ሐምሌ',
     'ነሐሴ',
-    'ጳጉሜ', // 13th month
+    'ጳጉሜ',
   ];
 
+  const tailwindStyles = StyleSheet.create({
+    p: {
+      ...(darkMode
+        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
+      marginVertical: -15,
+    },
+    a: tw`text-accent-6 font-nokia-bold text-sm underline`,
+    h1: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-2xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-2xl leading-snug`,
+    h2: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-xl leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-xl leading-snug`,
+    h3: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
+      : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+  });
+
+  const onRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    await refetch();
+    setIsRefreshing(false);
+  }, [refetch]);
+
   useEffect(() => {
-    if (devotions && devotions.length > 0) {
+    if (devotions.length > 0) {
       const today = new Date();
-      const ethiopianDate = toEthiopian(
+      const [year, month, day] = toEthiopian(
         today.getFullYear(),
         today.getMonth() + 1,
         today.getDate(),
       );
-      const [year, month, day] = ethiopianDate;
       const ethiopianMonth = ethiopianMonths[month];
       const todaysDevotion = devotions.find(
         devotion =>
@@ -117,18 +96,28 @@ const Devotion = () => {
     }
   }, [devotions]);
 
-  useEffect(() => {
-    refetch();
-  }, [devotions, refetch]);
+  const previousDevotions = useMemo(() => {
+    const today = new Date();
+    const [year, month, day] = toEthiopian(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      today.getDate(),
+    );
+    const ethiopianMonth = ethiopianMonths[month];
+    return devotions
+      .filter(
+        devotion =>
+          devotion.month === ethiopianMonth && Number(devotion.day) < day,
+      )
+      .sort((a, b) => Number(b.day) - Number(a.day))
+      .slice(0, 4);
+  }, [devotions]);
 
   if (!devotions || devotions.length === 0) {
     return <ErrorScreen />;
   }
 
   const devotionToDisplay = selectedDevotion || devotions[0];
-
-  // console.log(devotionToDisplay);
-
   const url = `${devotionToDisplay.image}`;
 
   if (isFetching) {
@@ -154,7 +143,8 @@ const Devotion = () => {
               colors={['#EA9215']}
               tintColor="#EA9215"
             />
-          }>
+          }
+          removeClippedSubviews={true}>
           <View style={tw`flex flex-row justify-between my-4`}>
             <View style={tw`border-b border-accent-6`}>
               <Text
@@ -309,47 +299,7 @@ const Devotion = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={tw`flex flex-row flex-wrap justify-between mt-4`}>
-            {[...devotions].slice(0, 4).map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={tw`w-[47.5%] h-35 mb-4 rounded-2 overflow-hidden`}
-                onPress={() =>
-                  navigation.navigate('SelectedDevotional', {
-                    devotionalId: item._id,
-                  })
-                }>
-                <ImageBackground
-                  source={{
-                    uri: `${item.image}`,
-                  }}
-                  style={tw`w-full h-full justify-end `}
-                  imageStyle={tw`rounded-lg`}>
-                  <View
-                    style={[
-                      tw`absolute inset-0 bg-accent-10 bg-opacity-60 rounded-lg`,
-                      darkMode ? tw`bg-accent-11 bg-opacity-70` : null,
-                    ]}>
-                    <ArrowSquareUpRight
-                      size={32}
-                      weight="fill"
-                      style={tw`text-white self-end m-2`}
-                      color="#F8F8F8"
-                    />
-                    <View style={tw`flex absolute bottom-0 left-0 my-2`}>
-                      <Text style={tw`font-nokia-bold text-white text-lg mx-2`}>
-                        {item.title}
-                      </Text>
-                      <Text
-                        style={tw`font-nokia-bold text-white text-sm mx-2 text-accent-2`}>
-                        {item.month} {item.day}
-                      </Text>
-                    </View>
-                  </View>
-                </ImageBackground>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <PreviousDevotions devotions={devotions} darkMode={darkMode} />
         </ScrollView>
       </SafeAreaView>
     </View>

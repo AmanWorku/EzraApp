@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import Slider from '@react-native-community/slider';
 import TrackPlayer, {
   useTrackPlayerEvents,
@@ -12,12 +12,15 @@ import tw from '../../../../tailwind';
 
 const AudioPlayer = ({value, onNext}) => {
   const [playbackState, setPlaybackState] = useState(State.None);
+  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
   const [error, setError] = useState(null);
   const {position, duration} = useProgress();
 
-  // Listen for changes in playback state (Playing, Paused, etc.)
   useTrackPlayerEvents([Event.PlaybackState], event => {
     setPlaybackState(event.state);
+    if (event.state === State.Playing || event.state === State.Paused) {
+      setIsLoading(false); // Stop loading once audio starts or pauses
+    }
   });
 
   useEffect(() => {
@@ -27,6 +30,7 @@ const AudioPlayer = ({value, onNext}) => {
     }
 
     const startPlayer = async () => {
+      setIsLoading(true); // Start loading when initializing player
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add({
         id: 'trackId',
@@ -37,11 +41,11 @@ const AudioPlayer = ({value, onNext}) => {
     };
 
     startPlayer().catch(err => {
+      setIsLoading(false); // Stop loading in case of error
       setError(`Failed to load the sound: ${err.message}`);
       console.error('Failed to load the sound', err);
     });
 
-    // Cleanup: Reset the player when component unmounts or value changes
     return () => {
       TrackPlayer.reset(); // Use reset instead of destroy
     };
@@ -58,9 +62,11 @@ const AudioPlayer = ({value, onNext}) => {
   };
 
   const togglePlayback = async () => {
-    if (playbackState === State.Playing) {
+    const currentState = await TrackPlayer.getState();
+    if (currentState === State.Playing) {
       await TrackPlayer.pause();
     } else {
+      setIsLoading(true); // Start loading when play is pressed
       await TrackPlayer.play();
     }
   };
@@ -84,12 +90,12 @@ const AudioPlayer = ({value, onNext}) => {
         minimumValue={0}
         maximumValue={duration}
         onValueChange={handleSeek}
-        minimumTrackTintColor="#1FB28A"
+        minimumTrackTintColor="#EA9215"
         maximumTrackTintColor="#d3d3d3"
-        thumbTintColor="#1FB28A"
+        thumbTintColor="#EA9215"
       />
 
-      <View style={tw`flex flex-row justify-between w-full px-2`}>
+      <View style={tw`flex flex-row justify-between w-full px-2 mt-[-8]`}>
         <Text style={tw`font-nokia-bold text-primary-1`}>
           {formatTime(position)}
         </Text>
@@ -97,11 +103,15 @@ const AudioPlayer = ({value, onNext}) => {
           {formatTime(duration)}
         </Text>
       </View>
-      <TouchableOpacity onPress={togglePlayback} style={tw`mt-2`}>
-        {playbackState === State.Playing ? (
-          <Pause size={36} color="#1FB28A" />
+
+      {/* Play/Pause Button or Loading Spinner */}
+      <TouchableOpacity onPress={togglePlayback} style={tw`mt-[-18]`}>
+        {isLoading ? (
+          <ActivityIndicator size={36} color="#EA9215" /> // Loading Spinner
+        ) : playbackState === State.Playing ? (
+          <Pause size={36} color="#EA9215" /> // Pause icon when playing
         ) : (
-          <Play size={36} color="#1FB28A" />
+          <Play size={36} color="#EA9215" /> // Play icon when paused or stopped
         )}
       </TouchableOpacity>
     </View>
