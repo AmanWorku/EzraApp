@@ -6,6 +6,7 @@ import {ArrowCircleDown, ArrowCircleUp} from 'phosphor-react-native';
 
 const Sequence = ({value, setIsSequenceComplete}) => {
   const carouselRef = useRef(null);
+
   const handlePrev = () => {
     const currentIndex = carouselRef.current?.getCurrentIndex();
     if (currentIndex > 0) {
@@ -24,6 +25,7 @@ const Sequence = ({value, setIsSequenceComplete}) => {
         animated: true,
       });
     } else {
+      // Set sequence as complete when the next button is clicked on the last item
       setIsSequenceComplete(true);
     }
   };

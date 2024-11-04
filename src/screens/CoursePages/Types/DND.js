@@ -16,7 +16,7 @@ const DND = ({value, setIsAnswerChecked}) => {
       setLocalIsAnswerChecked(true);
       setIsAnswerChecked(true); // This updates the parent component's state
 
-      if (selectedAnswer.text === value.correctAnswer) {
+      if (selectedAnswer.text === value.correctDndAnswer) {
         return Toast.show({
           type: 'success',
           text1: 'Correct Answer!',

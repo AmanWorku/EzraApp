@@ -443,15 +443,17 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'img':
                             return (
-                              <ImageComponent
-                                key={element._id}
-                                value={element.value}
-                                toggleModal={toggleModal}
-                                isModalVisible={isModalVisible}
-                                isImageLoaded={isImageLoaded}
-                                handleImageLoad={handleImageLoad}
-                                darkMode={darkMode}
-                              />
+                              <GestureHandlerRootView style={{flex: 1}}>
+                                <ImageComponent
+                                  key={element._id}
+                                  value={element.value}
+                                  toggleModal={toggleModal}
+                                  isModalVisible={isModalVisible}
+                                  isImageLoaded={isImageLoaded}
+                                  handleImageLoad={handleImageLoad}
+                                  darkMode={darkMode}
+                                />
+                              </GestureHandlerRootView>
                             );
                           case 'quiz':
                             return (
