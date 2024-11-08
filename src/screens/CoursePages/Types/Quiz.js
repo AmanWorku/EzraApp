@@ -61,9 +61,17 @@ const Quiz = ({value, setIsAnswerChecked}) => {
       </View>
       <TouchableOpacity
         onPress={checkAnswer}
-        style={tw`mt-4 bg-primary-2 px-4 py-2 rounded-lg`}
+        style={[
+          tw`mt-4 px-4 py-2 rounded-lg`,
+          isAnswerChecked ? tw`bg-accent-6` : tw`bg-primary-2`,
+        ]}
         disabled={!selectedAnswer || isAnswerChecked}>
-        <Text style={tw`font-nokia-bold text-secondary-6`}>
+        <Text
+          style={
+            isAnswerChecked
+              ? tw`font-nokia-bold text-primary-1`
+              : tw`font-nokia-bold text-secondary-6`
+          }>
           {isAnswerChecked ? 'Answer Checked' : 'Check Answer'}
         </Text>
       </TouchableOpacity>

@@ -62,13 +62,19 @@ const TextComponent = ({value}) => {
       }
 
       if (domNode.name === 'u') {
+        const fontSizeStyle = getFontSizeStyle();
+
         return (
           <View style={getAlignStyle()}>
-            <Text style={[styles.underline, styles.paragraphText]}>
+            <Text style={[fontSizeStyle, styles.underline]}>
               {domToReact(domNode.children, renderOptions)}
             </Text>
           </View>
         );
+      }
+
+      if (domNode.name === 'br') {
+        return <Text></Text>;
       }
 
       // Render list item

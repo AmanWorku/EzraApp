@@ -376,7 +376,7 @@ const SlideSample2 = ({route}) => {
                 return (
                   <>
                     <Text
-                      style={tw`text-primary-1 text-3xl font-nokia-bold text-center mb-8`}>
+                      style={tw`text-accent-6 text-3xl font-nokia-bold text-center mb-8`}>
                       {slides.slide}
                     </Text>
                     <View key={slides._id} style={tw`flex gap-4`}>
