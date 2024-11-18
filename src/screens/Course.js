@@ -189,8 +189,8 @@ const Course = () => {
                       style={tw`mt-2 mx-2 h-2 rounded-full`}
                     />
                   )}
-                  <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-                    የአጠናን ዘዴዎች
+                  <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
+                    {course.category}
                   </Text>
                   <Text
                     style={[
