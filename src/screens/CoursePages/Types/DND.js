@@ -19,12 +19,12 @@ const DND = ({value, setIsAnswerChecked}) => {
       if (selectedAnswer.text === value.correctDndAnswer) {
         return Toast.show({
           type: 'success',
-          text1: 'Correct Answer!',
+          text1: 'በትክክል መልሰዋል!',
         });
       } else {
         return Toast.show({
           type: 'error',
-          text1: 'Wrong Answer!',
+          text1: 'የመረጡት መልስ የተሳሳተ ነው!',
         });
       }
     }
