@@ -2,15 +2,14 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  Image,
-  TouchableOpacity,
   Text,
   View,
-  ImageBackground,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
-import {User, BookOpenText, ArrowSquareUpRight} from 'phosphor-react-native';
+import {User} from 'phosphor-react-native';
+import Toast from 'react-native-toast-message';
 import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
@@ -20,6 +19,10 @@ import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
 import {toEthiopian} from 'ethiopian-date';
 import ErrorScreen from '../components/ErrorScreen';
 import PreviousDevotions from './DevotionScreens/PreviousDevotions';
+import NetInfo from '@react-native-community/netinfo';
+import DevotionCard from '../components/DevotionCard';
+import CourseCard from '../components/CourseCard';
+import Header from '../components/Header';
 
 const ethiopianMonths = [
   '', // There is no month 0
@@ -41,18 +44,23 @@ const ethiopianMonths = [
 const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
+
   const {
     data: devotions = [],
     isFetching,
-    refetch,
+    refetch: refetchDevotions,
     error,
   } = useGetDevotionsQuery();
+
   const {
     data: courses = [],
-    courseIsFetching,
-    courseError,
+    isFetching: courseIsFetching,
+    refetch: refetchCourses,
+    error: courseError,
   } = useGetCoursesQuery();
 
   const [selectedDevotion, setSelectedDevotion] = useState(null);
@@ -64,14 +72,32 @@ const Home = () => {
     });
   };
 
-  const onRefresh = useCallback(async () => {
-    try {
-      setIsRefreshing(true);
-      await refetch();
-    } finally {
-      setIsRefreshing(false);
+  const fetchData = useCallback(async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      setHasError(true);
+      setIsLoading(false);
+      return;
     }
-  }, [refetch]);
+    try {
+      setIsLoading(true);
+      setHasError(false);
+      await Promise.all([refetchDevotions(), refetchCourses()]);
+    } catch (e) {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [refetchDevotions, refetchCourses]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     if (devotions && devotions.length > 0) {
@@ -91,13 +117,31 @@ const Home = () => {
     }
   }, [devotions]);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  const onRefresh = useCallback(async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      return;
+    }
+    try {
+      setIsRefreshing(true);
+      setHasError(false);
+      await Promise.all([refetchDevotions(), refetchCourses()]);
+    } catch (e) {
+      setHasError(true);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [refetchDevotions, refetchCourses]);
 
-  if (courseIsFetching && isFetching && !devotions.length) {
+  if ((courseIsFetching && isFetching && !devotions.length) || isLoading) {
     return (
-      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+      <SafeAreaView
+        style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
           Loading
@@ -106,13 +150,15 @@ const Home = () => {
     );
   }
 
-  if (error || courseError) {
-    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
+  if (error || courseError || hasError) {
+    console.log(courseError, error, hasError);
+    return <ErrorScreen refetch={fetchData} darkMode={darkMode} />;
   }
 
   if (!devotions || devotions.length === 0) {
     return (
-      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+      <SafeAreaView
+        style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
           Loading
@@ -123,16 +169,13 @@ const Home = () => {
 
   const devotionToDisplay = selectedDevotion || devotions[0];
 
-  if (!isFetching && isLoading) {
-    setIsLoading(false);
-  }
-
   const publishedCourses = courses.filter(course => course.published);
   const lastCourse = publishedCourses[publishedCourses.length - 1];
+  console.log('navigation:', navigation.getState());
 
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
-      <SafeAreaView style={tw`flex mx-auto w-[92%]`}>
+    <View style={darkMode ? tw`bg-secondary-9 flex-1` : tw`flex-1`}>
+      <SafeAreaView style={tw`flex mx-auto w-11/12`}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           refreshControl={
@@ -143,76 +186,13 @@ const Home = () => {
               tintColor="#EA9215"
             />
           }>
-          <View style={tw`flex flex-row justify-between my-4`}>
-            <View style={tw`border-b border-accent-6`}>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-xl text-secondary-6 text-center`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}>
-                Home
-              </Text>
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate('Setting')}>
-              <User
-                size={32}
-                weight="bold"
-                style={[
-                  tw`text-secondary-6`,
-                  darkMode ? tw`text-primary-1` : null,
-                ]}
-              />
-            </TouchableOpacity>
-          </View>
+          <Header darkMode={darkMode} navigation={navigation} />
           {devotionToDisplay && (
-            <View
-              style={[
-                tw`border-2 border-accent-6 mt-6 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,
-                darkMode ? tw`bg-secondary-8` : null,
-              ]}>
-              <View
-                style={tw`flex flex-row w-[100%] justify-between items-center`}>
-                <View style={tw`flex flex-row items-center gap-2`}>
-                  <BookOpenText
-                    size={32}
-                    weight="bold"
-                    style={tw`text-accent-6`}
-                  />
-                  <Text
-                    style={[
-                      tw`text-secondary-6 font-nokia-bold text-lg`,
-                      darkMode ? tw`text-primary-2` : null,
-                    ]}>
-                    የዕለቱ ጥቅስ -
-                  </Text>
-                  <Text style={tw`text-accent-6 font-nokia-bold text-lg`}>
-                    {devotionToDisplay.month} {devotionToDisplay.day}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  style={tw`bg-accent-6 px-4 py-1 rounded-full`}
-                  onPress={() =>
-                    navigation.navigate('Devotional', {
-                      screen: 'SelectedDevotional',
-                      params: {devotionalId: devotionToDisplay._id},
-                    })
-                  }>
-                  <Text style={tw`text-primary-1 font-nokia-bold text-sm`}>
-                    ክፈት
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={tw`border-b border-accent-6 mt-2 mb-1`} />
-              <View>
-                <Text
-                  style={[
-                    tw`font-nokia-bold text-lg text-secondary-6`,
-                    darkMode ? tw`text-primary-2` : null,
-                  ]}>
-                  {devotionToDisplay.verse}
-                </Text>
-              </View>
-            </View>
+            <DevotionCard
+              devotion={devotionToDisplay}
+              darkMode={darkMode}
+              navigation={navigation}
+            />
           )}
           <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
           <View style={tw`flex flex-row justify-between items-center`}>
@@ -232,34 +212,11 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           {lastCourse && (
-            <View style={tw`border border-accent-6 mt-4 rounded-4 p-2`}>
-              <View style={tw`h-48`}>
-                <Image
-                  source={{
-                    uri: `${lastCourse.image}`,
-                  }}
-                  style={tw`w-full h-full rounded-3`}
-                />
-              </View>
-              <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-                {lastCourse.title}
-              </Text>
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-6 text-2xl`,
-                  darkMode ? tw`text-primary-3` : null,
-                ]}>
-                {lastCourse.title}
-              </Text>
-              <TouchableOpacity
-                style={tw`bg-accent-6 px-4 py-2 rounded-full w-36 mt-2`}
-                onPress={() => handleButtonPress(lastCourse._id)}>
-                <Text
-                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                  ኮርሱን ክፈት
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <CourseCard
+              course={lastCourse}
+              darkMode={darkMode}
+              handleButtonPress={handleButtonPress}
+            />
           )}
           <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
           <View style={tw`flex flex-row justify-between items-center`}>

@@ -73,8 +73,9 @@ const Course = () => {
         return p.courseId === courseId;
       });
 
-    const totalChapter = courses?.find(course => course._id === courseId)
-      ?.chapters.length;
+    const totalChapter = courses?.find(
+      course => course._id === courseId,
+    )?.chapterCount;
 
     //calculate the percentage
     if (userProgress && totalChapter) {
@@ -189,8 +190,8 @@ const Course = () => {
                       style={tw`mt-2 mx-2 h-2 rounded-full`}
                     />
                   )}
-                  <Text style={tw`font-nokia-bold text-accent-6 text-xl mt-2`}>
-                    የአጠናን ዘዴዎች
+                  <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
+                    {course.category}
                   </Text>
                   <Text
                     style={[
@@ -210,7 +211,7 @@ const Course = () => {
                     </TouchableOpacity>
                     <View style={tw`flex flex-row items-center gap-1`}>
                       <Text style={tw`font-nokia-bold text-accent-6 text-lg `}>
-                        {course.chapters.length} {''}ምዕራፎች
+                        {course.chapterCount} {''}ምዕራፎች
                       </Text>
                     </View>
                   </View>
