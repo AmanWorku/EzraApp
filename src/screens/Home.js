@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import {User} from 'phosphor-react-native';
 import Toast from 'react-native-toast-message';
 import {useSelector} from 'react-redux';
 import tw from './../../tailwind';

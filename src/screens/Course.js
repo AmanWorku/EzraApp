@@ -17,6 +17,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import ErrorScreen from '../components/ErrorScreen';
 import {ProgressBar} from 'react-native-paper';
+import NetInfo from '@react-native-community/netinfo';
+import Toast from 'react-native-toast-message';
 
 const Course = () => {
   const {data: courses, error, isLoading, refetch} = useGetCoursesQuery();
@@ -28,6 +30,16 @@ const Course = () => {
   const currentUser = useSelector(state => state.auth.user);
 
   const onRefresh = useCallback(async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      setIsRefreshing(false);
+      return;
+    }
     try {
       setIsRefreshing(true);
       await refetch();
