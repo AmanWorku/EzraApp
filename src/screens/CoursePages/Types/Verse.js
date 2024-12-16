@@ -16,7 +16,7 @@ const VerseSection = ({value}) => {
         onPress={() => setActiveIndex(value[0])}
         style={tw`underline`}>
         <Text
-          style={tw`text-primary-2 bg-accent-7 px-3 py-1 rounded-xl text-lg font-nokia-bold`}>
+          style={tw`text-primary-2 bg-accent-7 px-3 py-1 rounded text-lg font-nokia-bold`}>
           {value[0]}
         </Text>
       </TouchableOpacity>
@@ -35,7 +35,7 @@ const VerseSection = ({value}) => {
               }
             }}>
             <View
-              style={tw`w-[90%] max-w-lg bg-secondary-6 bg-opacity-85 shadow-2xl px-4 py-6 rounded-lg my-2 border border-accent-6 relative`}>
+              style={tw`w-[90%] max-w-lg bg-secondary-8 bg-opacity-95 shadow-2xl px-4 py-6 rounded-lg my-2 border border-accent-6 relative`}>
               <Text
                 style={tw`absolute top-[-1rem] self-center transform -translate-x-1/2 text-lg text-primary-2 bg-accent-8 px-4 py-1 rounded-md shadow-md font-nokia-bold`}>
                 {value[0]}
