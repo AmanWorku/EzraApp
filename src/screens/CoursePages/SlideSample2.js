@@ -400,10 +400,12 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'text':
                             return (
-                              <TextComponent
-                                key={element._id}
-                                value={element.value}
-                              />
+                              <View style={tw`flex w-[100%]`}>
+                                <TextComponent
+                                  key={element._id}
+                                  value={element.value}
+                                />
+                              </View>
                             );
                           case 'mix':
                             return (

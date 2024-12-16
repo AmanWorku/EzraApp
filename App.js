@@ -25,6 +25,7 @@ import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
 import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
+import {onCreateNotification} from './src/services/NotificationService';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -39,6 +40,10 @@ const MainTabNavigator = () => {
       dispatch(login(userData)); // Dispatch the login action
     }
   }, [dispatch, userData]);
+
+  useEffect(() => {
+    onCreateNotification();
+  }, []);
 
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
