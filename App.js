@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Platform, StatusBar} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  StatusBar,
+  PermissionsAndroid,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -26,8 +31,11 @@ import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 import {onCreateNotification} from './src/services/NotificationService';
+import messaging from '@react-native-firebase/messaging';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const TOPIC = 'Daily Devotion';
 
 const MainTabNavigator = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -94,9 +102,87 @@ const MainTabNavigator = () => {
 };
 
 const App = () => {
+  const checkApplicationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+      } catch (error) {}
+    }
+  };
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    console.log('Authorization status (authStatus):', authStatus);
+    return (
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    );
+  };
+
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
+  useEffect(() => {
+    checkApplicationPermission();
+    if (requestUserPermission()) {
+      messaging()
+        .getToken()
+        .then(fcmToken => {
+          console.log('FCM Token >', fcmToken);
+        });
+    } else {
+      console.log('Not Authorization status');
+    }
+
+    messaging()
+      .getInitialNotification()
+      .then(async remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'getInitial Notification:' +
+              'Notification caused app to open from quit state',
+          );
+          console.log(remoteMessage);
+          alert(
+            'getInitial Notification: Notification caused app to' +
+              'open from quit state',
+          );
+        }
+      });
+
+    messaging().onNotificationOpenedApp(async remoteMessage => {
+      if (remoteMessage) {
+        console.log(
+          'onNotificationOpenedApp፡' +
+            'Notification caused app to open from background state',
+        );
+        console.log(remoteMessage);
+        console.log(
+          'onNotificationOpenedApp: Notification caused app to' +
+            'open from background state',
+        );
+      }
+    });
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Message handled in the background!', remoteMessage);
+    });
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      alert('A new FCM message arrived!');
+      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    messaging()
+      .subscribeToTopic(TOPIC)
+      .then(() => {
+        console.log('Topic: $(TOPIC) Suscribed');
+      });
+    return () => unsubscribe;
+    // messaging().unsubscribeFromTopic (TOPIC);
+  }, []);
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "542115569833",
-    "project_id": "ezra-seminary-dbf24",
-    "storage_bucket": "ezra-seminary-dbf24.appspot.com"
+    "project_number": "1096965053624",
+    "project_id": "ezra-seminary-ffc4e",
+    "storage_bucket": "ezra-seminary-ffc4e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:542115569833:android:cc33f87d0d2403bb8a09b8",
+        "mobilesdk_app_id": "1:1096965053624:android:7b5b82183f80ce8ffb284d",
         "android_client_info": {
           "package_name": "com.ezraapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB220P2ZJ4kmpwyYD6TAytKLg6WIASCFAA"
+          "current_key": "AIzaSyCIYjhqUjz_rNQNAqL6sNtmpdirZbkeFD8"
         }
       ],
       "services": {
