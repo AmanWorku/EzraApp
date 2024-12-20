@@ -32,6 +32,9 @@ import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 import {onCreateNotification} from './src/services/NotificationService';
 import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
+import {Linking} from 'react-native';
+import {navigationRef} from './src/navigation/NavigationRef';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -120,69 +123,100 @@ const App = () => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL
     );
   };
+  const navigateToScreen = screen => {
+    if (screen) {
+      // Example of navigation
+      navigationRef.current?.navigate(screen);
+    }
+  };
 
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
   useEffect(() => {
-    checkApplicationPermission();
-    if (requestUserPermission()) {
-      messaging()
-        .getToken()
-        .then(fcmToken => {
-          console.log('FCM Token >', fcmToken);
-        });
-    } else {
-      console.log('Not Authorization status');
-    }
+    // Request permissions
+    const requestPermissions = async () => {
+      const authStatus = await messaging().requestPermission();
+      console.log('Authorization status:', authStatus);
+    };
 
+    requestPermissions();
+
+    // Handle foreground notifications
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', remoteMessage);
+
+      // Display a notification popup for foreground messages
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default', // Ensure the channel is created
+          pressAction: {
+            id: 'default', // Define an action
+          },
+        },
+      });
+    });
+
+    // Handle notification when app is opened from quit state
     messaging()
       .getInitialNotification()
-      .then(async remoteMessage => {
+      .then(remoteMessage => {
         if (remoteMessage) {
           console.log(
-            'getInitial Notification:' +
-              'Notification caused app to open from quit state',
+            'Notification caused app to open from quit state:',
+            remoteMessage,
           );
-          console.log(remoteMessage);
-          alert(
-            'getInitial Notification: Notification caused app to' +
-              'open from quit state',
-          );
+          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
         }
       });
 
-    messaging().onNotificationOpenedApp(async remoteMessage => {
-      if (remoteMessage) {
-        console.log(
-          'onNotificationOpenedApp፡' +
-            'Notification caused app to open from background state',
-        );
-        console.log(remoteMessage);
-        console.log(
-          'onNotificationOpenedApp: Notification caused app to' +
-            'open from background state',
-        );
-      }
-    });
-
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Message handled in the background!', remoteMessage);
-    });
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      alert('A new FCM message arrived!');
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-
-    messaging()
-      .subscribeToTopic(TOPIC)
-      .then(() => {
-        console.log('Topic: $(TOPIC) Suscribed');
+    // Handle notification when app is opened from background state
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from background state:',
+            remoteMessage,
+          );
+          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
+        }
       });
-    return () => unsubscribe;
-    // messaging().unsubscribeFromTopic (TOPIC);
+
+    // Set background message handler
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Background message:', remoteMessage);
+
+      // Use notifee to display a notification
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default',
+          pressAction: {
+            id: 'default',
+          },
+        },
+      });
+    });
+
+    // Create notification channel for Android
+    const createChannel = async () => {
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+    };
+    createChannel();
+
+    // Cleanup subscriptions
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpenedApp();
+    };
   }, []);
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -208,7 +242,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
             initialRouteName={initialRoute}
             screenOptions={{
