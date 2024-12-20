@@ -13,7 +13,7 @@ const MainVerseSection = ({value}) => {
         </Text>
         <Text
           style={tw`text-primary-2 text-lg leading-relaxed py-1 font-nokia-bold text-center`}>
-          "{value[1]}"
+          {value[1]}
         </Text>
       </View>
     </View>
