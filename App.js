@@ -32,9 +32,13 @@ import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 import {onCreateNotification} from './src/services/NotificationService';
 import messaging from '@react-native-firebase/messaging';
-import notifee from '@notifee/react-native';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 import {Linking} from 'react-native';
 import {navigationRef} from './src/navigation/NavigationRef';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -105,6 +109,16 @@ const MainTabNavigator = () => {
 };
 
 const App = () => {
+  const createChannel = async () => {
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+      visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
+      sound: 'default', // Optional: Set a custom sound
+    });
+  };
+
   const checkApplicationPermission = async () => {
     if (Platform.OS === 'android') {
       try {
@@ -123,6 +137,7 @@ const App = () => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL
     );
   };
+
   const navigateToScreen = screen => {
     if (screen) {
       // Example of navigation
@@ -152,6 +167,8 @@ const App = () => {
         body: remoteMessage.notification?.body,
         android: {
           channelId: 'default', // Ensure the channel is created
+          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
           pressAction: {
             id: 'default', // Define an action
           },
@@ -193,21 +210,17 @@ const App = () => {
         title: remoteMessage.notification?.title,
         body: remoteMessage.notification?.body,
         android: {
-          channelId: 'default',
+          channelId: 'default', // Ensure the channel is created
+          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
           pressAction: {
-            id: 'default',
+            id: 'default', // Define an action
           },
         },
       });
     });
 
     // Create notification channel for Android
-    const createChannel = async () => {
-      await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
-      });
-    };
     createChannel();
 
     // Cleanup subscriptions
@@ -233,6 +246,14 @@ const App = () => {
     };
 
     checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    // Set background event handler for notifee
+    notifee.onBackgroundEvent(async ({type, detail}) => {
+      console.log('Background event:', type, detail);
+      // Handle background event
+    });
   }, []);
 
   if (isCheckingLoginStatus) {

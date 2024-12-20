@@ -150,7 +150,6 @@ const Home = () => {
   }
 
   if (error || courseError || hasError) {
-    console.log(courseError, error, hasError);
     return <ErrorScreen refetch={fetchData} darkMode={darkMode} />;
   }
 
@@ -170,7 +169,6 @@ const Home = () => {
 
   const publishedCourses = courses.filter(course => course.published);
   const lastCourse = publishedCourses[publishedCourses.length - 1];
-  console.log('navigation:', navigation.getState());
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 flex-1` : tw`flex-1`}>
