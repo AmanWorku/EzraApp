@@ -222,20 +222,20 @@ const Home = () => {
             <Text
               style={[
                 tw`font-nokia-bold text-secondary-4 text-lg`,
-                darkMode ? tw`text-primary-7` : null,
+                darkMode ? tw`text-primary-3` : null,
               ]}>
               የዚህ ሳምንት ሰንበት ትምህርት
             </Text>
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('SSL')}>
+              onPress={() => navigation.navigate('SSLHome')}>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All SSLs
               </Text>
             </TouchableOpacity>
           </View>
           <HomeCurrentSSL />
-          <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
+          <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
           <View style={tw`flex flex-row justify-between items-center`}>
             <Text
               style={[
@@ -247,7 +247,7 @@ const Home = () => {
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
               onPress={() =>
-                navigation.navigate('Devotional', {
+                navigation.navigate('DevotionHome', {
                   screen: 'AllDevotionals',
                 })
               }>
@@ -257,7 +257,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           {devotions.length > 0 && (
-            <PreviousDevotions devotions={devotions} navigation={navigation} />
+            <PreviousDevotions devotions={devotions} darkMode={darkMode} />
           )}
         </ScrollView>
       </SafeAreaView>
