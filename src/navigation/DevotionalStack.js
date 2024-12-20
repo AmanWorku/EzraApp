@@ -10,7 +10,7 @@ const DevotionalStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Devotional"
+        name="DevotionalHome"
         component={Devotion}
         options={{headerShown: false}}
       />

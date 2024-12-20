@@ -65,7 +65,7 @@ const Home = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
 
   const handleButtonPress = id => {
-    navigation.navigate('CourseHome', {
+    navigation.navigate('Course', {
       screen: 'CourseContent',
       params: {courseId: id},
     });
@@ -182,7 +182,7 @@ const Home = () => {
               refreshing={isFetching}
               onRefresh={onRefresh}
               colors={['#EA9215']}
-              tintColor="#EA9215"
+              tintColor={'#EA9215'}
             />
           }>
           <Header darkMode={darkMode} navigation={navigation} />
