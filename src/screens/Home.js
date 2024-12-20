@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import {User} from 'phosphor-react-native';
 import Toast from 'react-native-toast-message';
 import {useSelector} from 'react-redux';
 import tw from './../../tailwind';
@@ -66,7 +65,7 @@ const Home = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
 
   const handleButtonPress = id => {
-    navigation.navigate('CourseHome', {
+    navigation.navigate('Course', {
       screen: 'CourseContent',
       params: {courseId: id},
     });
@@ -151,7 +150,6 @@ const Home = () => {
   }
 
   if (error || courseError || hasError) {
-    console.log(courseError, error, hasError);
     return <ErrorScreen refetch={fetchData} darkMode={darkMode} />;
   }
 
@@ -171,7 +169,6 @@ const Home = () => {
 
   const publishedCourses = courses.filter(course => course.published);
   const lastCourse = publishedCourses[publishedCourses.length - 1];
-  console.log('navigation:', navigation.getState());
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 flex-1` : tw`flex-1`}>
@@ -183,7 +180,7 @@ const Home = () => {
               refreshing={isFetching}
               onRefresh={onRefresh}
               colors={['#EA9215']}
-              tintColor="#EA9215"
+              tintColor={'#EA9215'}
             />
           }>
           <Header darkMode={darkMode} navigation={navigation} />
@@ -205,7 +202,9 @@ const Home = () => {
             </Text>
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('Course')}>
+              onPress={() =>
+                navigation.navigate('Course', {screen: 'CourseHome'})
+              }>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 ሁሉም ኮርሶች
               </Text>
@@ -223,20 +222,20 @@ const Home = () => {
             <Text
               style={[
                 tw`font-nokia-bold text-secondary-4 text-lg`,
-                darkMode ? tw`text-primary-7` : null,
+                darkMode ? tw`text-primary-3` : null,
               ]}>
               የዚህ ሳምንት ሰንበት ትምህርት
             </Text>
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('SSL')}>
+              onPress={() => navigation.navigate('SSLHome')}>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 All SSLs
               </Text>
             </TouchableOpacity>
           </View>
           <HomeCurrentSSL />
-          <View style={tw`border-b border-primary-7 mt-4 mb-4`} />
+          <View style={tw`border-b border-primary-7 mt-4 mb-2`} />
           <View style={tw`flex flex-row justify-between items-center`}>
             <Text
               style={[
@@ -258,7 +257,7 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           {devotions.length > 0 && (
-            <PreviousDevotions devotions={devotions} navigation={navigation} />
+            <PreviousDevotions devotions={devotions} darkMode={darkMode} />
           )}
         </ScrollView>
       </SafeAreaView>

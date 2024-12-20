@@ -39,6 +39,8 @@ import ErrorScreen from '../../components/ErrorScreen';
 import Reveal from './Types/Reveal';
 import Range from './Types/Range';
 import DND from './Types/DND';
+import VerseSection from './Types/Verse';
+import MainVerseSection from './Types/MainVerse';
 import 'react-native-gesture-handler';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import VideoPlayer from './Types/Video';
@@ -128,6 +130,8 @@ const SlideSample2 = ({route}) => {
       'list',
       'video',
       'audio',
+      'verse',
+      'main-verse',
     ];
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
@@ -396,10 +400,12 @@ const SlideSample2 = ({route}) => {
                             );
                           case 'text':
                             return (
-                              <TextComponent
-                                key={element._id}
-                                value={element.value}
-                              />
+                              <View style={tw`flex w-[100%]`}>
+                                <TextComponent
+                                  key={element._id}
+                                  value={element.value}
+                                />
+                              </View>
                             );
                           case 'mix':
                             return (
@@ -476,6 +482,20 @@ const SlideSample2 = ({route}) => {
                               <Range
                                 key={element._id}
                                 setIsRangeComplete={setIsRangeComplete}
+                              />
+                            );
+                          case 'verse':
+                            return (
+                              <VerseSection
+                                key={element._id}
+                                value={element.value}
+                              />
+                            );
+                          case 'main-verse':
+                            return (
+                              <MainVerseSection
+                                key={element._id}
+                                value={element.value}
                               />
                             );
                           case 'video':

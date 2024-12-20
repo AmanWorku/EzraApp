@@ -26,8 +26,7 @@ const DevotionCard = ({devotion, darkMode, navigation}) => (
       <TouchableOpacity
         style={tw`bg-accent-6 px-4 py-1 rounded-full`}
         onPress={() => {
-          console.log('Navigating to SelectedDevotional');
-          navigation.navigate('DevotionalStack', {
+          navigation.navigate('Devotional', {
             screen: 'SelectedDevotional',
             params: {devotionalId: devotion._id},
           });

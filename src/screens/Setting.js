@@ -171,17 +171,6 @@ const Setting = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-
-        <View
-          style={tw`flex-row w-full justify-between items-center py-4 border-b border-accent-6`}>
-          <View style={tw`flex-row items-center`}>
-            <Bell size={20} weight="fill" color={'#EA9215'} style={tw`mr-2`} />
-            <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-              Enable Notifications
-            </Text>
-          </View>
-          <Switch />
-        </View>
         <View
           style={tw`flex-row w-full justify-between items-center py-4 border-b border-accent-6`}>
           <View style={tw`flex-row items-center`}>

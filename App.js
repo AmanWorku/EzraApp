@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Platform, StatusBar} from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  StatusBar,
+  PermissionsAndroid,
+} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -25,8 +30,19 @@ import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
 import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
+import {onCreateNotification} from './src/services/NotificationService';
+import messaging from '@react-native-firebase/messaging';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
+import {Linking} from 'react-native';
+import {navigationRef} from './src/navigation/NavigationRef';
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const TOPIC = 'Daily Devotion';
 
 const MainTabNavigator = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -39,6 +55,10 @@ const MainTabNavigator = () => {
       dispatch(login(userData)); // Dispatch the login action
     }
   }, [dispatch, userData]);
+
+  useEffect(() => {
+    onCreateNotification();
+  }, []);
 
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
@@ -89,8 +109,126 @@ const MainTabNavigator = () => {
 };
 
 const App = () => {
+  const createChannel = async () => {
+    await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+      importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+      visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
+      sound: 'default', // Optional: Set a custom sound
+    });
+  };
+
+  const checkApplicationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+      } catch (error) {}
+    }
+  };
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    console.log('Authorization status (authStatus):', authStatus);
+    return (
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+    );
+  };
+
+  const navigateToScreen = screen => {
+    if (screen) {
+      // Example of navigation
+      navigationRef.current?.navigate(screen);
+    }
+  };
+
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
+
+  useEffect(() => {
+    // Request permissions
+    const requestPermissions = async () => {
+      const authStatus = await messaging().requestPermission();
+      console.log('Authorization status:', authStatus);
+    };
+
+    requestPermissions();
+
+    // Handle foreground notifications
+    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', remoteMessage);
+
+      // Display a notification popup for foreground messages
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default', // Ensure the channel is created
+          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
+          pressAction: {
+            id: 'default', // Define an action
+          },
+        },
+      });
+    });
+
+    // Handle notification when app is opened from quit state
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage,
+          );
+          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
+        }
+      });
+
+    // Handle notification when app is opened from background state
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from background state:',
+            remoteMessage,
+          );
+          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
+        }
+      });
+
+    // Set background message handler
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+      console.log('Background message:', remoteMessage);
+
+      // Use notifee to display a notification
+      await notifee.displayNotification({
+        title: remoteMessage.notification?.title,
+        body: remoteMessage.notification?.body,
+        android: {
+          channelId: 'default', // Ensure the channel is created
+          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
+          pressAction: {
+            id: 'default', // Define an action
+          },
+        },
+      });
+    });
+
+    // Create notification channel for Android
+    createChannel();
+
+    // Cleanup subscriptions
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnNotificationOpenedApp();
+    };
+  }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -110,6 +248,14 @@ const App = () => {
     checkLoginStatus();
   }, []);
 
+  useEffect(() => {
+    // Set background event handler for notifee
+    notifee.onBackgroundEvent(async ({type, detail}) => {
+      console.log('Background event:', type, detail);
+      // Handle background event
+    });
+  }, []);
+
   if (isCheckingLoginStatus) {
     return <ActivityIndicator />;
   }
@@ -117,7 +263,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}>
           <Stack.Navigator
             initialRouteName={initialRoute}
             screenOptions={{

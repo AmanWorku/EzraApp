@@ -3,8 +3,8 @@ import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {MainTabNavigator} from './MainTabNavigator';
-import {Login, Signup, Welcome} from '..//screens';
+import MainTabNavigator from './MainTabNavigator';
+import {Login, Signup, Welcome} from '../screens';
 
 const Stack = createNativeStackNavigator();
 
