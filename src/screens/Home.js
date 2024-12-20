@@ -204,7 +204,9 @@ const Home = () => {
             </Text>
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
-              onPress={() => navigation.navigate('Course')}>
+              onPress={() =>
+                navigation.navigate('Course', {screen: 'CourseHome'})
+              }>
               <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                 ሁሉም ኮርሶች
               </Text>
@@ -247,7 +249,7 @@ const Home = () => {
             <TouchableOpacity
               style={tw`border border-accent-6 px-4 py-1 rounded-4`}
               onPress={() =>
-                navigation.navigate('DevotionHome', {
+                navigation.navigate('Devotional', {
                   screen: 'AllDevotionals',
                 })
               }>
