@@ -3,35 +3,28 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyBZcdGjYYD53HKZ8vVL9fcbV60M7gdK7zA</string>
-	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.example.EzraApp</string>
+	<string>AIzaSyDXwVjlIURgnX7KCghv71y2Llt_JUgIKSQ</string>
 	<key>GCM_SENDER_ID</key>
-	<string>542115569833</string>
-	<key>GOOGLE_APP_ID</key>
-	<string>1:542115569833:ios:c89042883b6fb17b8a09b8</string>
-	<key>IS_ADS_ENABLED</key>
-	<false/>
-	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
-	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
-	<key>IS_GCM_ENABLED</key>
-	<true/>
-	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSAllowsLocalNetworking</key>
-		<true/>
-	</dict>
+	<string>1096965053624</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.EzraApp</string>
 	<key>PROJECT_ID</key>
-	<string>ezra-seminary-dbf24</string>
+	<string>ezra-seminary-ffc4e</string>
 	<key>STORAGE_BUCKET</key>
-	<string>ezra-seminary-dbf24.appspot.com</string>
+	<string>ezra-seminary-ffc4e.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1096965053624:ios:6d1113f7b5387036fb284d</string>
 </dict>
 </plist>

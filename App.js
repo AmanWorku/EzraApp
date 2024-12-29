@@ -36,13 +36,10 @@ import notifee, {
   AndroidImportance,
   AndroidVisibility,
 } from '@notifee/react-native';
-import {Linking} from 'react-native';
 import {navigationRef} from './src/navigation/NavigationRef';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const TOPIC = 'Daily Devotion';
 
 const MainTabNavigator = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -117,25 +114,6 @@ const App = () => {
       visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
       sound: 'default', // Optional: Set a custom sound
     });
-  };
-
-  const checkApplicationPermission = async () => {
-    if (Platform.OS === 'android') {
-      try {
-        await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
-      } catch (error) {}
-    }
-  };
-
-  const requestUserPermission = async () => {
-    const authStatus = await messaging().requestPermission();
-    console.log('Authorization status (authStatus):', authStatus);
-    return (
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL
-    );
   };
 
   const navigateToScreen = screen => {
@@ -298,3 +276,8 @@ const App = () => {
 };
 
 export default App;
+
+// Register background handler
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});

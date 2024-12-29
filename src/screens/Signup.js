@@ -167,10 +167,17 @@ const Signup = ({navigation}) => {
       <ScrollView
         style={tw`flex mx-auto w-[92%]`}
         showsVerticalScrollIndicator={false}>
-        <View style={tw`my-8`}>
+        <View style={tw`my-8 w-100% items-center`}>
           <Text
             style={[
-              tw`font-Lato-Black text-4xl text-secondary-6 w-80%`,
+              tw`font-nokia-bold text-4xl text-secondary-6 text-center w-80%`,
+              darkMode ? tw`text-accent-6` : null,
+            ]}>
+            እንኳን ደህና መጡ!
+          </Text>
+          <Text
+            style={[
+              tw`font-Lato-Black text-3xl text-secondary-6 w-80% text-center`,
               darkMode ? tw`text-primary-3` : null,
             ]}>
             Create an account
@@ -181,7 +188,7 @@ const Signup = ({navigation}) => {
               darkMode ? tw`text-primary-3` : null,
             ]}>
             You will get to have your own profile and be able to track your
-            progress with the courses you take.
+            progress of the courses you take.
           </Text>
         </View>
         <View style={tw`flex flex-col gap-4`}>
@@ -338,13 +345,6 @@ const Signup = ({navigation}) => {
             </View>
           </View>
         </View>
-        <Text
-          style={[
-            tw`py-2 font-Lato-Bold text-secondary-6`,
-            darkMode ? tw`text-primary-3` : null,
-          ]}>
-          By clicking the Sign Up button, you agree to the public offer.
-        </Text>
         <TouchableOpacity
           style={tw`w-100% py-4 items-center bg-accent-6 rounded-2 my-2`}
           onPress={handleSubmit}
@@ -357,39 +357,6 @@ const Signup = ({navigation}) => {
             </Text>
           )}
         </TouchableOpacity>
-
-        <View style={tw`flex-row my-4 items-center mx-8`}>
-          <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
-          <Text
-            style={[
-              tw`font-Lato-Regular text-secondary-6`,
-              darkMode ? tw`text-primary-3` : null,
-            ]}>
-            OR Sign up with
-          </Text>
-          <View style={tw`flex-1 h-0.5 bg-secondary-3 mx-2`} />
-        </View>
-
-        <View style={tw`flex flex-row justify-center items-center gap-2`}>
-          <TouchableOpacity
-            onPress={() => console.log('Pressed')}
-            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
-            <Image
-              source={require('../assets/facebook.png')}
-              style={tw`h-6 w-6`}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={tw`p-3 bg-accent-2 rounded-full border border-accent-6`}>
-            <Image
-              source={require('../assets/google.png')}
-              style={tw`h-6 w-6`}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
 
         <View style={tw`flex-row justify-center my-4`}>
           <Text
