@@ -1,10 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  ActivityIndicator,
-  Platform,
-  StatusBar,
-  PermissionsAndroid,
-} from 'react-native';
+import {ActivityIndicator, Platform, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -30,13 +25,13 @@ import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
 import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
-import {onCreateNotification} from './src/services/NotificationService';
 import messaging from '@react-native-firebase/messaging';
 import notifee, {
   AndroidImportance,
   AndroidVisibility,
 } from '@notifee/react-native';
 import {navigationRef} from './src/navigation/NavigationRef';
+import {onCreateNotification} from './src/services/NotificationService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,10 +47,6 @@ const MainTabNavigator = () => {
       dispatch(login(userData)); // Dispatch the login action
     }
   }, [dispatch, userData]);
-
-  useEffect(() => {
-    onCreateNotification();
-  }, []);
 
   const tabBarStyle = {
     backgroundColor: darkMode ? '#293239' : '#F3F3F3',
@@ -106,23 +97,6 @@ const MainTabNavigator = () => {
 };
 
 const App = () => {
-  const createChannel = async () => {
-    await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-      importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
-      visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
-      sound: 'default', // Optional: Set a custom sound
-    });
-  };
-
-  const navigateToScreen = screen => {
-    if (screen) {
-      // Example of navigation
-      navigationRef.current?.navigate(screen);
-    }
-  };
-
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
@@ -135,24 +109,8 @@ const App = () => {
 
     requestPermissions();
 
-    // Handle foreground notifications
-    const unsubscribeOnMessage = messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', remoteMessage);
-
-      // Display a notification popup for foreground messages
-      await notifee.displayNotification({
-        title: remoteMessage.notification?.title,
-        body: remoteMessage.notification?.body,
-        android: {
-          channelId: 'default', // Ensure the channel is created
-          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
-          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
-          pressAction: {
-            id: 'default', // Define an action
-          },
-        },
-      });
-    });
+    // Initialize notifications
+    onCreateNotification();
 
     // Handle notification when app is opened from quit state
     messaging()
@@ -163,7 +121,6 @@ const App = () => {
             'Notification caused app to open from quit state:',
             remoteMessage,
           );
-          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
         }
       });
 
@@ -175,35 +132,11 @@ const App = () => {
             'Notification caused app to open from background state:',
             remoteMessage,
           );
-          navigateToScreen(remoteMessage.data.screen); // Handle screen navigation
         }
       });
 
-    // Set background message handler
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      console.log('Background message:', remoteMessage);
-
-      // Use notifee to display a notification
-      await notifee.displayNotification({
-        title: remoteMessage.notification?.title,
-        body: remoteMessage.notification?.body,
-        android: {
-          channelId: 'default', // Ensure the channel is created
-          importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
-          visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
-          pressAction: {
-            id: 'default', // Define an action
-          },
-        },
-      });
-    });
-
-    // Create notification channel for Android
-    createChannel();
-
     // Cleanup subscriptions
     return () => {
-      unsubscribeOnMessage();
       unsubscribeOnNotificationOpenedApp();
     };
   }, []);
@@ -224,14 +157,6 @@ const App = () => {
     };
 
     checkLoginStatus();
-  }, []);
-
-  useEffect(() => {
-    // Set background event handler for notifee
-    notifee.onBackgroundEvent(async ({type, detail}) => {
-      console.log('Background event:', type, detail);
-      // Handle background event
-    });
   }, []);
 
   if (isCheckingLoginStatus) {
@@ -280,4 +205,23 @@ export default App;
 // Register background handler
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   console.log('Message handled in the background!', remoteMessage);
+
+  // Use notifee to display a notification
+  await notifee.displayNotification({
+    title: remoteMessage.notification?.title,
+    body: remoteMessage.notification?.body,
+    android: {
+      channelId: 'default', // Ensure the channel is created
+      importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
+      visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
+      pressAction: {
+        id: 'default', // Define an action
+      },
+      largeIcon: remoteMessage.notification.android?.imageUrl,
+      style: {
+        type: notifee.AndroidStyle.BIGPICTURE,
+        picture: remoteMessage.notification.android?.imageUrl,
+      },
+    },
+  });
 });
