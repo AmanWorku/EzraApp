@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Share,
+  Linking,
 } from 'react-native';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
@@ -54,6 +55,12 @@ const Setting = ({navigation}) => {
     } catch (error) {
       console.error('Error sharing the app link:', error);
     }
+  };
+
+  const handleLinkPress = url => {
+    Linking.openURL(url).catch(err =>
+      console.error('Error opening link:', err),
+    );
   };
 
   return (
@@ -180,6 +187,42 @@ const Setting = ({navigation}) => {
             </Text>
           </View>
           <Switch onValueChange={handleToggle} value={darkMode} />
+        </View>
+        <View style={tw`py-4 border-b border-accent-6`}>
+          <TouchableOpacity
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={() =>
+              handleLinkPress('https://ezraseminary.org/contactUs')
+            }>
+            <View style={tw`flex-row items-center`}>
+              <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                Contact Us
+              </Text>
+            </View>
+            <ArrowCircleRight
+              size={24}
+              weight="fill"
+              color={'#EA9215'}
+              style={tw`mr-2`}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={tw`py-4 border-b border-accent-6`}>
+          <TouchableOpacity
+            style={tw`flex-row w-full justify-between items-center`}
+            onPress={() => handleLinkPress('https://ezraseminary.org/aboutUs')}>
+            <View style={tw`flex-row items-center`}>
+              <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                About Us
+              </Text>
+            </View>
+            <ArrowCircleRight
+              size={24}
+              weight="fill"
+              color={'#EA9215'}
+              style={tw`mr-2`}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <TouchableOpacity
