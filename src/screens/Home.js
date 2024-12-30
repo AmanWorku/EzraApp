@@ -101,7 +101,17 @@ const Home = () => {
   }, [refetchDevotions, refetchCourses]);
 
   useEffect(() => {
-    fetchData();
+    const checkInternetAndFetchData = async () => {
+      const netInfo = await NetInfo.fetch();
+      if (!netInfo.isConnected) {
+        setIsOffline(true);
+        setIsLoading(false);
+      } else {
+        fetchData();
+      }
+    };
+
+    checkInternetAndFetchData();
   }, [fetchData]);
 
   useEffect(() => {
@@ -144,7 +154,10 @@ const Home = () => {
     }
   }, [refetchDevotions, refetchCourses]);
 
-  if ((courseIsFetching && isFetching && !devotions.length) || isLoading) {
+  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
+  const coursesToDisplay = isOffline ? persistedCourses : courses;
+
+  if (isLoading) {
     return (
       <SafeAreaView
         style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
@@ -155,13 +168,6 @@ const Home = () => {
       </SafeAreaView>
     );
   }
-
-  if (error || courseError || hasError) {
-    return <ErrorScreen refetch={fetchData} darkMode={darkMode} />;
-  }
-
-  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
-  const coursesToDisplay = isOffline ? persistedCourses : courses;
 
   if (!devotionsToDisplay || devotionsToDisplay.length === 0) {
     return (
