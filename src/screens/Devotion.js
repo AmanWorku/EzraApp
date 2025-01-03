@@ -208,6 +208,7 @@ const Devotion = () => {
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
+              selectable
               style={[
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
@@ -224,7 +225,7 @@ const Devotion = () => {
           </View>
           <View
             style={[
-              tw`border border-accent-6 p-4 rounded-4 mt-4 bg-primary-4 shadow-sm mb-2`,
+              tw`border border-accent-6 p-4 rounded-4 mt-8 bg-primary-4 shadow-sm mb-2`,
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
