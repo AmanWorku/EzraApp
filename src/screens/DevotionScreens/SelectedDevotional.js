@@ -149,6 +149,7 @@ const SelectedDevotional = ({route}) => {
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
+              selectable
               style={[
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
