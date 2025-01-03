@@ -136,21 +136,98 @@ const SSLHome = () => {
       </SafeAreaView>
     );
   }
+
   if (lessonError) {
     return (
-      <>
-        <View style={tw`border border-accent-6 rounded mb-4`}>
-          <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
-            Wait for quarterly update!
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`border border-accent-6 rounded mb-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+              Wait for quarterly update!
+            </Text>
+          </View>
+          <TextInput
+            placeholder="Search SSLs..."
+            value={searchTerm}
+            onChangeText={handleSearch}
+            style={[
+              tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}
+            placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
+          />
+          <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
+            የሩብ አመት ትምህርቶች
           </Text>
-        </View>
-        {/* <CurrentSSL /> */}
-      </>
+          <Text
+            style={[
+              tw`font-nokia-bold text-secondary-6 text-xl`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
+            ያለፉ የሩብ አመት ትምህርቶች
+          </Text>
+          <View style={tw`border-b border-accent-6 my-1`} />
+          <View style={tw`flex flex-col`}>
+            {filteredData.map((item, index) => (
+              <View
+                key={item.id}
+                style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-64`}>
+                <Image
+                  source={{uri: item.cover}}
+                  style={({aspectRatio: 1}, tw`flex-1 w-42% rounded-2`)}
+                />
+                <View style={tw`flex-1 gap-2 justify-between`}>
+                  <View>
+                    <Text style={tw`font-nokia-bold text-sm text-accent-6`}>
+                      {item.human_date}
+                    </Text>
+                    <Text
+                      style={[
+                        tw`font-nokia-bold text-xl text-secondary-6 leading-tight`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      {item.title}
+                    </Text>
+                    <View style={tw`border-b border-accent-6 my-1`} />
+                    <Text
+                      numberOfLines={4}
+                      style={[
+                        tw`font-nokia-bold text-sm text-secondary-6 text-justify mt-2`,
+                        darkMode ? tw`text-primary-1` : null,
+                      ]}>
+                      {'  '}
+                      {item.description}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
+                    onPress={() => handleSSLOpen(item.id)}>
+                    <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
+                      ትምህርቱን ክፈት
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
+
   if (quarterError) {
     return <Text> Error: {quarterError}</Text>;
   }
+
   if (!quarterDetails || !lessonDetails) {
     return <Text>Missing data...</Text>;
   }

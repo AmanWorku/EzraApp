@@ -1,9 +1,14 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, View, StyleShee, Linking} from 'react-native';
 import tw from '../../../../tailwind';
 import parse, {domToReact} from 'html-react-parser';
 
 const TextComponent = ({value}) => {
+  const handleLinkPress = url => {
+    Linking.openURL(url).catch(err =>
+      console.error('Failed to open URL:', err),
+    );
+  };
   const renderOptions = {
     replace: domNode => {
       const getAlignStyle = () => {
@@ -88,6 +93,15 @@ const TextComponent = ({value}) => {
         );
       }
 
+      if (domNode.name === 'a' && domNode.attribs?.href) {
+        return (
+          <Text
+            style={[styles.textBase, styles.linkText, getFontSizeStyle()]}
+            onPress={() => handleLinkPress(domNode.attribs.href)}>
+            {domToReact(domNode.children, renderOptions)}
+          </Text>
+        );
+      }
       // Handle text nodes (fallback)
       if (domNode.type === 'text') {
         return (
@@ -121,6 +135,10 @@ const styles = StyleSheet.create({
   },
   left: {
     alignItems: 'flex-start',
+  },
+  linkText: {
+    color: 'blue',
+    textDecorationLine: 'underline',
   },
 });
 

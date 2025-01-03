@@ -11,6 +11,7 @@ import {
   StatusBar,
   TouchableOpacity,
   SafeAreaView,
+  Modal,
 } from 'react-native';
 import tw from './../../../tailwind';
 import {
@@ -75,6 +76,8 @@ const SlideSample2 = ({route}) => {
   const [isRevealComplete, setIsRevealComplete] = useState(false);
   const [isRangeComplete, setIsRangeComplete] = useState(false);
   const [isNextButtonVisible, setIsNextButtonVisible] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const handleImageLoad = () => {
     setIsImageLoaded(true);
@@ -322,6 +325,29 @@ const SlideSample2 = ({route}) => {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
+  const handleDisabledButtonPress = () => {
+    let message = '';
+    const interactiveTypes = {
+      slide: 'Go through all the texts by clicking the arrows.',
+      sequence: 'Complete the sequence.',
+      accordion: 'Expand all the accordion items.',
+      reveal: 'Reveal all the hidden content.',
+      range: 'Complete the range interaction.',
+      quiz: 'Answer the quiz question.',
+    };
+
+    data[activeIndex]?.elements.forEach(element => {
+      if (interactiveTypes[element.type]) {
+        message = interactiveTypes[element.type];
+      }
+    });
+
+    setPopupMessage(message);
+    setIsPopupVisible(true);
+  };
+
+  const isNextButtonDisabled = !isNextButtonVisible;
+
   return (
     <View style={tw`flex-1`}>
       <FullScreenMenu
@@ -551,19 +577,24 @@ const SlideSample2 = ({route}) => {
                 </TouchableOpacity>
               )}
 
-              {isNextButtonVisible && (
-                <TouchableOpacity
-                  style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
-                    onFirstSlide ? 'mx-auto' : ''
-                  }`}
-                  onPress={handleButtonPress}>
-                  <Text
-                    style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                    {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
-                  </Text>
-                  <CaretCircleRight size={18} weight="fill" color="white" />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10`}
+                onPress={() => {
+                  if (isNextButtonDisabled) {
+                    handleDisabledButtonPress();
+                  } else {
+                    goToNextSlide();
+                  }
+                }}
+                disabled={isNextButtonDisabled}>
+                <Text
+                  style={tw`text-primary-1 font-nokia-bold text-sm text-center ${
+                    isNextButtonDisabled ? 'opacity-50' : ''
+                  }`}>
+                  ቀጣይ
+                </Text>
+                <CaretCircleRight size={18} weight="fill" color="white" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
