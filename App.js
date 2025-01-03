@@ -100,46 +100,46 @@ const App = () => {
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
-  useEffect(() => {
-    // Request permissions
-    const requestPermissions = async () => {
-      const authStatus = await messaging().requestPermission();
-      console.log('Authorization status:', authStatus);
-    };
+  // useEffect(() => {
+  //   // Request permissions
+  //   const requestPermissions = async () => {
+  //     const authStatus = await messaging().requestPermission();
+  //     console.log('Authorization status:', authStatus);
+  //   };
 
-    requestPermissions();
+  //   requestPermissions();
 
-    // Initialize notifications
-    onCreateNotification();
+  //   // Initialize notifications
+  //   onCreateNotification();
 
-    // Handle notification when app is opened from quit state
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage,
-          );
-        }
-      });
+  //   // Handle notification when app is opened from quit state
+  //   messaging()
+  //     .getInitialNotification()
+  //     .then(remoteMessage => {
+  //       if (remoteMessage) {
+  //         console.log(
+  //           'Notification caused app to open from quit state:',
+  //           remoteMessage,
+  //         );
+  //       }
+  //     });
 
-    // Handle notification when app is opened from background state
-    const unsubscribeOnNotificationOpenedApp =
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from background state:',
-            remoteMessage,
-          );
-        }
-      });
+  //   // Handle notification when app is opened from background state
+  //   const unsubscribeOnNotificationOpenedApp =
+  //     messaging().onNotificationOpenedApp(remoteMessage => {
+  //       if (remoteMessage) {
+  //         console.log(
+  //           'Notification caused app to open from background state:',
+  //           remoteMessage,
+  //         );
+  //       }
+  //     });
 
-    // Cleanup subscriptions
-    return () => {
-      unsubscribeOnNotificationOpenedApp();
-    };
-  }, []);
+  //   // Cleanup subscriptions
+  //   return () => {
+  //     unsubscribeOnNotificationOpenedApp();
+  //   };
+  // }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {

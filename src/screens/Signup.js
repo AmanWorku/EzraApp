@@ -51,7 +51,7 @@ const Signup = ({navigation}) => {
   };
 
   const validatePassword = password => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+    const re = /^.{6,}$/;
     return re.test(password);
   };
 
@@ -90,8 +90,7 @@ const Signup = ({navigation}) => {
     }
 
     if (!validatePassword(password)) {
-      errMessage =
-        'Password must be at least 6 characters and include uppercase, lowercase, a number, and a special character.';
+      errMessage = 'Password must be at least 6 characters long.';
       Toast.show({
         type: 'error',
         text1: 'Error during sign up',
@@ -100,7 +99,7 @@ const Signup = ({navigation}) => {
         topOffset: 30,
         bottomOffset: 40,
         textStyle: {fontSize: 14},
-        style: {marginBottom: 30, borderRadius: 10}, // Adjust paddingVertical to increase height
+        style: {marginBottom: 30, borderRadius: 10},
       });
       return;
     }
