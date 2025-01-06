@@ -19,11 +19,13 @@ const HomeCurrentSSL = () => {
     data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
+    refetch: refetchLesson,
   } = useGetSSLOfDayQuery({path: quarter, id: week});
   const {
     data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
+    refetch: refetchQuarter,
   } = useGetSSLOfQuarterQuery(quarter);
 
   useEffect(() => {
@@ -46,6 +48,11 @@ const HomeCurrentSSL = () => {
     });
   };
 
+  const handleRefetch = () => {
+    refetchLesson();
+    refetchQuarter();
+  };
+
   if (lessonIsLoading || quarterIsLoading) {
     return <Text>Loading...</Text>;
   }
@@ -56,6 +63,13 @@ const HomeCurrentSSL = () => {
         <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
           Wait for quarterly update!
         </Text>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-2 mx-auto`}
+          onPress={handleRefetch}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            Reload
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }

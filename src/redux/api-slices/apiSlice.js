@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://ezrabackend.online/', // Replace with your actual base URL
+    baseUrl: 'https://localhost:5100/', // Replace with your actual base URL
     prepareHeaders: async headers => {
       const userString = await AsyncStorage.getItem('user');
       const user = userString ? JSON.parse(userString) : null;
