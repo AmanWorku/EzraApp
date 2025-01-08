@@ -26,12 +26,8 @@ import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 import messaging from '@react-native-firebase/messaging';
-import notifee, {
-  AndroidImportance,
-  AndroidVisibility,
-} from '@notifee/react-native';
 import {navigationRef} from './src/navigation/NavigationRef';
-import {onCreateNotification} from './src/services/NotificationService';
+import {configureNotification} from './src/services/NotificationService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,46 +96,50 @@ const App = () => {
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
-  // useEffect(() => {
-  //   // Request permissions
-  //   const requestPermissions = async () => {
-  //     const authStatus = await messaging().requestPermission();
-  //     console.log('Authorization status:', authStatus);
-  //   };
+  useEffect(() => {
+    // Request permissions
+    const requestPermissions = async () => {
+      const authStatus = await messaging().requestPermission();
+      console.log('Authorization status:', authStatus);
 
-  //   requestPermissions();
+      // Get the token
+      const token = await messaging().getToken();
+      console.log('FCM Token:', token);
+    };
 
-  //   // Initialize notifications
-  //   onCreateNotification();
+    requestPermissions();
 
-  //   // Handle notification when app is opened from quit state
-  //   messaging()
-  //     .getInitialNotification()
-  //     .then(remoteMessage => {
-  //       if (remoteMessage) {
-  //         console.log(
-  //           'Notification caused app to open from quit state:',
-  //           remoteMessage,
-  //         );
-  //       }
-  //     });
+    // Initialize notifications
+    configureNotification();
 
-  //   // Handle notification when app is opened from background state
-  //   const unsubscribeOnNotificationOpenedApp =
-  //     messaging().onNotificationOpenedApp(remoteMessage => {
-  //       if (remoteMessage) {
-  //         console.log(
-  //           'Notification caused app to open from background state:',
-  //           remoteMessage,
-  //         );
-  //       }
-  //     });
+    // Handle notification when app is opened from quit state
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage,
+          );
+        }
+      });
 
-  //   // Cleanup subscriptions
-  //   return () => {
-  //     unsubscribeOnNotificationOpenedApp();
-  //   };
-  // }, []);
+    // Handle notification when app is opened from background state
+    const unsubscribeOnNotificationOpenedApp =
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from background state:',
+            remoteMessage,
+          );
+        }
+      });
+
+    // Cleanup subscriptions
+    return () => {
+      unsubscribeOnNotificationOpenedApp();
+    };
+  }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -201,27 +201,3 @@ const App = () => {
 };
 
 export default App;
-
-// Register background handler
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
-
-  // Use notifee to display a notification
-  await notifee.displayNotification({
-    title: remoteMessage.notification?.title,
-    body: remoteMessage.notification?.body,
-    android: {
-      channelId: 'default', // Ensure the channel is created
-      importance: AndroidImportance.HIGH, // Ensure the importance is set to HIGH
-      visibility: AndroidVisibility.PUBLIC, // Ensure the visibility is set to PUBLIC
-      pressAction: {
-        id: 'default', // Define an action
-      },
-      largeIcon: remoteMessage.notification.android?.imageUrl,
-      style: {
-        type: notifee.AndroidStyle.BIGPICTURE,
-        picture: remoteMessage.notification.android?.imageUrl,
-      },
-    },
-  });
-});

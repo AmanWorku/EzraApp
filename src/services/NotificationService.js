@@ -1,74 +1,51 @@
-// import notifee, {
-//   AndroidImportance,
-//   AndroidVisibility,
-// } from '@notifee/react-native';
-// import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
 
-// export async function onCreateNotification() {
-//   await notifee.requestPermission();
+export function configureNotification() {
+  // Create a notification channel
+  PushNotification.createChannel(
+    {
+      channelId: 'default', // (required)
+      channelName: 'Default Channel', // (required)
+      channelDescription: 'A default channel', // (optional) default: undefined.
+      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+      importance: 4, // (optional) default: 4. Int value of the Android notification importance
+      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+    },
+    created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+  );
 
-//   // Create a notification channel
-//   await notifee.createChannel({
-//     id: 'default',
-//     name: 'Default Channel',
-//     importance: AndroidImportance.HIGH,
-//     visibility: AndroidVisibility.PUBLIC,
-//     sound: 'default',
-//   });
+  // Handle foreground notifications
+  messaging().onMessage(async remoteMessage => {
+    console.log('A new FCM message arrived!', remoteMessage);
 
-//   // Handle foreground notifications
-//   messaging().onMessage(async remoteMessage => {
-//     console.log('A new FCM message arrived!', remoteMessage);
+    // Display the notification
+    PushNotification.localNotification({
+      channelId: 'default',
+      title: remoteMessage.notification.title,
+      message: remoteMessage.notification.body,
+      bigPictureUrl: remoteMessage.notification.android?.imageUrl,
+      largeIconUrl: remoteMessage.notification.android?.imageUrl,
+      priority: 'high',
+      importance: 'high',
+      visibility: 'public',
+    });
+  });
 
-//     // Prevent duplicate notifications
-//     if (remoteMessage.notification) {
-//       await notifee.displayNotification({
-//         title: remoteMessage.notification.title,
-//         body: remoteMessage.notification.body,
-//         android: {
-//           channelId: 'default',
-//           importance: AndroidImportance.HIGH,
-//           visibility: AndroidVisibility.PUBLIC,
-//           pressAction: {
-//             id: 'default',
-//           },
-//           largeIcon: remoteMessage.notification.android?.imageUrl,
-//           style: remoteMessage.notification.android?.imageUrl
-//             ? {
-//                 type: notifee.AndroidStyle.BIGPICTURE,
-//                 picture: remoteMessage.notification.android?.imageUrl,
-//               }
-//             : undefined,
-//         },
-//       });
-//     }
-//   });
+  // Handle background and quit state notifications
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    console.log('Message handled in the background!', remoteMessage);
 
-//   // Handle background and quit state notifications
-//   messaging().setBackgroundMessageHandler(async remoteMessage => {
-//     console.log('Message handled in the background!', remoteMessage);
-
-//     // Prevent duplicate notifications
-//     if (remoteMessage.notification) {
-//       await notifee.displayNotification({
-//         title: remoteMessage.notification.title,
-//         body: remoteMessage.notification.body,
-//         android: {
-//           channelId: 'default',
-//           importance: AndroidImportance.HIGH,
-//           visibility: AndroidVisibility.PUBLIC,
-//           pressAction: {
-//             id: 'default',
-//           },
-//           largeIcon: remoteMessage.notification.android?.imageUrl,
-//           style: remoteMessage.notification.android?.imageUrl
-//             ? {
-//                 type: notifee.AndroidStyle.BIGPICTURE,
-//                 picture: remoteMessage.notification.android?.imageUrl,
-//               }
-//             : undefined,
-//         },
-//       });
-//     }
-//   });
-// }
+    // Display the notification
+    PushNotification.localNotification({
+      channelId: 'default',
+      title: remoteMessage.notification.title,
+      message: remoteMessage.notification.body,
+      bigPictureUrl: remoteMessage.notification.android?.imageUrl,
+      largeIconUrl: remoteMessage.notification.android?.imageUrl,
+      priority: 'high',
+      importance: 'high',
+      visibility: 'public',
+    });
+  });
+}

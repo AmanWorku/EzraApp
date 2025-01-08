@@ -152,7 +152,7 @@ const FullScreenMenu = ({
             navigation.navigate('CourseHome');
           }}>
           <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-            Exit Lesson
+            ዘግተህ ውጣ
           </Text>
         </TouchableOpacity>
       </View>
