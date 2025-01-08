@@ -2,50 +2,39 @@ import PushNotification from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
 
 export function configureNotification() {
-  // Create a notification channel
-  PushNotification.createChannel(
-    {
-      channelId: 'default', // (required)
-      channelName: 'Default Channel', // (required)
-      channelDescription: 'A default channel', // (optional) default: undefined.
-      soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
-      importance: 4, // (optional) default: 4. Int value of the Android notification importance
-      vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+  PushNotification.configure({
+    onNotification: function (notification) {
+      console.log('Notification received:', notification);
+      notification.finish(PushNotification.FetchResult.NoData);
     },
-    created => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-  );
-
-  // Handle foreground notifications
-  messaging().onMessage(async remoteMessage => {
-    console.log('A new FCM message arrived!', remoteMessage);
-
-    // Display the notification
-    PushNotification.localNotification({
-      channelId: 'default',
-      title: remoteMessage.notification.title,
-      message: remoteMessage.notification.body,
-      bigPictureUrl: remoteMessage.notification.android?.imageUrl,
-      largeIconUrl: remoteMessage.notification.android?.imageUrl,
-      priority: 'high',
-      importance: 'high',
-      visibility: 'public',
-    });
+    popInitialNotification: true,
+    requestPermissions: true,
   });
 
-  // Handle background and quit state notifications
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
+  PushNotification.createChannel(
+    {
+      channelId: 'default', // Must match `channelId` used in notifications
+      channelName: 'Default Channel',
+      channelDescription: 'A default channel for notifications',
+      soundName: 'default',
+      importance: PushNotification.Importance.HIGH, // Ensures heads-up notifications
+      vibrate: true,
+    },
+    created => console.log(`Channel created: ${created}`),
+  );
 
-    // Display the notification
+  // Handle foreground messages
+  messaging().onMessage(async remoteMessage => {
+    console.log('Foreground notification:', remoteMessage);
+
     PushNotification.localNotification({
       channelId: 'default',
-      title: remoteMessage.notification.title,
-      message: remoteMessage.notification.body,
-      bigPictureUrl: remoteMessage.notification.android?.imageUrl,
-      largeIconUrl: remoteMessage.notification.android?.imageUrl,
-      priority: 'high',
-      importance: 'high',
-      visibility: 'public',
+      title: remoteMessage.notification?.title || 'Notification',
+      message: remoteMessage.notification?.body || 'You have a new message.',
+      bigPictureUrl: remoteMessage.notification?.android?.imageUrl, // Optional
+      largeIconUrl: remoteMessage.notification?.android?.imageUrl, // Optional
+      priority: 'high', // High priority for heads-up display
+      importance: 'high', // High importance for visibility
     });
   });
 }

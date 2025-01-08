@@ -97,48 +97,41 @@ const App = () => {
   const [initialRoute, setInitialRoute] = useState('Signup');
 
   useEffect(() => {
-    // Request permissions
-    const requestPermissions = async () => {
-      const authStatus = await messaging().requestPermission();
-      console.log('Authorization status:', authStatus);
+    const initializeNotifications = async () => {
+      try {
+        await messaging().requestPermission();
+        const token = await messaging().getToken();
+        console.log('FCM Token:', token);
+      } catch (error) {
+        console.error('Notification setup error:', error);
+      }
 
-      // Get the token
-      const token = await messaging().getToken();
-      console.log('FCM Token:', token);
-    };
+      configureNotification();
 
-    requestPermissions();
+      // Handle notifications when app is opened from a quit state
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              'Notification caused app to open from quit state:',
+              remoteMessage,
+            );
+          }
+        });
 
-    // Initialize notifications
-    configureNotification();
-
-    // Handle notification when app is opened from quit state
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage,
-          );
-        }
-      });
-
-    // Handle notification when app is opened from background state
-    const unsubscribeOnNotificationOpenedApp =
+      // Handle notifications when app is opened from the background
       messaging().onNotificationOpenedApp(remoteMessage => {
         if (remoteMessage) {
           console.log(
-            'Notification caused app to open from background state:',
+            'Notification caused app to open from background:',
             remoteMessage,
           );
         }
       });
-
-    // Cleanup subscriptions
-    return () => {
-      unsubscribeOnNotificationOpenedApp();
     };
+
+    initializeNotifications();
   }, []);
 
   useEffect(() => {
