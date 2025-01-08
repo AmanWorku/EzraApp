@@ -651,7 +651,7 @@ const SlideSample2 = ({route}) => {
                 onPress={handleButtonPress}>
                 <Text
                   style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                  {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
+                  {onLastSlide ? 'ዘግተህ ውጣ' : 'ቀጥል'}
                 </Text>
                 <CaretCircleRight size={18} weight="fill" color="white" />
               </TouchableOpacity>
