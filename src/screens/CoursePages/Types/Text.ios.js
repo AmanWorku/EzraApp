@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, View, StyleShee, Linking} from 'react-native';
+import {Text, View, StyleSheet, Linking} from 'react-native';
 import tw from '../../../../tailwind';
 import parse, {domToReact} from 'html-react-parser';
 

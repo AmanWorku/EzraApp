@@ -27,7 +27,7 @@ import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
 import messaging from '@react-native-firebase/messaging';
 import {navigationRef} from './src/navigation/NavigationRef';
-import {configureNotification} from './src/services/NotificationService';
+// import {configureNotification} from './src/services/NotificationService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -96,43 +96,43 @@ const App = () => {
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
-  useEffect(() => {
-    const initializeNotifications = async () => {
-      try {
-        await messaging().requestPermission();
-        const token = await messaging().getToken();
-        console.log('FCM Token:', token);
-      } catch (error) {
-        console.error('Notification setup error:', error);
-      }
+  // useEffect(() => {
+  //   const initializeNotifications = async () => {
+  //     try {
+  //       await messaging().requestPermission();
+  //       const token = await messaging().getToken();
+  //       console.log('FCM Token:', token);
+  //     } catch (error) {
+  //       console.error('Notification setup error:', error);
+  //     }
 
-      configureNotification();
+  //     configureNotification();
 
-      // Handle notifications when app is opened from a quit state
-      messaging()
-        .getInitialNotification()
-        .then(remoteMessage => {
-          if (remoteMessage) {
-            console.log(
-              'Notification caused app to open from quit state:',
-              remoteMessage,
-            );
-          }
-        });
+  //     // Handle notifications when app is opened from a quit state
+  //     messaging()
+  //       .getInitialNotification()
+  //       .then(remoteMessage => {
+  //         if (remoteMessage) {
+  //           console.log(
+  //             'Notification caused app to open from quit state:',
+  //             remoteMessage,
+  //           );
+  //         }
+  //       });
 
-      // Handle notifications when app is opened from the background
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from background:',
-            remoteMessage,
-          );
-        }
-      });
-    };
+  //     // Handle notifications when app is opened from the background
+  //     messaging().onNotificationOpenedApp(remoteMessage => {
+  //       if (remoteMessage) {
+  //         console.log(
+  //           'Notification caused app to open from background:',
+  //           remoteMessage,
+  //         );
+  //       }
+  //     });
+  //   };
 
-    initializeNotifications();
-  }, []);
+  //   initializeNotifications();
+  // }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
