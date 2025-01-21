@@ -4,13 +4,17 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Eye, Lock, UserCircle} from 'phosphor-react-native';
 import tw from './../../tailwind';
 import {useDispatch} from 'react-redux';
-import {useLoginMutation} from '../redux/api-slices/apiSlice';
+import {
+  useLoginMutation,
+  useUpdateUserStatusMutation,
+} from '../redux/api-slices/apiSlice';
 import {login as loginUser} from '../redux/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ActivityIndicator} from 'react-native';
@@ -23,6 +27,7 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
   const [login, {isLoading, error}] = useLoginMutation();
+  const [updateUserStatus] = useUpdateUserStatusMutation();
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
 
@@ -44,15 +49,56 @@ const Login = ({navigation}) => {
       }
       const result = await login({email, password}).unwrap();
       if (result) {
-        await AsyncStorage.setItem('user', JSON.stringify(result));
-        dispatch(loginUser(result));
-        navigation.navigate('MainTab');
-        Toast.show({
-          type: 'success',
-          text1: 'Login Successful',
-        });
-        setEmail('');
-        setPassword('');
+        if (result.status === 'inactive') {
+          Alert.alert(
+            'Account Inactive',
+            'Your account is inactive. Would you like to reactivate it?',
+            [
+              {
+                text: 'Cancel',
+              },
+              {
+                text: 'Reactivate',
+                onPress: async () => {
+                  try {
+                    await updateUserStatus({
+                      id: result._id,
+                      status: 'active',
+                    }).unwrap();
+                    result.status = 'active'; // Update the status in the result object
+                    await AsyncStorage.setItem('user', JSON.stringify(result));
+                    dispatch(loginUser(result));
+                    navigation.navigate('MainTab');
+                    Toast.show({
+                      type: 'success',
+                      text1: 'Account Reactivated',
+                      text2: 'Your account has been reactivated successfully.',
+                    });
+                  } catch (err) {
+                    console.error('Error reactivating account: ', err);
+                    Toast.show({
+                      type: 'error',
+                      text1: 'Reactivation Error',
+                      text2:
+                        'Failed to reactivate your account. Please try again.',
+                    });
+                  }
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        } else {
+          await AsyncStorage.setItem('user', JSON.stringify(result));
+          dispatch(loginUser(result));
+          navigation.navigate('MainTab');
+          Toast.show({
+            type: 'success',
+            text1: 'Login Successful',
+          });
+          setEmail('');
+          setPassword('');
+        }
       }
     } catch (err) {
       console.error('Login Failed: ', err);

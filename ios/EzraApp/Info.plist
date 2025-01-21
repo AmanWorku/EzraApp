@@ -44,6 +44,9 @@
 		<string>Lato-Thin.ttf</string>
 		<string>Nokia Pure Headline Bold.ttf</string>
 		<string>Nokia Pure Headline Ultra Light.ttf</string>
+		<string>NokiaPureHeadline_Lt.ttf</string>
+		<string>NOKIAPUREHEADLINE_RG.ttf</string>
+		<string>NokiaPureHeadline_XBd..ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

@@ -22,12 +22,24 @@
       "sha1": "07290446bee3f81ce501a3c3dbfde6097c70ca15"
     },
     {
+      "path": "assets/fonts/NOKIAPUREHEADLINE_RG.TTF",
+      "sha1": "695c25021a1786525ac6fe420a2cb071753486ff"
+    },
+    {
       "path": "assets/fonts/Nokia Pure Headline Bold.ttf",
       "sha1": "e94bf6bb7acbcd4e265eddd47a5b038b77425808"
     },
     {
       "path": "assets/fonts/Nokia Pure Headline Ultra Light.ttf",
       "sha1": "3bbf7c263cce86dbd7ff9ce7cbae5dbde21a41dc"
+    },
+    {
+      "path": "assets/fonts/NokiaPureHeadline_Lt.ttf",
+      "sha1": "b025ed9cf6afd042566810c9c073f9e7f6eb9a7a"
+    },
+    {
+      "path": "assets/fonts/NokiaPureHeadline_XBd..ttf",
+      "sha1": "b3745bee1ee8f5352ee4a6d311e20a032480cf45"
     }
   ]
 }
