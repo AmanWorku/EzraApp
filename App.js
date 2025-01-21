@@ -25,7 +25,7 @@ import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
 import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import {navigationRef} from './src/navigation/NavigationRef';
 // import {configureNotification} from './src/services/NotificationService';
 
