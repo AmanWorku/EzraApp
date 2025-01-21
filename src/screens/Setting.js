@@ -17,11 +17,13 @@ import {toggleDarkMode} from '../redux/uiSlice';
 import {logoutUser} from '../redux/authSlice';
 import {
   ArrowCircleRight,
-  Bell,
+  Envelope,
   DeviceMobile,
   Moon,
   Pencil,
   ShareNetwork,
+  UserCircle,
+  Info,
 } from 'phosphor-react-native';
 
 const Setting = ({navigation}) => {
@@ -72,7 +74,7 @@ const Setting = ({navigation}) => {
         darkMode && tw`bg-secondary-9`,
       ]}>
       <ScrollView
-        contentContainerStyle={tw`flex-1 justify-center items-center`}
+        contentContainerStyle={tw`items-center`}
         showsVerticalScrollIndicator={false}>
         <View style={tw`w-92%`}>
           <Text
@@ -205,6 +207,12 @@ const Setting = ({navigation}) => {
                 handleLinkPress('https://ezraseminary.org/contactUs')
               }>
               <View style={tw`flex-row items-center`}>
+                <Envelope
+                  size={20}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
                 <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                   Contact Us
                 </Text>
@@ -224,6 +232,12 @@ const Setting = ({navigation}) => {
                 handleLinkPress('https://ezraseminary.org/aboutUs')
               }>
               <View style={tw`flex-row items-center`}>
+                <Info
+                  size={20}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
                 <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
                   About Us
                 </Text>
@@ -242,7 +256,7 @@ const Setting = ({navigation}) => {
                 style={tw`flex-row w-full justify-between items-center`}
                 onPress={() => navigation.navigate('AccountSettings')}>
                 <View style={tw`flex-row items-center`}>
-                  <Pencil
+                  <UserCircle
                     size={20}
                     weight="fill"
                     color={'#EA9215'}

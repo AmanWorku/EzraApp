@@ -14,6 +14,7 @@ import {
   useUpdateUserStatusMutation,
   useDeleteUserMutation,
 } from '../../redux/api-slices/apiSlice';
+import {ArrowSquareLeft} from 'phosphor-react-native';
 
 const AccountSettings = ({navigation}) => {
   const dispatch = useDispatch();
@@ -88,9 +89,14 @@ const AccountSettings = ({navigation}) => {
         darkMode && tw`bg-secondary-9`,
       ]}>
       <ScrollView
-        contentContainerStyle={tw`flex-1 justify-center items-center`}
+        contentContainerStyle={tw`items-center`}
         showsVerticalScrollIndicator={false}>
         <View style={tw`w-92%`}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={tw`self-start`}>
+            <ArrowSquareLeft weight="fill" color="#EA9215" size={32} />
+          </TouchableOpacity>
           <Text
             style={[
               tw`font-nokia-bold text-2xl text-secondary-6 text-center mt-4`,
