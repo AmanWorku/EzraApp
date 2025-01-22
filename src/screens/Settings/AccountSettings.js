@@ -68,7 +68,7 @@ const AccountSettings = ({navigation}) => {
             text: 'Yes',
             onPress: async () => {
               try {
-                await deleteUser({id: user.user._id}).unwrap();
+                await deleteUser(user.user._id).unwrap();
                 dispatch(logoutUser());
                 navigation.navigate('Login');
               } catch (error) {
