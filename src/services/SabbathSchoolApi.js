@@ -1,23 +1,29 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
+const baseQueryWithLanguage = async (args, api, extraOptions) => {
+  const language = api.getState().language.language;
+  const baseUrl = `https://sabbath-school-stage.adventech.io/api/v2/${language}`;
+  const rawBaseQuery = fetchBaseQuery({baseUrl});
+  const result = await rawBaseQuery(args, api, extraOptions);
+  return result;
+};
+
 export const SSLapi = createApi({
   reducerPath: 'SSLapi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: 'https://sabbath-school-stage.adventech.io/api/v2/',
-  }),
+  baseQuery: baseQueryWithLanguage,
   endpoints: builder => ({
     getSSLs: builder.query({
-      query: () => 'am/quarterlies/index.json',
+      query: () => `quarterlies/index.json`,
     }),
     getSSLOfQuarter: builder.query({
-      query: path => `am/quarterlies/${path}/index.json`,
+      query: ({path}) => `quarterlies/${path}/index.json`,
     }),
     getSSLOfDay: builder.query({
-      query: ({path, id}) => `am/quarterlies/${path}/lessons/${id}/index.json`,
+      query: ({path, id}) => `quarterlies/${path}/lessons/${id}/index.json`,
     }),
     getSSLOfDayLesson: builder.query({
       query: ({path, id, day}) => {
-        return `am/quarterlies/${path}/lessons/${id}/days/${day}/read/index.json`;
+        return `quarterlies/${path}/lessons/${id}/days/${day}/read/index.json`;
       },
     }),
   }),

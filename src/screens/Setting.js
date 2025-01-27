@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import {
   Linking,
   ScrollView,
   Alert,
+  Modal,
 } from 'react-native';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
 import {toggleDarkMode} from '../redux/uiSlice';
 import {logoutUser} from '../redux/authSlice';
+import {setLanguage} from '../redux/languageSlice';
 import {
   ArrowCircleRight,
   Envelope,
@@ -24,12 +26,15 @@ import {
   ShareNetwork,
   UserCircle,
   Info,
+  Globe,
 } from 'phosphor-react-native';
 
 const Setting = ({navigation}) => {
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
   const user = useSelector(state => state.auth);
+  const language = useSelector(state => state.language.language);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleToggle = () => {
     dispatch(toggleDarkMode());
@@ -65,6 +70,13 @@ const Setting = ({navigation}) => {
     Linking.openURL(url).catch(err =>
       console.error('Error opening link:', err),
     );
+  };
+
+  const handleLanguageChange = value => {
+    dispatch(setLanguage(value));
+    setModalVisible(false);
+    // Refetch data or navigate to trigger data reload
+    navigation.navigate('SSLHome', {language: value});
   };
 
   return (
@@ -203,18 +215,16 @@ const Setting = ({navigation}) => {
           <View style={tw`py-4 border-b border-accent-6`}>
             <TouchableOpacity
               style={tw`flex-row w-full justify-between items-center`}
-              onPress={() =>
-                handleLinkPress('https://ezraseminary.org/contactUs')
-              }>
+              onPress={() => setModalVisible(true)}>
               <View style={tw`flex-row items-center`}>
-                <Envelope
+                <Globe
                   size={20}
                   weight="fill"
                   color={'#EA9215'}
                   style={tw`mr-2`}
                 />
                 <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                  Contact Us
+                  Language
                 </Text>
               </View>
               <ArrowCircleRight
@@ -225,56 +235,6 @@ const Setting = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
-          <View style={tw`py-4 border-b border-accent-6`}>
-            <TouchableOpacity
-              style={tw`flex-row w-full justify-between items-center`}
-              onPress={() =>
-                handleLinkPress('https://ezraseminary.org/aboutUs')
-              }>
-              <View style={tw`flex-row items-center`}>
-                <Info
-                  size={20}
-                  weight="fill"
-                  color={'#EA9215'}
-                  style={tw`mr-2`}
-                />
-                <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                  About Us
-                </Text>
-              </View>
-              <ArrowCircleRight
-                size={24}
-                weight="fill"
-                color={'#EA9215'}
-                style={tw`mr-2`}
-              />
-            </TouchableOpacity>
-          </View>
-          {user.user && (
-            <View style={tw` py-4 border-b border-accent-6`}>
-              <TouchableOpacity
-                style={tw`flex-row w-full justify-between items-center`}
-                onPress={() => navigation.navigate('AccountSettings')}>
-                <View style={tw`flex-row items-center`}>
-                  <UserCircle
-                    size={20}
-                    weight="fill"
-                    color={'#EA9215'}
-                    style={tw`mr-2`}
-                  />
-                  <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                    Account Settings
-                  </Text>
-                </View>
-                <ArrowCircleRight
-                  size={24}
-                  weight="fill"
-                  color={'#EA9215'}
-                  style={tw`mr-2`}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
         </View>
         <TouchableOpacity
           onPress={handleLogout}
@@ -291,6 +251,43 @@ const Setting = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View
+          style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}>
+          <View style={tw`bg-primary-1 w-80 p-4 rounded-lg`}>
+            <Text style={tw`font-nokia-bold text-lg text-center mb-4`}>
+              Select Language
+            </Text>
+            <TouchableOpacity
+              style={tw`py-2`}
+              onPress={() => handleLanguageChange('am')}>
+              <Text style={tw`font-nokia-bold text-accent-6 text-center`}>
+                Amharic
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`py-2`}
+              onPress={() => handleLanguageChange('en')}>
+              <Text style={tw`font-nokia-bold text-accent-6 text-center`}>
+                English
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={tw`py-2`}
+              onPress={() => setModalVisible(false)}>
+              <Text style={tw`font-nokia-bold text-red-500 text-center`}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };

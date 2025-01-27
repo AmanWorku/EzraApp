@@ -15,18 +15,19 @@ const HomeCurrentSSL = () => {
   const [quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const navigation = useNavigation();
+  const language = useSelector(state => state.language.language);
   const {
     data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
     refetch: refetchLesson,
-  } = useGetSSLOfDayQuery({path: quarter, id: week});
+  } = useGetSSLOfDayQuery({language, path: quarter, id: week});
   const {
     data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
     refetch: refetchQuarter,
-  } = useGetSSLOfQuarterQuery(quarter);
+  } = useGetSSLOfQuarterQuery(language, quarter);
 
   useEffect(() => {
     if (quarterDetails) {

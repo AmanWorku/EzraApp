@@ -32,7 +32,10 @@ const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
+  const language = useSelector(state => state.language.language); // Ensure language state is accessed correctly
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
+  console.log(language);
+
   const {
     data: lessonDetails,
     error: lessonError,
@@ -44,7 +47,7 @@ const SSLHome = () => {
     error: quarterError,
     isLoading: quarterIsLoading,
     refetch: quarterRefetch,
-  } = useGetSSLOfQuarterQuery(quarter);
+  } = useGetSSLOfQuarterQuery({path: quarter});
 
   const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
 
@@ -106,8 +109,6 @@ const SSLHome = () => {
       alert('Video link not available');
     }
   };
-
-  // console.log('Video Link Data:', videoLink);
 
   if (error) {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
