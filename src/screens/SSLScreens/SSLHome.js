@@ -26,15 +26,12 @@ import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
-import CurrentSSL from './CurrentSSL';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
-  const language = useSelector(state => state.language.language); // Ensure language state is accessed correctly
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
-  console.log(language);
 
   const {
     data: lessonDetails,
@@ -47,7 +44,7 @@ const SSLHome = () => {
     error: quarterError,
     isLoading: quarterIsLoading,
     refetch: quarterRefetch,
-  } = useGetSSLOfQuarterQuery({path: quarter});
+  } = useGetSSLOfQuarterQuery(quarter);
 
   const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
 

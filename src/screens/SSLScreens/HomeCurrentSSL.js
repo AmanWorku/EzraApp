@@ -4,7 +4,7 @@ import {useSelector} from 'react-redux';
 import {
   useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
-} from './../../services/SabbathSchoolApi';
+} from '../../services/SabbathSchoolApi';
 import {useNavigation} from '@react-navigation/native';
 import DateConverter from './DateConverter';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
@@ -15,30 +15,31 @@ const HomeCurrentSSL = () => {
   const [quarter, week] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const navigation = useNavigation();
-  const language = useSelector(state => state.language.language);
   const {
     data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
     refetch: refetchLesson,
-  } = useGetSSLOfDayQuery({language, path: quarter, id: week});
+  } = useGetSSLOfDayQuery({path: quarter, id: week});
   const {
     data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
     refetch: refetchQuarter,
-  } = useGetSSLOfQuarterQuery(language, quarter);
+  } = useGetSSLOfQuarterQuery(quarter);
 
   useEffect(() => {
     if (quarterDetails) {
       setBackgroundImage(quarterDetails.quarterly.splash);
     }
   }, [quarterDetails]);
+
   const darkMode = useSelector(state => state.ui.darkMode);
 
   const textStyle = `font-nokia-bold text-secondary-5 text-xs ${
     darkMode ? 'text-primary-1' : null
   }`;
+
   const handleOpenButtonPress = () => {
     navigation.navigate('SSL', {
       screen: 'SSLWeek',
@@ -59,6 +60,7 @@ const HomeCurrentSSL = () => {
   }
 
   if (lessonError) {
+    console.error('Lesson Error:', lessonError); // Log the entire error object
     return (
       <View style={tw`border border-accent-6 rounded my-2`}>
         <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
@@ -74,12 +76,29 @@ const HomeCurrentSSL = () => {
       </View>
     );
   }
+
   if (quarterError) {
-    return <Text>Error: {quarterError.message}</Text>;
+    console.error('Quarter Error:', quarterError); // Log the entire error object
+    return (
+      <View style={tw`border border-accent-6 rounded my-2`}>
+        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+          Error: {quarterError.error || 'An error occurred'}
+        </Text>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-2 mx-auto`}
+          onPress={handleRefetch}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            Reload
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
+
   if (!quarterDetails || !lessonDetails) {
     return <Text>Missing data...</Text>;
   }
+
   return (
     <View style={tw` rounded-2 overflow-hidden`}>
       <View

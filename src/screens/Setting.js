@@ -28,6 +28,7 @@ import {
   Info,
   Globe,
 } from 'phosphor-react-native';
+import {useGetSSLsQuery} from '../services/SabbathSchoolApi';
 
 const Setting = ({navigation}) => {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ const Setting = ({navigation}) => {
   const user = useSelector(state => state.auth);
   const language = useSelector(state => state.language.language);
   const [modalVisible, setModalVisible] = useState(false);
+  const {refetch} = useGetSSLsQuery();
 
   const handleToggle = () => {
     dispatch(toggleDarkMode());
@@ -72,11 +74,10 @@ const Setting = ({navigation}) => {
     );
   };
 
-  const handleLanguageChange = value => {
+  const handleLanguageChange = async value => {
     dispatch(setLanguage(value));
     setModalVisible(false);
-    // Refetch data or navigate to trigger data reload
-    navigation.navigate('SSLHome', {language: value});
+    await refetch(); // Refetch data after changing the language
   };
 
   return (
@@ -227,6 +228,37 @@ const Setting = ({navigation}) => {
                   Language
                 </Text>
               </View>
+              <View style={tw`flex-row items-center`}>
+                <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                  {' '}
+                  {language === 'am' ? 'Amharic' : 'English'}{' '}
+                </Text>
+                <ArrowCircleRight
+                  size={24}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={tw`py-4 border-b border-accent-6`}>
+            <TouchableOpacity
+              style={tw`flex-row w-full justify-between items-center`}
+              onPress={() =>
+                handleLinkPress('https://ezraseminary.org/contactUs')
+              }>
+              <View style={tw`flex-row items-center`}>
+                <Envelope
+                  size={20}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
+                <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                  Contact Us
+                </Text>
+              </View>
               <ArrowCircleRight
                 size={24}
                 weight="fill"
@@ -235,6 +267,56 @@ const Setting = ({navigation}) => {
               />
             </TouchableOpacity>
           </View>
+          <View style={tw`py-4 border-b border-accent-6`}>
+            <TouchableOpacity
+              style={tw`flex-row w-full justify-between items-center`}
+              onPress={() =>
+                handleLinkPress('https://ezraseminary.org/aboutUs')
+              }>
+              <View style={tw`flex-row items-center`}>
+                <Info
+                  size={20}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
+                <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                  About Us
+                </Text>
+              </View>
+              <ArrowCircleRight
+                size={24}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`mr-2`}
+              />
+            </TouchableOpacity>
+          </View>
+          {user.user && (
+            <View style={tw` py-4 border-b border-accent-6`}>
+              <TouchableOpacity
+                style={tw`flex-row w-full justify-between items-center`}
+                onPress={() => navigation.navigate('AccountSettings')}>
+                <View style={tw`flex-row items-center`}>
+                  <UserCircle
+                    size={20}
+                    weight="fill"
+                    color={'#EA9215'}
+                    style={tw`mr-2`}
+                  />
+                  <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                    Account Settings
+                  </Text>
+                </View>
+                <ArrowCircleRight
+                  size={24}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
         <TouchableOpacity
           onPress={handleLogout}
