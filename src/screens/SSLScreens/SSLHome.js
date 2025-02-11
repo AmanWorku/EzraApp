@@ -15,7 +15,6 @@ import {
 import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import DateConverter from './DateConverter';
 import {
   useGetSSLsQuery,
   useGetSSLOfDayQuery,
@@ -26,13 +25,15 @@ import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
 import {YoutubeLogo} from 'phosphor-react-native';
 import ErrorScreen from '../../components/ErrorScreen';
+import {format} from 'date-fns';
+import DateConverter from './DateConverter';
 
 const SSLHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
-
+  console.log(ssl);
   const {
     data: lessonDetails,
     error: lessonError,
@@ -87,6 +88,24 @@ const SSLHome = () => {
   const filteredData = ssl?.filter(sslItems => {
     return sslItems.title.includes(searchTerm);
   });
+
+  const language = useSelector(state => state.language.language);
+
+  const parseCustomDate = dateString => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const formatDateRange = (startDate, endDate) => {
+    try {
+      const start = format(parseCustomDate(startDate), 'MMM dd');
+      const end = format(parseCustomDate(endDate), 'MMM dd');
+      return `${start} - ${end}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
 
   if (isLoading) {
     return (
@@ -226,8 +245,12 @@ const SSLHome = () => {
     return <Text> Error: {quarterError}</Text>;
   }
 
-  if (!quarterDetails || !lessonDetails) {
-    return <Text>Missing data...</Text>;
+  if (!lessonDetails || !quarterDetails) {
+    console.error('Missing lesson or quarter details:', {
+      lessonDetails,
+      quarterDetails,
+    });
+    return <Text>Loading...</Text>;
   }
 
   return (
@@ -258,18 +281,34 @@ const SSLHome = () => {
               <View style={[tw`absolute inset-0 rounded-lg`]}>
                 <View style={tw`flex absolute bottom-0 left-0 p-4`}>
                   <Text style={tw`font-nokia-bold text-primary-6`}>
-                    የዚህ ሳምንት ትምህርት
+                    {language === 'en'
+                      ? "This Week's Lesson"
+                      : 'የዚህ ሳምንት ትምህርት'}
                   </Text>
                   <View style={tw`flex flex-row items-center`}>
-                    <DateConverter
-                      gregorianDate={lessonDetails.lesson.start_date}
-                      textStyle={textStyle}
-                    />
-                    <Text style={tw`font-nokia-bold text-primary-3`}> - </Text>
-                    <DateConverter
-                      gregorianDate={lessonDetails.lesson.end_date}
-                      textStyle={textStyle}
-                    />
+                    {language === 'en' ? (
+                      <Text style={tw`font-nokia-bold text-accent-6`}>
+                        {formatDateRange(
+                          lessonDetails.lesson.start_date,
+                          lessonDetails.lesson.end_date,
+                        )}
+                      </Text>
+                    ) : (
+                      <View style={tw`flex flex-row items-center`}>
+                        <DateConverter
+                          gregorianDate={lessonDetails.lesson.start_date}
+                          textStyle={tw`font-nokia-bold text-accent-6`}
+                        />
+                        <Text style={tw`font-nokia-bold text-accent-6`}>
+                          {' '}
+                          -{' '}
+                        </Text>
+                        <DateConverter
+                          gregorianDate={lessonDetails.lesson.end_date}
+                          textStyle={tw`font-nokia-bold text-accent-6`}
+                        />
+                      </View>
+                    )}
                   </View>
                 </View>
               </View>
@@ -304,7 +343,9 @@ const SSLHome = () => {
             <TouchableOpacity
               style={tw`bg-accent-6 px-3 py-1 rounded-full`}
               onPress={handleOpenButtonPress}>
-              <Text style={tw`text-primary-1 font-nokia-bold`}>ትምህርቱን ክፈት</Text>
+              <Text style={tw`text-primary-1 font-nokia-bold`}>
+                {language === 'en' ? 'Open Lesson' : 'ትምህርቱን ክፈት'}
+              </Text>
             </TouchableOpacity>
 
             {videoLink && (
@@ -316,14 +357,14 @@ const SSLHome = () => {
                     tw`font-nokia-bold text-secondary-6 items-center`,
                     darkMode ? tw`text-primary-1` : null,
                   ]}>
-                  Watch on YouTube
+                  {language === 'en' ? 'Watch on YouTube' : 'በዩቲዩብ ይመልከቱ'}
                 </Text>
                 <YoutubeLogo size={20} weight="fill" color="#EA9215" />
               </TouchableOpacity>
             )}
           </View>
           <TextInput
-            placeholder="Search SSLs..."
+            placeholder={language === 'en' ? 'Search SSLs...' : 'ኤስኤስኤል ፈልግ...'}
             value={searchTerm}
             onChangeText={handleSearch}
             style={[
@@ -333,14 +374,16 @@ const SSLHome = () => {
             placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
           />
           <Text style={tw`font-nokia-bold text-accent-6 text-sm mt-2`}>
-            የሩብ አመት ትምህርቶች
+            {language === 'en' ? 'Quarterly Lessons' : 'የሩብ አመት ትምህርቶች'}
           </Text>
           <Text
             style={[
               tw`font-nokia-bold text-secondary-6 text-xl`,
               darkMode ? tw`text-primary-1` : null,
             ]}>
-            ያለፉ የሩብ አመት ትምህርቶች
+            {language === 'en'
+              ? 'Past Quarterly Lessons'
+              : 'ያለፉ የሩብ አመት ትምህርቶች'}
           </Text>
           <View style={tw`border-b border-accent-6 my-1`} />
           <View style={tw`flex flex-col`}>
@@ -379,7 +422,7 @@ const SSLHome = () => {
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
                     onPress={() => handleSSLOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
-                      ትምህርቱን ክፈት
+                      {language === 'en' ? 'Open Lesson' : 'ትምህርቱን ክፈት'}
                     </Text>
                   </TouchableOpacity>
                 </View>

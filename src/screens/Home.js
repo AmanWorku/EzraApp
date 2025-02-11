@@ -9,19 +9,20 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {useGetCoursesQuery} from '../services/api';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
-import {toEthiopian} from 'ethiopian-date';
-import ErrorScreen from '../components/ErrorScreen';
 import PreviousDevotions from './DevotionScreens/PreviousDevotions';
+import {toEthiopian} from 'ethiopian-date';
 import NetInfo from '@react-native-community/netinfo';
 import DevotionCard from '../components/DevotionCard';
 import CourseCard from '../components/CourseCard';
 import Header from '../components/Header';
+import {setDevotions} from '../redux/devotionsSlice';
+import {setCourses} from '../redux/courseSlice';
 
 const ethiopianMonths = [
   '', // There is no month 0
@@ -47,6 +48,7 @@ const Home = () => {
   const [isOffline, setIsOffline] = useState(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
   const user = useSelector(state => state.auth.user); // Get user from Redux store
   const persistedDevotions = useSelector(state => state.devotions); // Get persisted devotions from Redux store
@@ -92,13 +94,18 @@ const Home = () => {
       setIsLoading(true);
       setHasError(false);
       setIsOffline(false);
-      await Promise.all([refetchDevotions(), refetchCourses()]);
+      const [devotionsData, coursesData] = await Promise.all([
+        refetchDevotions(),
+        refetchCourses(),
+      ]);
+      dispatch(setDevotions(devotionsData.data));
+      dispatch(setCourses(coursesData.data));
     } catch (e) {
       setHasError(true);
     } finally {
       setIsLoading(false);
     }
-  }, [refetchDevotions, refetchCourses]);
+  }, [refetchDevotions, refetchCourses, dispatch]);
 
   useEffect(() => {
     const checkInternetAndFetchData = async () => {
@@ -146,13 +153,18 @@ const Home = () => {
     try {
       setIsRefreshing(true);
       setHasError(false);
-      await Promise.all([refetchDevotions(), refetchCourses()]);
+      const [devotionsData, coursesData] = await Promise.all([
+        refetchDevotions(),
+        refetchCourses(),
+      ]);
+      dispatch(setDevotions(devotionsData.data));
+      dispatch(setCourses(coursesData.data));
     } catch (e) {
       setHasError(true);
     } finally {
       setIsRefreshing(false);
     }
-  }, [refetchDevotions, refetchCourses]);
+  }, [refetchDevotions, refetchCourses, dispatch]);
 
   const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
   const coursesToDisplay = isOffline ? persistedCourses : courses;
