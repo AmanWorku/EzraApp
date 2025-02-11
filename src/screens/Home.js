@@ -182,8 +182,9 @@ const Home = () => {
   }
 
   const devotionToDisplay = selectedDevotion || devotionsToDisplay[0];
-
-  const publishedCourses = coursesToDisplay.filter(course => course.published);
+  const publishedCourses = coursesToDisplay
+    ? coursesToDisplay.filter(course => course.published)
+    : [];
   const lastCourse = publishedCourses[publishedCourses.length - 1];
 
   return (
