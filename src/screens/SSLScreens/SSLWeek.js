@@ -10,8 +10,6 @@ import {
   RefreshControl,
   ImageBackground,
   Modal,
-  TextInput,
-  Image,
   Linking,
 } from 'react-native';
 import {useSelector} from 'react-redux';
@@ -22,12 +20,19 @@ import {
 } from '../../services/SabbathSchoolApi';
 import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft, YoutubeLogo} from 'phosphor-react-native';
+import {
+  ArrowSquareLeft,
+  YoutubeLogo,
+  CaretUp,
+  CaretDown,
+} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {format} from 'date-fns';
+import {enUS, am} from 'date-fns/locale';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -54,6 +59,8 @@ const SSLWeek = ({route}) => {
     day: check,
   });
 
+  console.log(sslWeek);
+
   const year = ssl.substring(0, 4);
   const quarter = ssl.substring(5, 7);
 
@@ -72,8 +79,31 @@ const SSLWeek = ({route}) => {
   };
 
   const [notes, setNotes] = useState({});
-  const codeCounterRef = useRef(0);
   const [temporaryNotes, setTemporaryNotes] = useState({});
+
+  const language = useSelector(state => state.language.language);
+
+  const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
+
+  const parseCustomDate = dateString => {
+    const [day, month, year] = dateString.split('/');
+    const parsedDate = new Date(`${year}-${month}-${day}`);
+    if (isNaN(parsedDate.getTime())) {
+      console.error('Invalid date string:', dateString);
+      return new Date(); // Return current date as fallback
+    }
+    return parsedDate;
+  };
+
+  const formatDate = dateString => {
+    try {
+      const locale = language === 'en' ? enUS : am; // Use appropriate locale
+      return format(parseCustomDate(dateString), 'EEEE MMMM dd', {locale});
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
@@ -145,6 +175,10 @@ const SSLWeek = ({route}) => {
     const previousCheck = parseInt(check, 10) - 1;
     const paddedPreviousCheck = previousCheck.toString().padStart(2, '0');
     setCheck(paddedPreviousCheck);
+  };
+
+  const handleToggleSupplementalNotes = () => {
+    setShowSupplementalNotes(!showSupplementalNotes);
   };
 
   if (isLoading) {
@@ -246,31 +280,6 @@ const SSLWeek = ({route}) => {
         </View>
       );
     }
-
-    // if (node.name === 'code') {
-    //   codeCounterRef.current += 1;
-    //   const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
-    //   return (
-    //     <View key={index}>
-    //       <Text style={styles.code}>
-    //         {defaultRenderer(node.children, node)}
-    //       </Text>
-    //       <View style={tw`mt-2`}>
-    //         <TextInput
-    //           style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
-    //           placeholder="Add a note..."
-    //           placeholderTextColor="#9CA3AF"
-    //           value={temporaryNotes[noteKey] || notes[noteKey] || ''}
-    //           onChangeText={text =>
-    //             setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
-    //           }
-    //           onBlur={() => handleBlur(noteKey)}
-    //         />
-    //       </View>
-    //     </View>
-    //   );
-    // }
-
     if (node.name === 'table') {
       return (
         <View key={index} style={styles.table}>
@@ -293,6 +302,44 @@ const SSLWeek = ({route}) => {
           {defaultRenderer(node.children, node)}
         </View>
       );
+    }
+
+    if (
+      node.name === 'p' &&
+      node.children[0]?.data === 'Supplemental EGW Notes'
+    ) {
+      return (
+        <TouchableOpacity
+          key={index}
+          onPress={handleToggleSupplementalNotes}
+          style={[
+            tw`flex flex-row justify-between p-2 rounded-lg mt-4 border border-lg h-8`,
+          ]}>
+          <Text
+            style={[
+              tw`font-nokia-bold`,
+              darkMode ? tw`text-accent-6` : tw`text-secondary-6`,
+            ]}>
+            {node.children[0].data}
+          </Text>
+          {showSupplementalNotes ? (
+            <CaretUp size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+          ) : (
+            <CaretDown size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+          )}
+        </TouchableOpacity>
+      );
+    }
+
+    if (
+      node.name === 'div' &&
+      node.attribs?.class === 'ss-donation-appeal-text'
+    ) {
+      return showSupplementalNotes ? (
+        <View key={index} style={tw`mt-2`}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      ) : null;
     }
 
     return undefined;

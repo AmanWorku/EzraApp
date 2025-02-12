@@ -33,7 +33,7 @@ const SSLHome = () => {
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
-  console.log(ssl);
+  // console.log(ssl);
   const {
     data: lessonDetails,
     error: lessonError,
@@ -364,7 +364,9 @@ const SSLHome = () => {
             )}
           </View>
           <TextInput
-            placeholder={language === 'en' ? 'Search SSLs...' : 'ኤስኤስኤል ፈልግ...'}
+            placeholder={
+              language === 'en' ? 'Search SSLs...' : 'የቀድሞ ትምህርቶችን ፈልግ...'
+            }
             value={searchTerm}
             onChangeText={handleSearch}
             style={[
