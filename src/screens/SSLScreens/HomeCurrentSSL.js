@@ -38,10 +38,6 @@ const HomeCurrentSSL = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const language = useSelector(state => state.language.language);
 
-  const textStyle = `font-nokia-bold text-secondary-5 text-xs ${
-    darkMode ? 'text-primary-1' : null
-  }`;
-
   const handleOpenButtonPress = () => {
     navigation.navigate('SSL', {
       screen: 'SSLWeek',
