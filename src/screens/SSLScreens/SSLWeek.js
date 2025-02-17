@@ -59,8 +59,6 @@ const SSLWeek = ({route}) => {
     day: check,
   });
 
-  console.log(sslWeek);
-
   const year = ssl.substring(0, 4);
   const quarter = ssl.substring(5, 7);
 

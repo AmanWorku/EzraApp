@@ -33,7 +33,7 @@ const SSLHome = () => {
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
-  // console.log(ssl);
+
   const {
     data: lessonDetails,
     error: lessonError,
@@ -90,6 +90,11 @@ const SSLHome = () => {
   });
 
   const language = useSelector(state => state.language.language);
+
+  // Refetch data when language changes
+  useEffect(() => {
+    onRefresh();
+  }, [language, onRefresh]);
 
   const parseCustomDate = dateString => {
     const [day, month, year] = dateString.split('/');

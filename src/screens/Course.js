@@ -56,7 +56,7 @@ const Course = () => {
 
   if (courses) {
     filteredData = courses.filter(course => {
-      if (currentUser && currentUser.role === 'Admin') {
+      if (currentUser && currentUser.role !== 'Learner') {
         return course.title.includes(searchTerm);
       } else {
         return course.title.includes(searchTerm) && course.published;
