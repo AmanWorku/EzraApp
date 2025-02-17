@@ -47,7 +47,7 @@ const DateConverter = ({gregorianDate}) => {
 
   return (
     <Text style={tw`font-nokia-bold text-accent-6`}>
-      {ethiopianMonthName} {ethDateTime.date}
+      {ethiopianMonthName} {ethDateTime.date + 1}
     </Text>
   );
 };
