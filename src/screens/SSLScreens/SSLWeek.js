@@ -40,9 +40,19 @@ const SSLWeek = ({route}) => {
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
+  const daysOfWeekEng = [
+    'Friday',
+    'Saturday',
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+  ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVerseKey, setSelectedVerseKey] = useState('');
   const [selectedVerseContent, setSelectedVerseContent] = useState('');
+  const language = useSelector(state => state.language.language);
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
@@ -75,62 +85,11 @@ const SSLWeek = ({route}) => {
       alert('Video link not available');
     }
   };
-
-  const [notes, setNotes] = useState({});
-  const [temporaryNotes, setTemporaryNotes] = useState({});
-
-  const language = useSelector(state => state.language.language);
-
   const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
-
-  const parseCustomDate = dateString => {
-    const [day, month, year] = dateString.split('/');
-    const parsedDate = new Date(`${year}-${month}-${day}`);
-    if (isNaN(parsedDate.getTime())) {
-      console.error('Invalid date string:', dateString);
-      return new Date(); // Return current date as fallback
-    }
-    return parsedDate;
-  };
-
-  const formatDate = dateString => {
-    try {
-      const locale = language === 'en' ? enUS : am; // Use appropriate locale
-      return format(parseCustomDate(dateString), 'EEEE MMMM dd', {locale});
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'Invalid Date';
-    }
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
   }, [check]);
-
-  const fetchNotes = async () => {
-    try {
-      const storedNotes = await AsyncStorage.getItem('notes');
-      if (storedNotes) {
-        setNotes(JSON.parse(storedNotes));
-      }
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  const saveNote = async (key, noteContent) => {
-    const newNotes = {...notes, [key]: noteContent};
-    setNotes(newNotes);
-    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
-  };
-
-  const handleBlur = noteKey => {
-    saveNote(noteKey, temporaryNotes[noteKey]);
-  };
 
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -232,6 +191,20 @@ const SSLWeek = ({route}) => {
     // 'tr:last-child': tw`border-b-0`,
     // 'td:last-child': tw`border-r-0`,
   });
+  const parseCustomDate = dateString => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const formatDate = startDate => {
+    try {
+      const start = format(parseCustomDate(startDate), 'MMM dd');
+      return `${start}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
     if (node.name === 'a') {
@@ -389,14 +362,23 @@ const SSLWeek = ({route}) => {
               end={{x: 0.5, y: 0.2}}
             />
             <View style={tw`absolute bottom-0 p-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                {daysOfWeek[check % 7]} &nbsp;
-                <DateConverter
-                  gregorianDate={sslWeek.date}
-                  style={tw`text-2xl`}
-                  textStyle={dateStyle}
-                />
-              </Text>
+              {language === 'en' ? (
+                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                  {daysOfWeekEng[check % 7]}, &nbsp;
+                  <Text style={tw`text-accent-6`}>
+                    {formatDate(sslWeek.date)}
+                  </Text>
+                </Text>
+              ) : (
+                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                  {daysOfWeek[check % 7]}፣ &nbsp;
+                  <DateConverter
+                    gregorianDate={sslWeek.date}
+                    style={tw`text-2xl`}
+                    textStyle={dateStyle}
+                  />
+                </Text>
+              )}
               <Text
                 style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1`}>
                 {sslWeek.title}
