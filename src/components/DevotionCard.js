@@ -1,20 +1,23 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, ImageBackground} from 'react-native';
 import {BookOpenText} from 'phosphor-react-native';
 import tw from './../../tailwind';
 
 const DevotionCard = ({devotion, darkMode, navigation}) => (
-  <View
+  <ImageBackground
+    source={{uri: devotion.image}}
     style={[
-      tw`border-2 border-accent-6 mt-3 rounded-4 bg-primary-6 shadow-lg px-4 py-4`,
+      tw`border-2 border-accent-6 mt-3 rounded-4 shadow-lg px-4 py-4`,
       darkMode ? tw`bg-secondary-8` : null,
-    ]}>
+    ]}
+    imageStyle={tw`rounded-4`}>
+    <View style={tw`absolute inset-0 bg-black bg-opacity-50 rounded-4`} />
     <View style={tw`flex flex-row w-[100%] justify-between items-center`}>
       <View style={tw`flex flex-row items-center gap-2`}>
         <BookOpenText size={32} weight="bold" style={tw`text-accent-6`} />
         <Text
           style={[
-            tw`text-secondary-6 font-nokia-bold text-lg`,
+            tw`text-primary-2 font-nokia-bold text-lg`,
             darkMode ? tw`text-primary-2` : null,
           ]}>
           የዕለቱ ጥቅስ -
@@ -38,13 +41,13 @@ const DevotionCard = ({devotion, darkMode, navigation}) => (
     <View>
       <Text
         style={[
-          tw`font-nokia-bold text-lg text-secondary-6`,
+          tw`font-nokia-bold text-lg text-primary-2`,
           darkMode ? tw`text-primary-2` : null,
         ]}>
         {devotion.verse}
       </Text>
     </View>
-  </View>
+  </ImageBackground>
 );
 
 export default DevotionCard;
