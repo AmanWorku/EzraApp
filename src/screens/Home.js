@@ -23,6 +23,7 @@ import CourseCard from '../components/CourseCard';
 import Header from '../components/Header';
 import {setDevotions} from '../redux/devotionsSlice';
 import {setCourses} from '../redux/courseSlice';
+import {scheduleVerseOfTheDayNotification} from '../utils/notifications';
 
 const ethiopianMonths = [
   '', // There is no month 0
@@ -77,6 +78,30 @@ const Home = () => {
     });
   };
 
+  useEffect(() => {
+    const devotionsToUse = isOffline ? persistedDevotions : devotions;
+    if (devotionsToUse && devotionsToUse.length > 0) {
+      const today = new Date();
+      const ethiopianDate = toEthiopian(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        today.getDate(),
+      );
+      const [year, month, day] = ethiopianDate;
+      const ethiopianMonth = ethiopianMonths[month];
+      const todaysDevotion = devotionsToUse.find(
+        devotion =>
+          devotion.month === ethiopianMonth && Number(devotion.day) === day,
+      );
+      setSelectedDevotion(todaysDevotion || devotionsToUse[0]);
+    }
+  }, [devotions, isOffline, persistedDevotions]);
+
+  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
+  const coursesToDisplay = isOffline ? persistedCourses : courses;
+
+  const devotionToDisplay = selectedDevotion || devotionsToDisplay[0];
+
   const fetchData = useCallback(async () => {
     const netInfo = await NetInfo.fetch();
     if (!netInfo.isConnected) {
@@ -100,12 +125,16 @@ const Home = () => {
       ]);
       dispatch(setDevotions(devotionsData.data));
       dispatch(setCourses(coursesData.data));
+
+      if (devotionToDisplay) {
+        scheduleVerseOfTheDayNotification(devotionToDisplay.verse);
+      }
     } catch (e) {
       setHasError(true);
     } finally {
       setIsLoading(false);
     }
-  }, [refetchDevotions, refetchCourses, dispatch]);
+  }, [refetchDevotions, refetchCourses, dispatch, devotionToDisplay]);
 
   useEffect(() => {
     const checkInternetAndFetchData = async () => {
@@ -120,25 +149,6 @@ const Home = () => {
 
     checkInternetAndFetchData();
   }, [fetchData]);
-
-  useEffect(() => {
-    const devotionsToUse = isOffline ? persistedDevotions : devotions;
-    if (devotionsToUse && devotionsToUse.length > 0) {
-      const today = new Date();
-      const ethiopianDate = toEthiopian(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        today.getDate(),
-      );
-      const [year, month, day] = ethiopianDate;
-      const ethiopianMonth = ethiopianMonths[month];
-      const todaysDevotion = devotionsToUse.find(
-        devotion =>
-          devotion.month === ethiopianMonth && Number(devotion.day) === day,
-      );
-      setSelectedDevotion(todaysDevotion || devotionsToUse[0]);
-    }
-  }, [devotions, isOffline, persistedDevotions]);
 
   const onRefresh = useCallback(async () => {
     const netInfo = await NetInfo.fetch();
@@ -166,9 +176,6 @@ const Home = () => {
     }
   }, [refetchDevotions, refetchCourses, dispatch]);
 
-  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
-  const coursesToDisplay = isOffline ? persistedCourses : courses;
-
   if (isLoading) {
     return (
       <SafeAreaView
@@ -180,7 +187,6 @@ const Home = () => {
       </SafeAreaView>
     );
   }
-
   if (!devotionsToDisplay || devotionsToDisplay.length === 0) {
     return (
       <SafeAreaView
@@ -193,7 +199,6 @@ const Home = () => {
     );
   }
 
-  const devotionToDisplay = selectedDevotion || devotionsToDisplay[0];
   const publishedCourses = coursesToDisplay
     ? coursesToDisplay.filter(course => course.published)
     : [];

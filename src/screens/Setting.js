@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   Modal,
+  Button,
 } from 'react-native';
 import tw from './../../tailwind';
 import {useSelector, useDispatch} from 'react-redux';
@@ -29,6 +30,7 @@ import {
   Globe,
 } from 'phosphor-react-native';
 import {useGetSSLsQuery} from '../services/SabbathSchoolApi';
+import NotificationSettings from '../screens/Settings/NotificationSettings';
 
 const Setting = ({navigation}) => {
   const dispatch = useDispatch();
@@ -317,6 +319,9 @@ const Setting = ({navigation}) => {
               </TouchableOpacity>
             </View>
           )}
+          <View style={tw`py-4 border-b border-accent-6`}>
+            <NotificationSettings />
+          </View>
         </View>
         <TouchableOpacity
           onPress={handleLogout}

@@ -47,7 +47,7 @@ const SSLHome = () => {
     refetch: quarterRefetch,
   } = useGetSSLOfQuarterQuery(quarter);
 
-  const lastDigitQuarter = parseInt(quarter.slice(-1), 10);
+  const lastDigitQuarter = parseInt(quarter?.slice(-1), 10);
 
   const {
     data: videoLink,
