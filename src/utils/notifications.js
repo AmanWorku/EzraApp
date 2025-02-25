@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const scheduleVerseOfTheDayNotification = async verse => {
   const savedTime = await AsyncStorage.getItem('notificationTime');
   const [hour, minute] = savedTime ? savedTime.split(':').map(Number) : [6, 0]; // Default to 6:00 AM
-
+  console.log('Saved Time Check: ' + savedTime);
   const now = new Date();
   const notificationDate = new Date(
     now.getFullYear(),
@@ -27,4 +27,6 @@ export const scheduleVerseOfTheDayNotification = async verse => {
     date: notificationDate, // Schedule for the specific time
     allowWhileIdle: true, // Allow notification even when the device is idle
   });
+
+  console.log('Notification scheduled for:', notificationDate);
 };

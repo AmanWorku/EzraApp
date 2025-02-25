@@ -1804,7 +1804,7 @@
   resolved "https://registry.npmjs.org/@react-native-masked-view/masked-view/-/masked-view-0.2.8.tgz"
   integrity sha512-+1holBPDF1yi/y0uc1WB6lA5tSNHhM7PpTMapT3ypvSnKQ9+C6sy/zfjxNxRA/llBQ1Ci6f94EaK56UCKs5lTA==
 
-"@react-native-picker/picker@^2.4.0":
+"@react-native-picker/picker@^2.11.0", "@react-native-picker/picker@^2.4.0":
   version "2.11.0"
   resolved "https://registry.npmjs.org/@react-native-picker/picker/-/picker-2.11.0.tgz"
   integrity sha512-QuZU6gbxmOID5zZgd/H90NgBnbJ3VV6qVzp6c7/dDrmWdX8S0X5YFYgDcQFjE3dRen9wB9FWnj2VVdPU64adSg==

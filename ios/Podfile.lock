@@ -1091,6 +1091,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.2.8):
     - React-Core
+  - RNCPicker (2.11.0):
+    - React-Core
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
   - RNDateTimePicker (8.3.0):
@@ -1101,7 +1103,12 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - RNPermissions (4.1.5):
+  - RNNotifee (9.1.3):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 9.1.3)
+  - RNNotifee/NotifeeCore (9.1.3):
+    - React-Core
+  - RNPermissions (4.1.4):
     - React-Core
   - RNReanimated (3.8.1):
     - glog
@@ -1192,10 +1199,12 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1332,6 +1341,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCMaskedView:
     :path: "../node_modules/@react-native-masked-view/masked-view"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDateTimePicker:
@@ -1340,6 +1351,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -1419,11 +1432,13 @@ SPEC CHECKSUMS:
   ReactCommon: 45b5d4f784e869c44a6f5a8fad5b114ca8f78c53
   RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
   RNCMaskedView: bc0170f389056201c82a55e242e5d90070e18e5a
+  RNCPicker: 4f6d5e8d107064be32dfc8f1bcb5a3741135db0b
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDateTimePicker: a793ed8822283f576dd0a205a0916c5098c2611f
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 73c6f550a659dada33d43ad732df3370777f4444
-  RNPermissions: 294531ede5a64d1528463e88fffef05675842042
+  RNNotifee: 522276e0be010e98173175fb838514b69f18cbe0
+  RNPermissions: e8d5f054c1d7e704220028b2b2b13b64b1bc28c9
   RNReanimated: 3e23d4be380e295e504b7b3b3a357df60e1168a2
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   RNShare: 859ff710211285676b0bcedd156c12437ea1d564
