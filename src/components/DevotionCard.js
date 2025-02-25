@@ -25,7 +25,7 @@ const DevotionCard = ({devotion, darkMode, navigation}) => {
     <ImageBackground
       source={{uri: devotion.image}}
       style={[
-        tw`border-2 border-accent-6 mt-3 rounded-4 shadow-lg px-4 py-4`,
+        tw`border border-accent-6 mt-3 rounded-4 shadow-md px-4 py-4`,
         darkMode ? tw`bg-secondary-8` : null,
       ]}
       imageStyle={tw`rounded-4`}>
@@ -65,7 +65,7 @@ const DevotionCard = ({devotion, darkMode, navigation}) => {
           {verse}
         </Text>
         {reference && (
-          <View style={tw`border-t border-accent-6 mt-4 pt-2 w-[30%]`}>
+          <View style={tw`border-t border-accent-6 mt-4 pt-2 w-[50%]`}>
             <Text
               style={[
                 tw`font-nokia-bold text-accent-6 text-lg leading-tight`,

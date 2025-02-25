@@ -113,13 +113,6 @@ const Devotion = () => {
       .slice(0, 4);
   }, [devotions]);
 
-  if (!devotions || devotions.length === 0) {
-    return <ErrorScreen />;
-  }
-
-  const devotionToDisplay = selectedDevotion || devotions[0];
-  const url = `${devotionToDisplay.image}`;
-
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -130,6 +123,11 @@ const Devotion = () => {
       </SafeAreaView>
     );
   }
+  if (!devotions || devotions.length === 0) {
+    return <ErrorScreen />;
+  }
+  const devotionToDisplay = selectedDevotion || devotions[0];
+  const url = `${devotionToDisplay.image}`;
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
