@@ -85,9 +85,9 @@ const SSLHome = () => {
     setSearchTerm(text);
   };
 
-  const filteredData = ssl?.filter(sslItems => {
-    return sslItems.title.includes(searchTerm);
-  });
+  const filteredData = ssl?.filter(item =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const language = useSelector(state => state.language.language);
 

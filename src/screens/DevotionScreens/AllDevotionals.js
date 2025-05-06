@@ -29,7 +29,7 @@ const ethopianMonths = [
   'ጥር',
   'የካቲት',
   'መጋቢት',
-  'ሚያዝያ',
+  'ሚያዚያ',
   'ግንቦት',
   'ሰኔ',
   'ሐምሌ',
@@ -58,6 +58,7 @@ const AllDevotionals = ({navigation}) => {
     }
   }, [refetch]);
 
+  // Function to get the index of an Ethiopian month
   const getEthiopianMonthIndex = monthName => ethopianMonths.indexOf(monthName);
 
   // Organize devotionals by month and sort days within each month
@@ -82,6 +83,7 @@ const AllDevotionals = ({navigation}) => {
 
     return {sortedMonths, devotionalsByMonth};
   }, [originalDevotionals]);
+
   const toggleMonth = month =>
     setExpandedMonth(expandedMonth === month ? null : month);
 

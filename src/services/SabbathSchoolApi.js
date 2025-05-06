@@ -4,12 +4,7 @@ const baseQueryWithLanguage = async (args, api, extraOptions) => {
   const language = api.getState().language.language;
   const baseUrl = `https://sabbath-school-stage.adventech.io/api/v2/${language}`;
   const rawBaseQuery = fetchBaseQuery({baseUrl});
-  console.log(
-    'API Request:',
-    baseUrl + (typeof args === 'string' ? args : args.url),
-  );
   const result = await rawBaseQuery(args, api, extraOptions);
-  console.log('API Response:', result);
 
   // Filter the data to exclude lessons with multiple hyphens in their id
   if (result.data && Array.isArray(result.data)) {
@@ -30,15 +25,28 @@ export const SSLapi = createApi({
       query: () => `quarterlies/index.json`,
     }),
     getSSLOfQuarter: builder.query({
-      query: quarter => `quarterlies/${quarter}/index.json`,
+      query: quarter => {
+        // Dynamically add the `-cq` suffix if not already present
+        const formattedQuarter = quarter.includes('cq')
+          ? quarter
+          : `${quarter}-cq`;
+        return `quarterlies/${formattedQuarter}/index.json`;
+      },
     }),
     getSSLOfDay: builder.query({
-      query: ({path, id}) => `quarterlies/${path}/lessons/${id}/index.json`,
+      query: ({path, id}) => {
+        const formattedPath = path.includes('cq') ? path : `${path}-cq`;
+        return `quarterlies/${formattedPath}/lessons/${id}/index.json`;
+      },
     }),
     getSSLOfDayLesson: builder.query({
       query: ({path, id, day}) => {
-        return `quarterlies/${path}/lessons/${id}/days/${day}/read/index.json`;
+        const formattedPath = path.includes('cq') ? path : `${path}-cq`;
+        return `quarterlies/${formattedPath}/lessons/${id}/days/${day}/read/index.json`;
       },
+      getInVerseOfQuarter: builder.query({
+        query: quarter => `quarterlies/${quarter}-cq/index.json`, // Add `-cq` suffix for InVerse
+      }),
     }),
   }),
 });
@@ -48,4 +56,5 @@ export const {
   useGetSSLOfQuarterQuery,
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
+  useGetInVerseOfQuarterQuery,
 } = SSLapi;

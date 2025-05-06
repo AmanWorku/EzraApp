@@ -1,9 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
+import sslReducer from './sslSlice'; // Import the sslSlice
 import courseReducer from './courseSlice';
 import devotionsReducer from './devotionsSlice';
 import authReducer from './authSlice';
 import uiReducer from './uiSlice';
-import languageReducer from './languageSlice'; // Import the languageSlice
+import languageReducer from './languageSlice';
 import {apiSlice} from './api-slices/apiSlice';
 import {SSLapi} from '../services/SabbathSchoolApi';
 import {videoLinksApi} from '../services/videoLinksApi'; // Import the videoLinksApi
@@ -14,11 +15,12 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {setupListeners} from '@reduxjs/toolkit/query';
 
 const rootReducer = combineReducers({
+  ssl: sslReducer, // Add the ssl reducer
   ui: uiReducer,
   course: courseReducer,
   devotions: devotionsReducer,
   auth: authReducer,
-  language: languageReducer, // Add the language reducer
+  language: languageReducer,
   [SSLapi.reducerPath]: SSLapi.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
   [videoLinksApi.reducerPath]: videoLinksApi.reducer,
@@ -29,12 +31,13 @@ const persistConfig = {
   storage: AsyncStorage,
   stateReconciler: autoMergeLevel2,
   whitelist: [
-    SSLapi.reducerPath,
-    apiSlice.reducerPath,
+    'ssl', // Persist the ssl state
     'ui',
     'auth',
     'language',
-  ], // Add 'language' to the whitelist
+    SSLapi.reducerPath,
+    apiSlice.reducerPath,
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
