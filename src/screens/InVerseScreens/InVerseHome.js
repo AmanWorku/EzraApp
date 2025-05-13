@@ -16,10 +16,10 @@ import tw from './../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import {
-  useGetSSLsQuery,
-  useGetSSLOfDayQuery,
-  useGetSSLOfQuarterQuery,
-} from '../../services/SabbathSchoolApi';
+  useGetInVersesQuery,
+  useGetInVerseOfDayQuery,
+  useGetInVerseOfQuarterQuery,
+} from '../../services/InVerseapi';
 import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
 import LinearGradient from 'react-native-linear-gradient';
@@ -28,38 +28,29 @@ import ErrorScreen from '../../components/ErrorScreen';
 import {format} from 'date-fns';
 import DateConverter from './DateConverter';
 
-const SSLHome = () => {
+const InVerseHome = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
   const [quarter, week, year] = useCalculateLessonIndex(currentDate);
   const [backgroundImage, setBackgroundImage] = useState('');
-  const {data: ssl, error, isLoading, refetch} = useGetSSLsQuery();
+  const {data: InVerse, error, isLoading, refetch} = useGetInVersesQuery();
+
+  console.log('InVerse Check:', InVerse);
 
   const {
     data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
     refetch: lessonRefetch,
-  } = useGetSSLOfDayQuery({path: quarter, id: week});
+  } = useGetInVerseOfDayQuery({path: quarter, id: week});
 
   const {
     data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
     refetch: quarterRefetch,
-  } = useGetSSLOfQuarterQuery(quarter);
+  } = useGetInVerseOfQuarterQuery(quarter);
 
   const lastDigitQuarter = parseInt(quarter?.slice(-1), 10);
-
-  const {
-    data: videoLink,
-    error: videoError,
-    isLoading: videoLoading,
-  } = useGetVideoLinkQuery({
-    year: year,
-    quarter: lastDigitQuarter,
-    lesson: week,
-  });
-
   useEffect(() => {
     if (lessonDetails) {
       setBackgroundImage(lessonDetails.lesson.cover);
@@ -77,25 +68,49 @@ const SSLHome = () => {
     }
   }, [lessonRefetch, quarterRefetch, refetch]);
 
-  const navigation = useNavigation();
-  const darkMode = useSelector(state => state.ui.darkMode);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearch = text => {
-    setSearchTerm(text);
-  };
-
-  const filteredData = ssl?.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-
   const language = useSelector(state => state.language.language);
 
   // Refetch data when language changes
   useEffect(() => {
     onRefresh();
   }, [language, onRefresh]);
+
+  const navigation = useNavigation();
+  const darkMode = useSelector(state => state.ui.darkMode);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    data: videoLink,
+    error: videoError,
+    isLoading: videoLoading,
+  } = useGetVideoLinkQuery({
+    year: year,
+    quarter: lastDigitQuarter,
+    lesson: week,
+  });
+
+  if (quarterError) {
+    console.error(
+      'Error initializing useGetInVerseOfQuarterQuery:',
+      quarterError,
+    );
+  }
+
+  if (!useGetInVerseOfQuarterQuery) {
+    return (
+      <SafeAreaView>
+        <Text>Error: Hook not initialized</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const handleSearch = text => {
+    setSearchTerm(text);
+  };
+
+  const filteredData = InVerse?.filter(item =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   const parseCustomDate = dateString => {
     const [day, month, year] = dateString.split('/');
@@ -136,15 +151,15 @@ const SSLHome = () => {
     return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
   }
 
-  const handleSSLOpen = sslId => {
-    navigation.navigate('SSLQuarter', {sslId});
+  const handleInVerseOpen = InVerseId => {
+    navigation.navigate('InVerseQuarter', {InVerseId});
   };
 
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
   const handleOpenButtonPress = () => {
-    navigation.navigate('SSLWeek', {
-      ssl: quarter,
+    navigation.navigate('InVerseWeek', {
+      InVerse: quarter,
       weekId: week,
     });
   };
@@ -179,7 +194,7 @@ const SSLHome = () => {
             </Text>
           </View>
           <TextInput
-            placeholder="Search SSLs..."
+            placeholder="Search InVerses..."
             value={searchTerm}
             onChangeText={handleSearch}
             style={[
@@ -233,7 +248,7 @@ const SSLHome = () => {
                   </View>
                   <TouchableOpacity
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
-                    onPress={() => handleSSLOpen(item.id)}>
+                    onPress={() => handleInVerseOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
                       ትምህርቱን ክፈት
                     </Text>
@@ -258,6 +273,9 @@ const SSLHome = () => {
     });
     return <Text>Loading...</Text>;
   }
+
+  console.log('Quarter:', quarter);
+  console.log('useGetInVerseOfQuarterQuery:', useGetInVerseOfQuarterQuery);
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -371,7 +389,7 @@ const SSLHome = () => {
           </View>
           <TextInput
             placeholder={
-              language === 'en' ? 'Search SSLs...' : 'የቀድሞ ትምህርቶችን ፈልግ...'
+              language === 'en' ? 'Search InVerses...' : 'የቀድሞ ትምህርቶችን ፈልግ...'
             }
             value={searchTerm}
             onChangeText={handleSearch}
@@ -428,7 +446,7 @@ const SSLHome = () => {
                   </View>
                   <TouchableOpacity
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
-                    onPress={() => handleSSLOpen(item.id)}>
+                    onPress={() => handleInVerseOpen(item.id)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
                       {language === 'en' ? 'Open Lesson' : 'ትምህርቱን ክፈት'}
                     </Text>
@@ -443,4 +461,4 @@ const SSLHome = () => {
   );
 };
 
-export default SSLHome;
+export default InVerseHome;

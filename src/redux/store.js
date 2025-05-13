@@ -7,6 +7,7 @@ import uiReducer from './uiSlice';
 import languageReducer from './languageSlice';
 import {apiSlice} from './api-slices/apiSlice';
 import {SSLapi} from '../services/SabbathSchoolApi';
+import {InVerseapi} from '../services/InVerseapi'; // Import the InVerseapi
 import {videoLinksApi} from '../services/videoLinksApi'; // Import the videoLinksApi
 import {combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   language: languageReducer,
   [SSLapi.reducerPath]: SSLapi.reducer,
+  [InVerseapi.reducerPath]: InVerseapi.reducer, // Add the InVerseapi reducer
   [apiSlice.reducerPath]: apiSlice.reducer,
   [videoLinksApi.reducerPath]: videoLinksApi.reducer,
 });
@@ -36,6 +38,7 @@ const persistConfig = {
     'auth',
     'language',
     SSLapi.reducerPath,
+    InVerseapi.reducerPath, // Persist the InVerseapi state
     apiSlice.reducerPath,
   ],
 };
@@ -48,7 +51,12 @@ export const store = configureStore({
     getDefaultMiddleware({
       immutableCheck: false,
       serializableCheck: false,
-    }).concat(SSLapi.middleware, apiSlice.middleware, videoLinksApi.middleware), // Add the videoLinksApi middleware
+    }).concat(
+      SSLapi.middleware,
+      InVerseapi.middleware, // Add the InVerseapi middleware
+      apiSlice.middleware,
+      videoLinksApi.middleware,
+    ),
 });
 
 export const persistor = persistStore(store, null, () => {

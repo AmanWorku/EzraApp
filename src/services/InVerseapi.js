@@ -22,20 +22,24 @@ const baseQueryWithLanguage = async (args, api, extraOptions) => {
   return result;
 };
 
-export const SSLapi = createApi({
-  reducerPath: 'SSLapi',
+export const InVerseapi = createApi({
+  reducerPath: 'InVerseapi',
   baseQuery: baseQueryWithLanguage,
   endpoints: builder => ({
-    getSSLs: builder.query({
+    getInVerses: builder.query({
       query: () => `quarterlies/index.json`,
+      transformResponse: response => {
+        // Filter the data to include only items with an id ending in '-cq'
+        return response.filter(item => item.id.endsWith('-cq'));
+      },
     }),
-    getSSLOfQuarter: builder.query({
+    getInVerseOfQuarter: builder.query({
       query: quarter => `quarterlies/${quarter}/index.json`,
     }),
-    getSSLOfDay: builder.query({
+    getInVerseOfDay: builder.query({
       query: ({path, id}) => `quarterlies/${path}/lessons/${id}/index.json`,
     }),
-    getSSLOfDayLesson: builder.query({
+    getInVerseOfDayLesson: builder.query({
       query: ({path, id, day}) => {
         return `quarterlies/${path}/lessons/${id}/days/${day}/read/index.json`;
       },
@@ -44,8 +48,8 @@ export const SSLapi = createApi({
 });
 
 export const {
-  useGetSSLsQuery,
-  useGetSSLOfQuarterQuery,
-  useGetSSLOfDayQuery,
-  useGetSSLOfDayLessonQuery,
-} = SSLapi;
+  useGetInVersesQuery,
+  useGetInVerseOfQuarterQuery,
+  useGetInVerseOfDayQuery,
+  useGetInVerseOfDayLessonQuery,
+} = InVerseapi;
