@@ -17,22 +17,14 @@ import DateConverter from './DateConverter';
 import {
   useGetInVerseOfDayQuery,
   useGetInVerseOfDayLessonQuery,
-} from '../../services/SabbathSchoolApi';
-import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
+} from '../../services/InVerseapi';
 import {useNavigation} from '@react-navigation/native';
-import {
-  ArrowSquareLeft,
-  YoutubeLogo,
-  CaretUp,
-  CaretDown,
-} from 'phosphor-react-native';
+import {ArrowSquareLeft, CaretUp, CaretDown} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from '../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {format} from 'date-fns';
-import {enUS, am} from 'date-fns/locale';
 
 const InVerseWeek = ({route}) => {
   const {InVerse, weekId} = route.params;
@@ -69,22 +61,6 @@ const InVerseWeek = ({route}) => {
     day: check,
   });
 
-  const year = InVerse.substring(0, 4);
-  const quarter = InVerse.substring(5, 7);
-
-  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
-    year: year,
-    quarter: quarter,
-    lesson: weekId,
-  });
-
-  const handleWatchYouTube = () => {
-    if (videoLink && videoLink.videoUrl) {
-      Linking.openURL(videoLink.videoUrl);
-    } else {
-      alert('Video link not available');
-    }
-  };
   const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
 
   useEffect(() => {
@@ -344,16 +320,6 @@ const InVerseWeek = ({route}) => {
               onPress={handleBackButtonPress}
               style={{zIndex: 1, marginTop: 12}}>
               <ArrowSquareLeft size={36} weight="fill" color={'#EA9215'} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleWatchYouTube}
-              style={{
-                zIndex: 1,
-                marginTop: 42,
-                position: 'absolute',
-                right: 20,
-              }}>
-              <YoutubeLogo size={36} weight="fill" color={'#EA9215'} />
             </TouchableOpacity>
             <LinearGradient
               colors={[gradientColor, `${gradientColor}20`]}

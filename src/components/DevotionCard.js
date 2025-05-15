@@ -5,20 +5,19 @@ import tw from './../../tailwind';
 
 const DevotionCard = ({devotion, darkMode, navigation}) => {
   const verseText = devotion.verse;
-  const verseMatch = verseText.match(/^(.*?)(?:"(.*)")?$/);
-  const lastQuoteIndex = verseText.lastIndexOf('“');
-  const verse =
-    lastQuoteIndex !== -1
-      ? verseText.substring(0, lastQuoteIndex).trim()
-      : verseText;
-  let reference = verseMatch[2] ? verseMatch[2].trim() : ''; // Everything after the last double quote
 
-  // If the reference is empty, check if there's any text after the last quote
-  if (!reference) {
-    const lastQuoteIndex = verseText.lastIndexOf('“');
-    if (lastQuoteIndex !== -1) {
-      reference = verseText.substring(lastQuoteIndex + 1).trim();
-    }
+  // Extract the verse content and reference
+  const lastQuoteIndex = verseText.lastIndexOf('”'); // Find the last closing quote
+  let verse = '';
+  let reference = '';
+
+  if (lastQuoteIndex !== -1) {
+    // Separate the verse content and reference
+    verse = verseText.substring(0, lastQuoteIndex + 1).trim(); // Everything up to the last closing quote
+    reference = verseText.substring(lastQuoteIndex + 1).trim(); // Everything after the last closing quote
+  } else {
+    // If no quotes are found, treat the entire text as the verse
+    verse = verseText;
   }
 
   return (

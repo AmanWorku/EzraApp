@@ -34,7 +34,18 @@ const InVerseHome = () => {
   const [backgroundImage, setBackgroundImage] = useState('');
   const {data: InVerse, error, isLoading, refetch} = useGetInVersesQuery();
 
-  console.log('InVerse Check:', InVerse);
+  // Filter the data to include only items with an id or index ending in '-cq'
+  const filteredData = InVerse?.filter(item => {
+    if (
+      (item.id && typeof item.id === 'string' && item.id.endsWith('-cq')) ||
+      (item.index &&
+        typeof item.index === 'string' &&
+        item.index.endsWith('-cq'))
+    ) {
+      return true;
+    }
+    return false;
+  });
 
   const {
     data: lessonDetails,
@@ -107,10 +118,6 @@ const InVerseHome = () => {
   const handleSearch = text => {
     setSearchTerm(text);
   };
-
-  const filteredData = InVerse?.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
 
   const parseCustomDate = dateString => {
     const [day, month, year] = dateString.split('/');
@@ -187,7 +194,8 @@ const InVerseHome = () => {
               colors={['#EA9215']}
               tintColor="#EA9215"
             />
-          }>
+          }
+          contentContainerStyle={tw`flex-1`}>
           <View style={tw`border border-accent-6 rounded mb-4`}>
             <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
               Wait for quarterly update!
@@ -273,9 +281,6 @@ const InVerseHome = () => {
     });
     return <Text>Loading...</Text>;
   }
-
-  console.log('Quarter:', quarter);
-  console.log('useGetInVerseOfQuarterQuery:', useGetInVerseOfQuarterQuery);
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -415,7 +420,7 @@ const InVerseHome = () => {
           <View style={tw`flex flex-col`}>
             {filteredData.map((item, index) => (
               <View
-                key={item.id}
+                key={item.id || item.index}
                 style={tw`flex flex-row gap-2 my-2 border border-accent-6 p-1.5 rounded-2 h-64`}>
                 <Image
                   source={{uri: item.cover}}
@@ -446,7 +451,7 @@ const InVerseHome = () => {
                   </View>
                   <TouchableOpacity
                     style={tw`px-4 py-1 rounded-4 bg-accent-6 self-start`}
-                    onPress={() => handleInVerseOpen(item.id)}>
+                    onPress={() => handleInVerseOpen(item.id || item.index)}>
                     <Text style={tw`font-nokia-bold text-sm text-primary-1`}>
                       {language === 'en' ? 'Open Lesson' : 'ትምህርቱን ክፈት'}
                     </Text>

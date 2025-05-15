@@ -28,6 +28,11 @@ import SettingsStack from './src/navigation/SettingsStack';
 // import messaging from '@react-native-firebase/messaging';
 import {navigationRef} from './src/navigation/NavigationRef';
 // import {configureNotification} from './src/services/NotificationService';
+import SelectedDevotional from './src/screens/DevotionScreens/SelectedDevotional';
+import SSLQuarter from './src/screens/SSLScreens/SSLQuarter';
+import SSLWeek from './src/screens/SSLScreens/SSLWeek';
+import InVerseQuarter from './src/screens/InVerseScreens/InVerseQuarter';
+import InVerseWeek from './src/screens/InVerseScreens/InVerseWeek';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -183,6 +188,31 @@ const App = () => {
             <Stack.Screen
               name="MainTab"
               component={MainTabNavigator}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SelectedDevotional"
+              component={SelectedDevotional}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SSLQuarter"
+              component={SSLQuarter}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SSLWeek"
+              component={SSLWeek}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="InVerseQuarter"
+              component={InVerseQuarter}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="InVerseWeek"
+              component={InVerseWeek}
               options={{headerShown: false}}
             />
           </Stack.Navigator>

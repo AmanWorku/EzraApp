@@ -4,12 +4,8 @@ const baseQueryWithLanguage = async (args, api, extraOptions) => {
   const language = api.getState().language.language;
   const baseUrl = `https://sabbath-school-stage.adventech.io/api/v2/${language}`;
   const rawBaseQuery = fetchBaseQuery({baseUrl});
-  console.log(
-    'API Request:',
-    baseUrl + (typeof args === 'string' ? args : args.url),
-  );
+
   const result = await rawBaseQuery(args, api, extraOptions);
-  console.log('API Response:', result);
 
   // Filter the data to exclude lessons with multiple hyphens in their id
   if (result.data && Array.isArray(result.data)) {

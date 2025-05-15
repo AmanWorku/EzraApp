@@ -15,12 +15,11 @@ import DateConverter from './DateConverter';
 import tw from '../../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import {useGetInVerseOfQuarterQuery} from '../../services/SabbathSchoolApi';
+import {useGetInVerseOfQuarterQuery} from '../../services/InVerseapi';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 const InVerseQuarter = ({route}) => {
   const {InVerseId} = route.params;
-  const language = useSelector(state => state.language.language);
   const {
     data: InVerseQuarter,
     error,
@@ -28,7 +27,6 @@ const InVerseQuarter = ({route}) => {
     refetch,
   } = useGetInVerseOfQuarterQuery(InVerseId);
 
-  console.log('InVerseQuarter:', InVerseQuarter);
   const navigation = useNavigation();
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);

@@ -1,22 +1,26 @@
-import {View, Text, SafeAreaView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import React, {useState} from 'react';
 import tw from './../../tailwind';
 import {useSelector} from 'react-redux';
 import SSLHome from './SSLScreens/SSLHome';
 import InVerseHome from './InVerseScreens/InVerseHome'; // Import the InVerseHome component
-import {List, User} from 'phosphor-react-native';
+import {User} from 'phosphor-react-native';
 
 const SSL = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [activeTab, setActiveTab] = useState('SSL'); // State to toggle between SSL and InVerse
 
-  console.log('Active Tab:', activeTab);
-
   return (
-    <View style={darkMode ? tw`bg-secondary-9` : null}>
-      <SafeAreaView style={tw`flex flex-col mx-auto w-[92%]`}>
+    <SafeAreaView style={[tw`flex-1`, darkMode ? tw`bg-secondary-9` : null]}>
+      <View style={tw`flex-1  mx-auto w-[92%]`}>
         {/* Header Section */}
-        <View style={tw`flex flex-row justify-between my-4`}>
+        <View style={tw`flex flex-row justify-between my-4 px-4`}>
           <View style={tw`border-b border-accent-6`}>
             <Text
               style={[
@@ -51,7 +55,11 @@ const SSL = ({navigation}) => {
             <Text
               style={[
                 tw`font-nokia-bold`,
-                activeTab === 'SSL' ? tw`text-primary-1` : tw`text-secondary-6`,
+                activeTab === 'SSL'
+                  ? tw`text-primary-1`
+                  : darkMode
+                  ? tw`text-accent-6`
+                  : tw`text-secondary-6`,
               ]}>
               SSL
             </Text>
@@ -69,6 +77,8 @@ const SSL = ({navigation}) => {
                 tw`font-nokia-bold`,
                 activeTab === 'InVerse'
                   ? tw`text-primary-1`
+                  : darkMode
+                  ? tw`text-accent-6`
                   : tw`text-secondary-6`,
               ]}>
               InVerse
@@ -77,9 +87,11 @@ const SSL = ({navigation}) => {
         </View>
 
         {/* Render Active Component */}
-        {activeTab === 'SSL' ? <SSLHome /> : <InVerseHome />}
-      </SafeAreaView>
-    </View>
+        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+          {activeTab === 'SSL' ? <SSLHome /> : <InVerseHome />}
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 

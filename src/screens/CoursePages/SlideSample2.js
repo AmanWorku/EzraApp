@@ -374,8 +374,6 @@ const SlideSample2 = ({route}) => {
           },
         },
       );
-
-      console.log('Progress updated successfully:', response.data);
       setProgressLoading(false);
 
       navigation.navigate('Course', {
