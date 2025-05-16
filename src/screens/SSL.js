@@ -43,7 +43,7 @@ const SSL = ({navigation}) => {
         </View>
 
         {/* Switch Button */}
-        <View style={tw`flex flex-row justify-center gap-4 my-4`}>
+        <View style={tw`flex flex-row justify-center gap-4 my-2`}>
           <TouchableOpacity
             style={[
               tw`px-4 py-2 rounded-full`,

@@ -32,7 +32,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {format} from 'date-fns';
-import {enUS, am} from 'date-fns/locale';
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;

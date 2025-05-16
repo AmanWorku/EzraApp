@@ -227,7 +227,7 @@ const Setting = ({navigation}) => {
                   style={tw`mr-2`}
                 />
                 <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                  Language
+                  SSL Language
                 </Text>
               </View>
               <View style={tw`flex-row items-center`}>
@@ -319,9 +319,9 @@ const Setting = ({navigation}) => {
               </TouchableOpacity>
             </View>
           )}
-          <View style={tw`py-4 border-b border-accent-6`}>
+          {/* <View style={tw`py-4 border-b border-accent-6`}>
             <NotificationSettings />
-          </View>
+          </View> */}
         </View>
         <TouchableOpacity
           onPress={handleLogout}
