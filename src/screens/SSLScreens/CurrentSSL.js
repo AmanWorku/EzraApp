@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -72,15 +72,6 @@ const CurrentSSL = () => {
 
   const handleSSLOpen = sslId => {
     navigation.navigate('SSLQuarter', {sslId});
-  };
-
-  const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
-  const gradientColor = '#222222';
-  const handleOpenButtonPress = () => {
-    navigation.navigate('SSLWeek', {
-      ssl: quarter,
-      weekId: week,
-    });
   };
 
   if (quarterError) {

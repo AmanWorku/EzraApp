@@ -140,7 +140,6 @@ const SSLHome = () => {
     navigation.navigate('SSLQuarter', {sslId});
   };
 
-  const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
   const handleOpenButtonPress = () => {
     navigation.navigate('SSLWeek', {
