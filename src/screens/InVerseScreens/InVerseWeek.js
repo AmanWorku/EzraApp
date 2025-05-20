@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Modal,
   Linking,
+  TextInput,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -25,6 +26,50 @@ import tw from '../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 import {format} from 'date-fns';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const NoteInput = React.memo(function NoteInput({
+  noteKey,
+  value,
+  onChange,
+  onBlur,
+  darkMode,
+}) {
+  const [height, setHeight] = useState(60);
+
+  return (
+    <View
+      style={[
+        tw`bg-primary-2 border border-accent-6 rounded-lg my-2 px-3 py-2`,
+        {
+          minHeight: 60,
+          shadowColor: '#000',
+          shadowOpacity: 0.05,
+          shadowRadius: 2,
+        },
+      ]}>
+      <TextInput
+        multiline
+        value={value}
+        onChangeText={onChange}
+        onBlur={onBlur}
+        placeholder="Write your note here..."
+        placeholderTextColor="#AAB0B4"
+        style={[
+          tw`text-base font-nokia-bold text-secondary-6`,
+          darkMode ? tw`text-primary-1` : null,
+          {height, padding: 0, backgroundColor: 'transparent'},
+        ]}
+        numberOfLines={3}
+        onContentSizeChange={e => {
+          const h = Math.max(60, e.nativeEvent.contentSize.height);
+          setHeight(h);
+        }}
+        underlineColorAndroid="transparent"
+      />
+    </View>
+  );
+});
 
 const InVerseWeek = ({route}) => {
   const {InVerse, weekId} = route.params;
@@ -60,8 +105,75 @@ const InVerseWeek = ({route}) => {
     id: weekId,
     day: check,
   });
+  const notesRef = useRef({});
+  const [, forceUpdate] = useState(0); // to force re-render on note change
+
+  useEffect(() => {
+    AsyncStorage.getItem('inVerseNotes').then(stored => {
+      if (stored) {
+        notesRef.current = JSON.parse(stored);
+        forceUpdate(n => n + 1); // force re-render to show loaded notes
+      }
+    });
+  }, []);
+
+  const handleNoteChange = (noteKey, text) => {
+    notesRef.current[noteKey] = text;
+    forceUpdate(n => n + 1); // update UI immediately
+  };
+
+  const handleNoteBlur = async noteKey => {
+    await AsyncStorage.setItem(
+      'inVerseNotes',
+      JSON.stringify(notesRef.current),
+    );
+  };
+
+  const handleSaveNote = useCallback(async (key, text) => {
+    notesRef.current[key] = text;
+    await AsyncStorage.setItem(
+      'inVerseNotes',
+      JSON.stringify(notesRef.current),
+    );
+  }, []);
 
   const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
+  const [notes, setNotes] = useState({});
+  const [inputHeights, setInputHeights] = useState({});
+  const saveTimeout = useRef(null);
+
+  const navigateTo = useCallback(async newCheck => {
+    await AsyncStorage.setItem(
+      'inVerseNotes',
+      JSON.stringify(notesRef.current),
+    );
+    setCheck(newCheck.toString().padStart(2, '0'));
+    scrollRef.current?.scrollTo({y: 0, animated: true});
+  }, []);
+
+  // Unique identifiers for this lesson
+  const year = InVerse?.split('-')[0];
+  const quarter = InVerse?.split('-')[1];
+  // weekId and check are already available
+
+  // Load notes on mount
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('inVerseNotes');
+        if (stored) setNotes(JSON.parse(stored));
+      } catch (e) {}
+    };
+    loadNotes();
+  }, []);
+
+  // When navigating to next/previous, save all notes
+  const onPrevious = () => {
+    if (check !== '01') navigateTo(parseInt(check, 10) - 1);
+  };
+  const onNext = () => {
+    if (check !== '07') navigateTo(parseInt(check, 10) + 1);
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
@@ -96,18 +208,6 @@ const InVerseWeek = ({route}) => {
     setIsRefreshing(true);
     await refetch();
     setIsRefreshing(false);
-  };
-
-  const onNextButtonClick = () => {
-    const nextCheck = parseInt(check, 10) + 1;
-    const paddedNextCheck = nextCheck.toString().padStart(2, '0');
-    setCheck(paddedNextCheck);
-  };
-
-  const onPreviousButtonClick = () => {
-    const previousCheck = parseInt(check, 10) - 1;
-    const paddedPreviousCheck = previousCheck.toString().padStart(2, '0');
-    setCheck(paddedPreviousCheck);
   };
 
   const handleToggleSupplementalNotes = () => {
@@ -289,6 +389,24 @@ const InVerseWeek = ({route}) => {
       ) : null;
     }
 
+    if (node.name === 'code') {
+      const noteKey = `${year}_${quarter}_${weekId}_${check}_code_${index}`;
+      return (
+        <View key={index}>
+          <Text style={styles.code}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+          <NoteInput
+            noteKey={noteKey}
+            value={notesRef.current[noteKey] || ''}
+            onChange={text => handleNoteChange(noteKey, text)}
+            onBlur={() => handleNoteBlur(noteKey)}
+            darkMode={darkMode}
+          />
+        </View>
+      );
+    }
+
     return undefined;
   };
 
@@ -360,9 +478,7 @@ const InVerseWeek = ({route}) => {
             />
             <View style={tw`flex flex-row justify-between`}>
               {check !== '01' && (
-                <TouchableOpacity
-                  style={tw`mb-2`}
-                  onPress={onPreviousButtonClick}>
+                <TouchableOpacity style={tw`mb-2`} onPress={onPrevious}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
                     ተመለስ
@@ -372,7 +488,7 @@ const InVerseWeek = ({route}) => {
               {check !== '07' && (
                 <TouchableOpacity
                   style={[tw`mb-2`, check === '01' && tw`self-end`]}
-                  onPress={onNextButtonClick}>
+                  onPress={onNext}>
                   <Text
                     style={tw`text-accent-6 font-nokia-bold text-xl border border-accent-6 px-4 py-1 rounded-4`}>
                     ቀጥል
