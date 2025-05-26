@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
   ImageBackground,
   Modal,
   Linking,
+  TextInput,
+  Dimensions,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -32,6 +34,69 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {format} from 'date-fns';
+
+const NoteModal = ({isVisible, onClose, onSave, initialText, darkMode}) => {
+  const [noteText, setNoteText] = useState(initialText || '');
+
+  const handleSave = () => {
+    onSave(noteText);
+    onClose();
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onClose}>
+      <View
+        style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-80`}>
+        <View
+          style={[
+            tw`w-11/12 bg-primary-2 p-4 rounded-2 border border-accent-8`,
+            darkMode ? tw`bg-secondary-9` : null,
+          ]}>
+          <TextInput
+            multiline
+            value={noteText}
+            onChangeText={setNoteText}
+            placeholder="Write your note here..."
+            placeholderTextColor="#AAB0B4"
+            style={[
+              tw`border border-accent-6 rounded-2 px-3 py-2 min-h-[120px] mb-4`,
+              darkMode
+                ? tw`text-primary-1 bg-secondary-7`
+                : tw`text-secondary-6 bg-primary-2`,
+              tw`font-nokia-bold text-base`,
+            ]}
+            textAlignVertical="top"
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+          />
+          <View style={tw`flex-row justify-end gap-4`}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={tw`px-4 py-2 rounded-lg border border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={tw`px-4 py-2 rounded-lg bg-accent-6`}>
+              <Text style={tw`font-nokia-bold text-primary-1`}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -137,6 +202,46 @@ const SSLWeek = ({route}) => {
     setShowSupplementalNotes(!showSupplementalNotes);
   };
 
+  const [notes, setNotes] = useState({});
+  const [activeNoteId, setActiveNoteId] = useState(null);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const savedNotes = await AsyncStorage.getItem(
+          `notes-${weekId}-${check}`,
+        );
+        if (savedNotes) {
+          setNotes(JSON.parse(savedNotes));
+        } else {
+          setNotes({});
+        }
+      } catch (error) {
+        console.error('Error loading notes:', error);
+      }
+    };
+    loadNotes();
+  }, [weekId, check]);
+
+  const handleSaveNote = useCallback(
+    async (noteId, text) => {
+      try {
+        const newNotes = {
+          ...notes,
+          [noteId]: text,
+        };
+        setNotes(newNotes);
+        await AsyncStorage.setItem(
+          `notes-${weekId}-${check}`,
+          JSON.stringify(newNotes),
+        );
+      } catch (error) {
+        console.error('Error saving note:', error);
+      }
+    },
+    [notes, weekId, check],
+  );
+
   if (isLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -178,7 +283,7 @@ const SSLWeek = ({route}) => {
       ...tw`font-nokia-bold`,
       color: '#EA9215',
       backgroundColor: darkMode ? '#333' : '#f5f5f5',
-      padding: 4,
+      padding: 8,
       borderRadius: 4,
     },
     strong: tw`text-xl`,
@@ -310,6 +415,84 @@ const SSLWeek = ({route}) => {
           {defaultRenderer(node.children, node)}
         </View>
       ) : null;
+    }
+
+    if (node.name === 'code') {
+      const codeContent = (node.children ?? [])
+        .map(child => child.data || '')
+        .join('');
+
+      const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
+        0,
+        20,
+      )}`;
+      const noteText = notes[noteId] || '';
+
+      const screenWidth = Dimensions.get('window').width;
+      const containerWidth = screenWidth - 32; // Account for padding (px-4 = 16px each side)
+
+      return (
+        <View
+          key={noteId}
+          style={[tw`mb-2`, {width: containerWidth, maxWidth: containerWidth}]}>
+          <View
+            style={[
+              tw`rounded-lg p-2`,
+              {
+                backgroundColor: darkMode ? '#333' : '#f5f5f5',
+                width: '100%',
+                maxWidth: '100%',
+              },
+            ]}>
+            <View style={{width: '100%', maxWidth: '100%'}}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  {
+                    color: '#EA9215',
+                    width: '100%',
+                  },
+                ]}
+                numberOfLines={undefined}
+                ellipsizeMode="clip">
+                {codeContent}
+              </Text>
+            </View>
+          </View>
+          <View style={tw`mt-2`}>
+            <View style={tw`flex flex-col gap-2`}>
+              <View style={tw`w-full border-accent-6`}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold pb-1 text-justify`,
+                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                    {
+                      textDecorationLine: 'underline',
+                      textDecorationColor: '#EA9215',
+                      textDecorationStyle: 'solid',
+                    },
+                  ]}>
+                  {noteText || ''}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setActiveNoteId(noteId)}
+                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6`}>
+                <Text style={tw`font-nokia-bold text-primary-1`}>
+                  {noteText ? 'Edit Note' : 'Add Note'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <NoteModal
+              isVisible={activeNoteId === noteId}
+              onClose={() => setActiveNoteId(null)}
+              onSave={text => handleSaveNote(noteId, text)}
+              initialText={noteText}
+              darkMode={darkMode}
+            />
+          </View>
+        </View>
+      );
     }
 
     return undefined;

@@ -17,13 +17,17 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
         classpath("com.google.gms:google-services:4.4.1")
     }
-
 }
 
 allprojects {
-  repositories {
-    google()  // Google's Maven repository
-  }
+    repositories {
+        google()  // Google's Maven repository
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://www.jitpack.io" }
+        maven { url "$rootDir/../node_modules/react-native/android" }
+        maven { url "$rootDir/../node_modules/jsc-android/dist" }
+    }
 }
 
 apply plugin: "com.facebook.react.rootproject"

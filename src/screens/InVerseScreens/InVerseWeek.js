@@ -12,6 +12,7 @@ import {
   Modal,
   Linking,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -28,48 +29,94 @@ import ErrorScreen from '../../components/ErrorScreen';
 import {format} from 'date-fns';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NoteInput = React.memo(function NoteInput({
-  noteKey,
-  value,
-  onChange,
-  onBlur,
-  darkMode,
-}) {
-  const [height, setHeight] = useState(60);
+// Replace the NoteBox component with this simpler version
+const NoteInput = ({darkMode}) => {
+  const [text, setText] = useState('');
 
   return (
-    <View
+    <TextInput
+      multiline
+      value={text}
+      onChangeText={setText}
+      placeholder="Write your note here..."
+      placeholderTextColor="#AAB0B4"
       style={[
-        tw`bg-primary-2 border border-accent-6 rounded-lg my-2 px-3 py-2`,
-        {
-          minHeight: 60,
-          shadowColor: '#000',
-          shadowOpacity: 0.05,
-          shadowRadius: 2,
-        },
-      ]}>
-      <TextInput
-        multiline
-        value={value}
-        onChangeText={onChange}
-        onBlur={onBlur}
-        placeholder="Write your note here..."
-        placeholderTextColor="#AAB0B4"
-        style={[
-          tw`text-base font-nokia-bold text-secondary-6`,
-          darkMode ? tw`text-primary-1` : null,
-          {height, padding: 0, backgroundColor: 'transparent'},
-        ]}
-        numberOfLines={3}
-        onContentSizeChange={e => {
-          const h = Math.max(60, e.nativeEvent.contentSize.height);
-          setHeight(h);
-        }}
-        underlineColorAndroid="transparent"
-      />
-    </View>
+        tw`bg-primary-2 border border-accent-6 rounded-lg px-3 py-2 min-h-[60px]`,
+        darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+        tw`font-nokia-bold text-base`,
+      ]}
+      textAlignVertical="top"
+      autoCapitalize="none"
+      autoCorrect={false}
+      spellCheck={false}
+      numberOfLines={4}
+    />
   );
-});
+};
+
+// Replace the NoteInput component with this new modal-based system
+const NoteModal = ({isVisible, onClose, onSave, initialText, darkMode}) => {
+  const [noteText, setNoteText] = useState(initialText || '');
+
+  const handleSave = () => {
+    onSave(noteText);
+    onClose();
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onClose}>
+      <View
+        style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-80`}>
+        <View
+          style={[
+            tw`w-11/12 bg-primary-2 p-4 rounded-2 border border-accent-8`,
+            darkMode ? tw`bg-secondary-9` : null,
+          ]}>
+          <TextInput
+            multiline
+            value={noteText}
+            onChangeText={setNoteText}
+            placeholder="Write your note here..."
+            placeholderTextColor="#AAB0B4"
+            style={[
+              tw` border border-accent-6 rounded-2 px-3 py-2 min-h-[120px] mb-4`,
+              darkMode
+                ? tw`text-primary-1 bg-secondary-7`
+                : tw`text-secondary-6 bg-primary-2`,
+              tw`font-nokia-bold text-base`,
+            ]}
+            textAlignVertical="top"
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+          />
+          <View style={tw`flex-row justify-end gap-4`}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={tw`px-4 py-2 rounded-lg border border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={tw`px-4 py-2 rounded-lg bg-accent-6`}>
+              <Text style={tw`font-nokia-bold text-primary-1`}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const InVerseWeek = ({route}) => {
   const {InVerse, weekId} = route.params;
@@ -90,6 +137,11 @@ const InVerseWeek = ({route}) => {
   const [selectedVerseKey, setSelectedVerseKey] = useState('');
   const [selectedVerseContent, setSelectedVerseContent] = useState('');
   const language = useSelector(state => state.language.language);
+
+  // notes for each <code> block
+  const [activeNoteId, setActiveNoteId] = useState(null);
+  const [notes, setNotes] = useState({});
+
   const {data: InVerseQuarter, error: quarterError} = useGetInVerseOfDayQuery({
     path: InVerse,
     id: weekId,
@@ -105,75 +157,6 @@ const InVerseWeek = ({route}) => {
     id: weekId,
     day: check,
   });
-  const notesRef = useRef({});
-  const [, forceUpdate] = useState(0); // to force re-render on note change
-
-  useEffect(() => {
-    AsyncStorage.getItem('inVerseNotes').then(stored => {
-      if (stored) {
-        notesRef.current = JSON.parse(stored);
-        forceUpdate(n => n + 1); // force re-render to show loaded notes
-      }
-    });
-  }, []);
-
-  const handleNoteChange = (noteKey, text) => {
-    notesRef.current[noteKey] = text;
-    forceUpdate(n => n + 1); // update UI immediately
-  };
-
-  const handleNoteBlur = async noteKey => {
-    await AsyncStorage.setItem(
-      'inVerseNotes',
-      JSON.stringify(notesRef.current),
-    );
-  };
-
-  const handleSaveNote = useCallback(async (key, text) => {
-    notesRef.current[key] = text;
-    await AsyncStorage.setItem(
-      'inVerseNotes',
-      JSON.stringify(notesRef.current),
-    );
-  }, []);
-
-  const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
-  const [notes, setNotes] = useState({});
-  const [inputHeights, setInputHeights] = useState({});
-  const saveTimeout = useRef(null);
-
-  const navigateTo = useCallback(async newCheck => {
-    await AsyncStorage.setItem(
-      'inVerseNotes',
-      JSON.stringify(notesRef.current),
-    );
-    setCheck(newCheck.toString().padStart(2, '0'));
-    scrollRef.current?.scrollTo({y: 0, animated: true});
-  }, []);
-
-  // Unique identifiers for this lesson
-  const year = InVerse?.split('-')[0];
-  const quarter = InVerse?.split('-')[1];
-  // weekId and check are already available
-
-  // Load notes on mount
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const stored = await AsyncStorage.getItem('inVerseNotes');
-        if (stored) setNotes(JSON.parse(stored));
-      } catch (e) {}
-    };
-    loadNotes();
-  }, []);
-
-  // When navigating to next/previous, save all notes
-  const onPrevious = () => {
-    if (check !== '01') navigateTo(parseInt(check, 10) - 1);
-  };
-  const onNext = () => {
-    if (check !== '07') navigateTo(parseInt(check, 10) + 1);
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
@@ -182,37 +165,361 @@ const InVerseWeek = ({route}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleVerseClick = verseKey => {
-    if (
-      InVerseWeek &&
-      InVerseWeek.bible &&
-      InVerseWeek.bible.length > 0 &&
-      InVerseWeek.bible[[0]].verses &&
-      InVerseWeek.bible[[0]].verses[verseKey]
-    ) {
-      setSelectedVerseKey(verseKey);
-      setSelectedVerseContent(InVerseWeek.bible[[0]].verses[verseKey]);
-      setIsModalOpen(true);
-    } else {
-      console.error(`Verse key "${verseKey}" not found`);
-    }
-  };
+  // Load notes from AsyncStorage when component mounts or when weekId/check changes
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const savedNotes = await AsyncStorage.getItem(
+          `notes-${weekId}-${check}`,
+        );
+        if (savedNotes) {
+          setNotes(JSON.parse(savedNotes));
+        } else {
+          setNotes({});
+        }
+      } catch (error) {
+        console.error('Error loading notes:', error);
+      }
+    };
+    loadNotes();
+  }, [weekId, check]);
 
-  const onCloseModal = () => {
+  // Save notes to AsyncStorage whenever they change
+  const handleSaveNote = useCallback(
+    async (noteId, text) => {
+      try {
+        const newNotes = {
+          ...notes,
+          [noteId]: text,
+        };
+        setNotes(newNotes);
+        await AsyncStorage.setItem(
+          `notes-${weekId}-${check}`,
+          JSON.stringify(newNotes),
+        );
+      } catch (error) {
+        console.error('Error saving note:', error);
+      }
+    },
+    [notes, weekId, check],
+  );
+
+  const handleVerseClick = useCallback(
+    verseKey => {
+      if (
+        InVerseWeek &&
+        InVerseWeek.bible &&
+        InVerseWeek.bible.length > 0 &&
+        InVerseWeek.bible[[0]].verses &&
+        InVerseWeek.bible[[0]].verses[verseKey]
+      ) {
+        setSelectedVerseKey(verseKey);
+        setSelectedVerseContent(InVerseWeek.bible[[0]].verses[verseKey]);
+        setIsModalOpen(true);
+      } else {
+        console.error(
+          `Verse key "${verseKey}" not found in InVerseWeek:`,
+          InVerseWeek,
+        );
+      }
+    },
+    [InVerseWeek],
+  );
+
+  const onCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedVerseKey('');
     setSelectedVerseContent('');
-  };
+  }, []);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setIsRefreshing(true);
     await refetch();
     setIsRefreshing(false);
+  }, [refetch]);
+
+  const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
+
+  const handleToggleSupplementalNotes = useCallback(() => {
+    setShowSupplementalNotes(prev => !prev);
+  }, []);
+
+  const onPrevious = () => {
+    if (check !== '01') {
+      setCheck(prev => (parseInt(prev, 10) - 1).toString().padStart(2, '0'));
+      scrollRef.current?.scrollTo({y: 0, animated: true});
+    }
   };
 
-  const handleToggleSupplementalNotes = () => {
-    setShowSupplementalNotes(!showSupplementalNotes);
+  const onNext = () => {
+    if (check !== '07') {
+      setCheck(prev => (parseInt(prev, 10) + 1).toString().padStart(2, '0'));
+      scrollRef.current?.scrollTo({y: 0, animated: true});
+    }
   };
+
+  // Styles definition should be here, after hooks and before early returns if it uses darkMode
+  const styles = StyleSheet.create({
+    text: tw`font-nokia-bold`,
+    h3: darkMode
+      ? tw`font-nokia-bold text-primary-1 text-2xl`
+      : tw`font-nokia-bold text-secondary-6 text-2xl`,
+    p: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-justify py-2`
+      : tw`text-secondary-6 font-nokia-bold text-justify py-2`,
+    blockquote: darkMode
+      ? tw`text-primary-1 font-nokia-bold text-xl`
+      : tw`text-secondary-6 font-nokia-bold text-xl`,
+    'blockquote.p': tw`font-nokia-bold text-4xl`,
+    em: tw`mt-4`,
+    code: {
+      ...tw`font-nokia-bold`,
+      color: '#EA9215',
+      backgroundColor: darkMode ? '#333' : '#f5f5f5',
+      padding: 8,
+      borderRadius: 4,
+    },
+    strong: tw`text-xl`,
+    a: darkMode
+      ? tw`text-accent-6 font-nokia-bold text-justify py-2`
+      : tw`text-accent-6 font-nokia-bold text-justify py-2`,
+    table: tw`border border-gray-300 my-4`,
+    td: tw`border-r border-gray-300 p-2`,
+  });
+
+  // Memoize renderNode
+  const renderNode = useCallback(
+    (node, index, siblings, parent, defaultRenderer) => {
+      /* 1 ─────────  PARAGRAPH  ───────── */
+      if (node.name === 'p') {
+        // Special case for supplemental notes toggle, which needs access to showSupplementalNotes state
+        if (node.children[0]?.data === 'Supplemental EGW Notes') {
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={handleToggleSupplementalNotes}
+              style={[
+                tw`flex flex-row justify-between p-2 rounded-lg mt-4 border border-lg h-8`,
+              ]}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-accent-6` : tw`text-secondary-6`,
+                ]}>
+                {node.children[0].data}
+              </Text>
+              {showSupplementalNotes ? (
+                <CaretUp size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+              ) : (
+                <CaretDown size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+              )}
+            </TouchableOpacity>
+          );
+        }
+        // Default paragraph rendering
+        return (
+          <Text
+            key={index}
+            style={[
+              styles.p, // font-nokia-bold, colour, justify, etc.
+              {flexWrap: 'wrap'}, // allow the text itself to wrap
+            ]}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+        );
+      }
+
+      // Handle verse links (a tags) - render as inline Text with specific styles
+      if (node.name === 'a') {
+        const {class: className, verse: verseReference} = node.attribs;
+        const linkStyle = [tw`font-nokia-bold text-accent-6 underline`];
+        if (className === 'verse' && verseReference) {
+          const onPress = () => handleVerseClick(verseReference); // handleVerseClick needs to be stable or in deps
+          return (
+            <Text key={index} style={linkStyle} onPress={onPress}>
+              {defaultRenderer(node.children, node)}{' '}
+            </Text>
+          );
+        }
+        return (
+          <Text key={index} style={linkStyle}>
+            {defaultRenderer(node.children, node)}
+          </Text>
+        );
+      }
+
+      // Handle blockquote handling
+      if (node.name === 'blockquote') {
+        const childrenWithStyles = node.children.map((child, childIndex) => {
+          if (child.type === 'text') {
+            return (
+              <Text
+                key={childIndex}
+                style={[
+                  tw`font-nokia-bold text-lg text-justify`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                  {flexWrap: 'wrap'},
+                ]}>
+                {child.data}
+              </Text>
+            );
+          } else {
+            return defaultRenderer([child], parent);
+          }
+        });
+        return (
+          <View
+            key={index}
+            style={[
+              tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
+            ]}>
+            {childrenWithStyles}
+          </View>
+        );
+      }
+
+      // Keep table handling
+      if (node.name === 'table') {
+        return (
+          <View key={index} style={styles.table}>
+            {defaultRenderer(node.children, node)}
+          </View>
+        );
+      }
+
+      if (node.name === 'tr') {
+        return (
+          <View key={index} style={styles.tr}>
+            {defaultRenderer(node.children, node)}
+          </View>
+        );
+      }
+
+      if (node.name === 'td') {
+        return (
+          <View key={index} style={styles.td}>
+            {defaultRenderer(node.children, node)}
+          </View>
+        );
+      }
+
+      // Keep supplemental notes div handling
+      if (
+        node.name === 'div' &&
+        node.attribs?.class === 'ss-donation-appeal-text'
+      ) {
+        return showSupplementalNotes ? (
+          <View key={index} style={tw`mt-2`}>
+            {defaultRenderer(node.children, node)}
+          </View>
+        ) : null;
+      }
+
+      // Note section handling
+      if (node.name === 'code') {
+        const codeContent = (node.children ?? [])
+          .map(child => child.data || '')
+          .join('');
+
+        const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
+          0,
+          20,
+        )}`;
+        const noteText = notes[noteId] || '';
+
+        const screenWidth = Dimensions.get('window').width;
+        const containerWidth = screenWidth - 32; // Account for padding (px-4 = 16px each side)
+
+        return (
+          <View
+            key={noteId}
+            style={[
+              tw`mb-2`,
+              {width: containerWidth, maxWidth: containerWidth},
+            ]}>
+            <View
+              style={[
+                tw`rounded-lg p-2`,
+                {
+                  backgroundColor: darkMode ? '#333' : '#f5f5f5',
+                  width: '100%',
+                  maxWidth: '100%',
+                },
+              ]}>
+              <View style={{width: '100%', maxWidth: '100%'}}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold`,
+                    {
+                      color: '#EA9215',
+                      width: '100%',
+                    },
+                  ]}
+                  numberOfLines={undefined}
+                  ellipsizeMode="clip">
+                  {codeContent}
+                </Text>
+              </View>
+            </View>
+            <View style={tw`mt-2`}>
+              <View style={tw`flex flex-col gap-2`}>
+                <View style={tw`w-full border-accent-6`}>
+                  <Text
+                    style={[
+                      tw`font-nokia-bold pb-1 text-justify`,
+                      darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                      {
+                        textDecorationLine: 'underline',
+                        textDecorationColor: '#EA9215', // accent-6 color
+                        textDecorationStyle: 'solid',
+                      },
+                    ]}>
+                    {noteText || ''}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setActiveNoteId(noteId)}
+                  style={tw`self-start px-3 py-1 rounded-2 bg-accent-6 mt-2`}>
+                  <Text style={tw`font-nokia-bold text-primary-1`}>
+                    {noteText ? 'Edit Note' : 'Add Note'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <NoteModal
+                isVisible={activeNoteId === noteId}
+                onClose={() => setActiveNoteId(null)}
+                onSave={text => handleSaveNote(noteId, text)}
+                initialText={noteText}
+                darkMode={darkMode}
+              />
+            </View>
+          </View>
+        );
+      }
+
+      return undefined;
+    },
+    [
+      darkMode,
+      handleVerseClick,
+      handleToggleSupplementalNotes,
+      showSupplementalNotes,
+      styles,
+      weekId,
+      check,
+      notes,
+      setActiveNoteId,
+      handleSaveNote,
+      activeNoteId,
+    ],
+  );
+
+  const handleBackButtonPress = () => {
+    navigation.goBack();
+  };
+  const gradientColor = '#000000';
+  const dateStyle = 'font-nokia-bold text-lg text-primary-6';
+  const modifiedContent = selectedVerseContent.replace(/<h2>/g, '<br><h2>');
 
   if (isLoading) {
     return (
@@ -235,38 +542,19 @@ const InVerseWeek = ({route}) => {
     );
   }
 
+  if (!InVerseWeek || !InVerseWeek.content) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Content not available
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   const {content} = InVerseWeek;
   const sanitizedContent = content.replace(/\n/g, '');
 
-  const styles = StyleSheet.create({
-    text: tw`font-nokia-bold`,
-    h3: darkMode
-      ? tw`font-nokia-bold text-primary-1 text-2xl`
-      : tw`font-nokia-bold text-secondary-6 text-2xl`,
-    p: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-justify py-2 flex-wrap`
-      : tw`text-secondary-6 font-nokia-bold text-justify py-2 flex-wrap`,
-    blockquote: darkMode
-      ? tw`text-primary-1 font-nokia-bold text-xl`
-      : tw`text-secondary-6 font-nokia-bold text-xl`,
-    'blockquote.p': tw`font-nokia-bold text-4xl`,
-    em: tw`mt-4`,
-    code: {
-      ...tw`font-nokia-bold`,
-      color: '#EA9215',
-      backgroundColor: darkMode ? '#333' : '#f5f5f5',
-      padding: 4,
-      borderRadius: 4,
-    },
-    strong: tw`text-xl`,
-    a: tw`text-accent-6 underline`,
-    // Styles for table elements
-    table: tw`border border-gray-300 my-4`,
-    // tr: tw`border-b border-gray-300`,
-    td: tw`border-r border-gray-300 p-2`,
-    // 'tr:last-child': tw`border-b-0`,
-    // 'td:last-child': tw`border-r-0`,
-  });
   const parseCustomDate = dateString => {
     const [day, month, year] = dateString.split('/');
     return new Date(`${year}-${month}-${day}`);
@@ -281,141 +569,6 @@ const InVerseWeek = ({route}) => {
       return 'Invalid Date';
     }
   };
-
-  const renderNode = (node, index, siblings, parent, defaultRenderer) => {
-    if (node.name === 'a') {
-      const {class: className, verse: verseReference} = node.attribs;
-      if (className === 'verse' && verseReference) {
-        const onPress = () => handleVerseClick(verseReference);
-        return (
-          <Text key={index} style={styles.a} onPress={onPress}>
-            {defaultRenderer(node.children, node)}
-          </Text>
-        );
-      }
-      return (
-        <Text key={index} style={styles.a}>
-          {defaultRenderer(node.children, node)}
-        </Text>
-      );
-    }
-
-    if (node.name === 'blockquote') {
-      const childrenWithStyles = node.children.map((child, childIndex) => {
-        if (child.type === 'text') {
-          return (
-            <Text
-              key={childIndex}
-              style={[
-                tw`font-nokia-bold text-lg text-justify`,
-                darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-              ]}>
-              {child.data}
-            </Text>
-          );
-        } else {
-          return defaultRenderer(child.children, child);
-        }
-      });
-      return (
-        <View
-          key={index}
-          style={[
-            tw`border-l-4 border-accent-6 pl-4 flex flex-row flex-wrap text-wrap`,
-          ]}>
-          {childrenWithStyles}
-        </View>
-      );
-    }
-    if (node.name === 'table') {
-      return (
-        <View key={index} style={styles.table}>
-          {defaultRenderer(node.children, node)}
-        </View>
-      );
-    }
-
-    if (node.name === 'tr') {
-      return (
-        <View key={index} style={styles.tr}>
-          {defaultRenderer(node.children, node)}
-        </View>
-      );
-    }
-
-    if (node.name === 'td') {
-      return (
-        <View key={index} style={styles.td}>
-          {defaultRenderer(node.children, node)}
-        </View>
-      );
-    }
-
-    if (
-      node.name === 'p' &&
-      node.children[0]?.data === 'Supplemental EGW Notes'
-    ) {
-      return (
-        <TouchableOpacity
-          key={index}
-          onPress={handleToggleSupplementalNotes}
-          style={[
-            tw`flex flex-row justify-between p-2 rounded-lg mt-4 border border-lg h-8`,
-          ]}>
-          <Text
-            style={[
-              tw`font-nokia-bold`,
-              darkMode ? tw`text-accent-6` : tw`text-secondary-6`,
-            ]}>
-            {node.children[0].data}
-          </Text>
-          {showSupplementalNotes ? (
-            <CaretUp size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
-          ) : (
-            <CaretDown size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
-          )}
-        </TouchableOpacity>
-      );
-    }
-
-    if (
-      node.name === 'div' &&
-      node.attribs?.class === 'ss-donation-appeal-text'
-    ) {
-      return showSupplementalNotes ? (
-        <View key={index} style={tw`mt-2`}>
-          {defaultRenderer(node.children, node)}
-        </View>
-      ) : null;
-    }
-
-    if (node.name === 'code') {
-      const noteKey = `${year}_${quarter}_${weekId}_${check}_code_${index}`;
-      return (
-        <View key={index}>
-          <Text style={styles.code}>
-            {defaultRenderer(node.children, node)}
-          </Text>
-          <NoteInput
-            noteKey={noteKey}
-            value={notesRef.current[noteKey] || ''}
-            onChange={text => handleNoteChange(noteKey, text)}
-            onBlur={() => handleNoteBlur(noteKey)}
-            darkMode={darkMode}
-          />
-        </View>
-      );
-    }
-
-    return undefined;
-  };
-
-  const handleBackButtonPress = () => {
-    navigation.goBack();
-  };
-  const gradientColor = '#000000';
-  const dateStyle = 'font-nokia-bold text-lg text-primary-6';
-  const modifiedContent = selectedVerseContent.replace(/<h2>/g, '<br><h2>');
 
   return (
     <View style={darkMode ? tw`bg-secondary-9 h-full` : null}>
@@ -470,12 +623,25 @@ const InVerseWeek = ({route}) => {
             </View>
           </ImageBackground>
           <View style={tw`flex flex-col gap-4 px-4 mt-4`}>
-            <HTMLView
-              value={sanitizedContent}
-              renderNode={renderNode}
-              stylesheet={styles}
-              addLineBreaks={false}
-            />
+            <View style={{width: '100%'}}>
+              <HTMLView
+                value={sanitizedContent}
+                renderNode={renderNode}
+                stylesheet={styles}
+                addLineBreaks={false}
+                onLinkPress={() => {}}
+                onLinkLongPress={() => {}}
+                textComponentProps={{
+                  selectable: true,
+                  style: [
+                    tw`font-nokia-bold`,
+                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                    {flexWrap: 'wrap'},
+                  ],
+                }}
+                NodeComponent={View}
+              />
+            </View>
             <View style={tw`flex flex-row justify-between`}>
               {check !== '01' && (
                 <TouchableOpacity style={tw`mb-2`} onPress={onPrevious}>
@@ -514,18 +680,7 @@ const InVerseWeek = ({route}) => {
             <ScrollView>
               <HTMLView
                 value={`<div>${modifiedContent}</div>`}
-                stylesheet={{
-                  p: [
-                    tw`text-secondary-6 font-nokia-bold text-justify`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ],
-                  div: [
-                    tw`text-secondary-6 font-nokia-bold text-justify`,
-                    darkMode ? tw`text-primary-1` : null,
-                  ],
-                  h2: tw`font-nokia-bold text-2xl text-accent-6`,
-                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-6`,
-                }}
+                stylesheet={styles}
                 addLineBreaks={true}
               />
             </ScrollView>
