@@ -28,6 +28,7 @@ import {
   UserCircle,
   Info,
   Globe,
+  Bell,
 } from 'phosphor-react-native';
 import {useGetSSLsQuery} from '../services/SabbathSchoolApi';
 import NotificationSettings from '../screens/Settings/NotificationSettings';
@@ -319,9 +320,29 @@ const Setting = ({navigation}) => {
               </TouchableOpacity>
             </View>
           )}
-          {/* <View style={tw`py-4 border-b border-accent-6`}>
-            <NotificationSettings />
-          </View> */}
+          <View style={tw`py-4 border-b border-accent-6`}>
+            <TouchableOpacity
+              style={tw`flex-row w-full justify-between items-center`}
+              onPress={() => navigation.navigate('NotificationSettings')}>
+              <View style={tw`flex-row items-center`}>
+                <Bell
+                  size={20}
+                  weight="fill"
+                  color={'#EA9215'}
+                  style={tw`mr-2`}
+                />
+                <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
+                  Notification Settings
+                </Text>
+              </View>
+              <ArrowCircleRight
+                size={24}
+                weight="fill"
+                color={'#EA9215'}
+                style={tw`mr-2`}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <TouchableOpacity
           onPress={handleLogout}

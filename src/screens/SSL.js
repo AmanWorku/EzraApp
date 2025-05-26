@@ -4,17 +4,87 @@ import {
   SafeAreaView,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import tw from './../../tailwind';
 import {useSelector} from 'react-redux';
 import SSLHome from './SSLScreens/SSLHome';
 import InVerseHome from './InVerseScreens/InVerseHome'; // Import the InVerseHome component
 import {User} from 'phosphor-react-native';
+import NetInfo from '@react-native-community/netinfo';
+import Toast from 'react-native-toast-message';
 
 const SSL = ({navigation}) => {
   const darkMode = useSelector(state => state.ui.darkMode);
   const [activeTab, setActiveTab] = useState('SSL'); // State to toggle between SSL and InVerse
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      setIsRefreshing(false);
+      return;
+    }
+
+    try {
+      setIsRefreshing(true);
+      // Add a small delay to show the refresh animation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Force re-render of the active component
+      setActiveTab(prev => (prev === 'SSL' ? 'InVerse' : 'SSL'));
+      setActiveTab(prev => (prev === 'InVerse' ? 'SSL' : 'InVerse'));
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  const handleReload = async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Add a small delay to show the loading animation
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Force re-render of the active component
+      setActiveTab(prev => (prev === 'SSL' ? 'InVerse' : 'SSL'));
+      setActiveTab(prev => (prev === 'InVerse' ? 'SSL' : 'InVerse'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={[tw`flex-1`, darkMode ? tw`bg-secondary-9` : null]}>
+        <View style={tw`flex-1 justify-center items-center`}>
+          <ActivityIndicator size="large" color="#EA9215" />
+          <Text
+            style={[
+              tw`font-nokia-bold text-lg text-accent-6 mt-4`,
+              darkMode ? tw`text-primary-1` : null,
+            ]}>
+            Loading...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[tw`flex-1`, darkMode ? tw`bg-secondary-9` : null]}>
@@ -87,8 +157,21 @@ const SSL = ({navigation}) => {
         </View>
 
         {/* Render Active Component */}
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          {activeTab === 'SSL' ? <SSLHome /> : <InVerseHome />}
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          {activeTab === 'SSL' ? (
+            <SSLHome onReload={handleReload} />
+          ) : (
+            <InVerseHome onReload={handleReload} />
+          )}
         </ScrollView>
       </View>
     </SafeAreaView>

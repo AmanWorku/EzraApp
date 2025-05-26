@@ -25,14 +25,14 @@ import {useGetCurrentUserQuery} from './src/redux/api-slices/apiSlice';
 import {login} from './src/redux/authSlice';
 import {Login, Signup, Welcome, Setting, SSL} from './src/screens';
 import SettingsStack from './src/navigation/SettingsStack';
-// import messaging from '@react-native-firebase/messaging';
 import {navigationRef} from './src/navigation/NavigationRef';
-// import {configureNotification} from './src/services/NotificationService';
 import SelectedDevotional from './src/screens/DevotionScreens/SelectedDevotional';
 import SSLQuarter from './src/screens/SSLScreens/SSLQuarter';
 import SSLWeek from './src/screens/SSLScreens/SSLWeek';
 import InVerseQuarter from './src/screens/InVerseScreens/InVerseQuarter';
 import InVerseWeek from './src/screens/InVerseScreens/InVerseWeek';
+import NotificationService from './src/services/NotificationService';
+import notifee, {EventType} from '@notifee/react-native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -101,52 +101,13 @@ const App = () => {
   const [isCheckingLoginStatus, setIsCheckingLoginStatus] = useState(true);
   const [initialRoute, setInitialRoute] = useState('Signup');
 
-  // useEffect(() => {
-  //   const initializeNotifications = async () => {
-  //     try {
-  //       await messaging().requestPermission();
-  //       const token = await messaging().getToken();
-  //       console.log('FCM Token:', token);
-  //     } catch (error) {
-  //       console.error('Notification setup error:', error);
-  //     }
-
-  //     configureNotification();
-
-  //     // Handle notifications when app is opened from a quit state
-  //     messaging()
-  //       .getInitialNotification()
-  //       .then(remoteMessage => {
-  //         if (remoteMessage) {
-  //           console.log(
-  //             'Notification caused app to open from quit state:',
-  //             remoteMessage,
-  //           );
-  //         }
-  //       });
-
-  //     // Handle notifications when app is opened from the background
-  //     messaging().onNotificationOpenedApp(remoteMessage => {
-  //       if (remoteMessage) {
-  //         console.log(
-  //           'Notification caused app to open from background:',
-  //           remoteMessage,
-  //         );
-  //       }
-  //     });
-  //   };
-
-  //   initializeNotifications();
-  // }, []);
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const storedUser = await AsyncStorage.getItem('user');
         if (storedUser) {
-          // Dispatch the login action with user data
           store.dispatch(login(JSON.parse(storedUser)));
-          setInitialRoute('MainTab'); // User is authenticated
+          setInitialRoute('MainTab');
         }
       } catch (error) {
         console.error('Failed to get user details', error);
@@ -155,6 +116,44 @@ const App = () => {
     };
 
     checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    const initializeNotifications = async () => {
+      // Request permissions
+      if (Platform.OS === 'android') {
+        await NotificationService.requestPermissions();
+      }
+
+      // Handle notification events
+      notifee.onForegroundEvent(({type, detail}) => {
+        console.log('Foreground event:', type, detail);
+        if (type === EventType.PRESS) {
+          handleNotificationPress(detail.notification);
+        }
+      });
+
+      notifee.onBackgroundEvent(async ({type, detail}) => {
+        console.log('Background event:', type, detail);
+        if (type === EventType.PRESS) {
+          handleNotificationPress(detail.notification);
+        }
+      });
+    };
+
+    const handleNotificationPress = notification => {
+      if (notification?.data?.type === 'daily-verse') {
+        setTimeout(() => {
+          if (navigationRef.current) {
+            navigationRef.current.navigate('MainTab', {
+              screen: 'Devotional',
+            });
+          }
+        }, 1000);
+      }
+    };
+
+    initializeNotifications();
   }, []);
 
   if (isCheckingLoginStatus) {

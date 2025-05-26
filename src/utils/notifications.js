@@ -28,5 +28,5 @@ export const scheduleVerseOfTheDayNotification = async verse => {
     allowWhileIdle: true, // Allow notification even when the device is idle
   });
 
-  console.log('Notification scheduled for:', notificationDate);
+  // console.log('Notification scheduled for:', notificationDate);
 };

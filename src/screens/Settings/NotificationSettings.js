@@ -1,165 +1,309 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, TextInput, Modal} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {ArrowCircleRight, Bell} from 'phosphor-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import tw from './../../../tailwind';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Platform,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import {useSelector} from 'react-redux';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {Bell, Clock, TestTube, ArrowSquareLeft} from 'phosphor-react-native';
+import tw from '../../../tailwind';
+import NotificationService from '../../services/NotificationService';
+import {useGetDevotionsQuery} from '../../redux/api-slices/apiSlice';
+import {toEthiopian} from 'ethiopian-date';
+import {useNavigation} from '@react-navigation/native';
 
 const NotificationSettings = () => {
-  const [notificationTime, setNotificationTime] = useState({
-    hour: '06',
-    minute: '00',
-    period: 'AM',
-  }); // Default to 6:00 AM
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const darkMode = useSelector(state => state.ui.darkMode);
+  const navigation = useNavigation();
+  const {data: devotions = []} = useGetDevotionsQuery();
+
+  const [notificationTime, setNotificationTime] = useState(new Date());
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const ethiopianMonths = [
+    '',
+    'መስከረም',
+    'ጥቅምት',
+    'ህዳር',
+    'ታህሳስ',
+    'ጥር',
+    'የካቲት',
+    'መጋቢት',
+    'ሚያዝያ',
+    'ግንቦት',
+    'ሰኔ',
+    'ሐምሌ',
+    'ነሐሴ',
+    'ጳጉሜ',
+  ];
 
   useEffect(() => {
-    // Load saved notification time from AsyncStorage
-    const loadNotificationTime = async () => {
-      const savedTime = await AsyncStorage.getItem('notificationTime');
-      if (savedTime) {
-        const [hour, minute] = savedTime.split(':');
-        const period = hour >= 12 ? 'PM' : 'AM';
-        const formattedHour = hour % 12 || 12;
-        setNotificationTime({
-          hour: formattedHour.toString().padStart(2, '0'),
-          minute,
-          period,
-        });
-      }
-    };
-    loadNotificationTime();
+    initializeNotifications();
   }, []);
 
-  const saveNotificationTime = async () => {
-    let {hour, minute, period} = notificationTime;
-    hour = parseInt(hour, 10);
-    if (period === 'PM' && hour !== 12) {
-      hour += 12;
-    } else if (period === 'AM' && hour === 12) {
-      hour = 0;
+  const initializeNotifications = async () => {
+    try {
+      // Request permissions
+      const hasPermission = await NotificationService.requestPermissions();
+      if (!hasPermission) {
+        Alert.alert(
+          'Permission Required',
+          'Please enable notifications in your device settings to receive daily verses.',
+          [{text: 'OK'}],
+        );
+        return;
+      }
+
+      // Set default time to 7:30 AM
+      const defaultTime = new Date();
+      defaultTime.setHours(7, 30, 0, 0);
+      setNotificationTime(defaultTime);
+
+      // Schedule notification with default time
+      const currentDevotion = getCurrentDevotion();
+      if (currentDevotion) {
+        const time = {
+          hour: 7,
+          minute: 30,
+        };
+
+        await NotificationService.scheduleDailyVerseNotification(
+          currentDevotion,
+          time,
+        );
+      }
+    } catch (error) {
+      console.error('Error initializing notifications:', error);
+    } finally {
+      setIsLoading(false);
     }
-    await AsyncStorage.setItem(
-      'notificationTime',
-      `${hour.toString().padStart(2, '0')}:${minute}`,
+  };
+
+  const getCurrentDevotion = () => {
+    if (devotions.length === 0) return null;
+
+    const today = new Date();
+    const [year, month, day] = toEthiopian(
+      today.getFullYear(),
+      today.getMonth() + 1,
+      today.getDate(),
     );
-    setIsModalVisible(false);
+    const ethiopianMonth = ethiopianMonths[month];
+
+    return (
+      devotions.find(
+        devotion =>
+          devotion.month === ethiopianMonth && Number(devotion.day) === day,
+      ) || devotions[0]
+    );
   };
 
-  const handleInputChange = (field, value) => {
-    setNotificationTime(prevState => ({
-      ...prevState,
-      [field]: value,
-    }));
+  const handleTimeChange = async selectedTime => {
+    setTimePickerVisibility(false);
+    setNotificationTime(selectedTime);
+
+    const time = {
+      hour: selectedTime.getHours(),
+      minute: selectedTime.getMinutes(),
+    };
+
+    try {
+      await NotificationService.updateDailyNotificationTime(time);
+
+      const currentDevotion = getCurrentDevotion();
+      if (currentDevotion) {
+        const success =
+          await NotificationService.scheduleDailyVerseNotification(
+            currentDevotion,
+            time,
+          );
+
+        if (success) {
+          Alert.alert(
+            'Time Updated',
+            `Daily verse notifications will now be sent at ${formatTime(
+              selectedTime,
+            )}`,
+            [{text: 'OK'}],
+          );
+        } else {
+          Alert.alert(
+            'Error',
+            'Failed to schedule notification. Please try again.',
+            [{text: 'OK'}],
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error updating notification time:', error);
+      Alert.alert(
+        'Error',
+        'Failed to update notification time. Please try again.',
+        [{text: 'OK'}],
+      );
+    }
   };
 
-  // Function to format time in 12-hour format
-  const formatTime = (hour, minute, period) => {
-    return `${hour}:${minute < 10 ? '0' : ''}${minute} ${period}`;
+  const handleTestNotification = () => {
+    const currentDevotion = getCurrentDevotion();
+    if (currentDevotion) {
+      NotificationService.showTestNotification(currentDevotion);
+      Alert.alert(
+        'Test Notification Sent',
+        'Check your notification panel to see how the daily verse notification will appear.',
+        [{text: 'OK'}],
+      );
+    } else {
+      Alert.alert(
+        'No Devotion Available',
+        'Unable to send test notification. Please try again later.',
+        [{text: 'OK'}],
+      );
+    }
   };
 
-  return (
-    <View>
-      <TouchableOpacity
-        onPress={() => setIsModalVisible(true)}
-        style={tw`flex-row justify-between`}>
-        <View style={tw`flex-row items-center`}>
-          <Bell size={18} weight="fill" color={'#EA9215'} style={tw`mr-2`} />
-          <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-            Notification Time:{' '}
-            {formatTime(
-              notificationTime.hour,
-              notificationTime.minute,
-              notificationTime.period,
-            )}
+  const formatTime = time => {
+    return time.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
+  const handleBackPress = () => {
+    navigation.goBack();
+  };
+
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={darkMode ? tw`bg-secondary-9 h-full` : tw`bg-primary-1 h-full`}>
+        <View style={tw`p-4`}>
+          <Text
+            style={[
+              tw`text-center`,
+              darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+            ]}>
+            Loading notification settings...
           </Text>
         </View>
-        <ArrowCircleRight
-          size={24}
-          weight="fill"
-          color={'#EA9215'}
-          style={tw`mr-2`}
-        />
-      </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}>
-        <View
-          style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}>
+  return (
+    <SafeAreaView
+      style={darkMode ? tw`bg-secondary-9 h-full` : tw`bg-primary-1 h-full`}>
+      <ScrollView style={tw`flex-1`}>
+        <View style={tw`p-4`}>
+          {/* Header */}
+          <View style={tw`flex-row items-center mb-6`}>
+            <TouchableOpacity onPress={handleBackPress} style={tw`mr-4`}>
+              <ArrowSquareLeft
+                size={32}
+                color={darkMode ? '#FFFFFF' : '#000000'}
+                weight="fill"
+              />
+            </TouchableOpacity>
+            <Bell
+              size={24}
+              color={darkMode ? '#FFFFFF' : '#000000'}
+              weight="fill"
+            />
+            <Text
+              style={[
+                tw`text-xl font-nokia-bold ml-2`,
+                darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+              ]}>
+              Notification Settings
+            </Text>
+          </View>
+
+          {/* Time Picker */}
+          <TouchableOpacity
+            style={[
+              tw`flex-row justify-between items-center p-4 rounded-lg mb-4`,
+              darkMode ? tw`bg-secondary-8` : tw`bg-primary-2`,
+            ]}
+            onPress={() => setTimePickerVisibility(true)}>
+            <View style={tw`flex-row items-center`}>
+              <Clock size={20} color={darkMode ? '#FFFFFF' : '#000000'} />
+              <Text
+                style={[
+                  tw`font-nokia-bold text-base ml-2`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                Notification Time
+              </Text>
+            </View>
+            <Text style={[tw`font-nokia-bold text-base`, tw`text-accent-6`]}>
+              {formatTime(notificationTime)}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Test Notification Button */}
+          <TouchableOpacity
+            style={[
+              tw`flex-row justify-center items-center p-4 rounded-lg mb-4`,
+              tw`bg-accent-6`,
+            ]}
+            onPress={handleTestNotification}>
+            <TestTube size={20} color="#FFFFFF" />
+            <Text style={tw`font-nokia-bold text-primary-1 ml-2`}>
+              Send Test Notification
+            </Text>
+          </TouchableOpacity>
+
+          {/* Info Text */}
           <View
             style={[
-              tw`p-6 rounded-lg w-80`,
-              darkMode ? tw`bg-secondary-9` : tw`bg-white`,
+              tw`p-4 rounded-lg mb-4`,
+              darkMode ? tw`bg-secondary-8` : tw`bg-primary-2`,
             ]}>
             <Text
-              style={tw`font-nokia-bold text-lg mb-4 text-center text-accent-6`}>
-              Set Notification Time
+              style={[
+                tw`font-nokia-bold text-sm text-center`,
+                darkMode ? tw`text-primary-3` : tw`text-secondary-4`,
+              ]}>
+              You will receive daily verse notifications at{' '}
+              {formatTime(notificationTime)}
             </Text>
-            <View style={tw`items-center`}>
-              <View style={tw`flex flex-row justify-center gap-2 items-center`}>
-                <TextInput
-                  style={[
-                    tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold mb-2 text-center`,
-                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                  ]}
-                  placeholder="HH"
-                  value={notificationTime.hour}
-                  onChangeText={value => handleInputChange('hour', value)}
-                  keyboardType="numeric"
-                  maxLength={2}
-                  placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-                />
-                <Text
-                  style={tw`font-nokia-bold text-2xl text-accent-6 text-center`}>
-                  :
-                </Text>
-                <TextInput
-                  style={[
-                    tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold mb-4 text-center`,
-                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                  ]}
-                  placeholder="MM"
-                  value={notificationTime.minute}
-                  onChangeText={value => handleInputChange('minute', value)}
-                  keyboardType="numeric"
-                  maxLength={2}
-                  placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}
-                />
-                <Picker
-                  selectedValue={notificationTime.period}
-                  style={[
-                    tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold mb-4`,
-                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                  ]}
-                  onValueChange={value => handleInputChange('period', value)}>
-                  <Picker.Item label="AM" value="AM" />
-                  <Picker.Item label="PM" value="PM" />
-                </Picker>
-              </View>
-            </View>
-            <View style={tw`items-center`}>
-              <View
-                style={tw`flex flex-row justify-between items-center gap-2`}>
-                <TouchableOpacity onPress={saveNotificationTime}>
-                  <Text style={tw`font-nokia-bold text-accent-6 text-sm`}>
-                    Save
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                  <Text style={tw`font-nokia-bold text-red-500 text-sm`}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          </View>
+
+          {/* Additional Info */}
+          <View
+            style={[
+              tw`p-4 rounded-lg`,
+              darkMode ? tw`bg-secondary-8` : tw`bg-primary-2`,
+            ]}>
+            <Text
+              style={[
+                tw`font-nokia-bold text-xs text-center`,
+                darkMode ? tw`text-primary-3` : tw`text-secondary-4`,
+              ]}>
+              Notifications will include the daily verse title, scripture text,
+              and chapter reference. You can tap the notification to open the
+              devotional section of the app.
+            </Text>
           </View>
         </View>
-      </Modal>
-    </View>
+      </ScrollView>
+
+      <DateTimePickerModal
+        isVisible={isTimePickerVisible}
+        mode="time"
+        onConfirm={handleTimeChange}
+        onCancel={() => setTimePickerVisibility(false)}
+        date={notificationTime}
+        is24Hour={false}
+      />
+    </SafeAreaView>
   );
 };
 
