@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,9 @@ import {
   RefreshControl,
   ImageBackground,
   Modal,
-  TextInput,
-  Image,
   Linking,
+  TextInput,
+  Dimensions,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import DateConverter from './DateConverter';
@@ -22,12 +22,81 @@ import {
 } from '../../services/SabbathSchoolApi';
 import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import {useNavigation} from '@react-navigation/native';
-import {ArrowSquareLeft, YoutubeLogo} from 'phosphor-react-native';
+import {
+  ArrowSquareLeft,
+  YoutubeLogo,
+  CaretUp,
+  CaretDown,
+} from 'phosphor-react-native';
 import HTMLView from 'react-native-htmlview';
 import tw from './../../../tailwind';
 import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {format} from 'date-fns';
+
+const NoteModal = ({isVisible, onClose, onSave, initialText, darkMode}) => {
+  const [noteText, setNoteText] = useState(initialText || '');
+
+  const handleSave = () => {
+    onSave(noteText);
+    onClose();
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onClose}>
+      <View
+        style={tw`flex-1 justify-center items-center bg-secondary-9 bg-opacity-80`}>
+        <View
+          style={[
+            tw`w-11/12 bg-primary-2 p-4 rounded-2 border border-accent-8`,
+            darkMode ? tw`bg-secondary-9` : null,
+          ]}>
+          <TextInput
+            multiline
+            value={noteText}
+            onChangeText={setNoteText}
+            placeholder="Write your note here..."
+            placeholderTextColor="#AAB0B4"
+            style={[
+              tw`border border-accent-6 rounded-2 px-3 py-2 min-h-[120px] mb-4`,
+              darkMode
+                ? tw`text-primary-1 bg-secondary-7`
+                : tw`text-secondary-6 bg-primary-2`,
+              tw`font-nokia-bold text-base`,
+            ]}
+            textAlignVertical="top"
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+          />
+          <View style={tw`flex-row justify-end gap-4`}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={tw`px-4 py-2 rounded-lg border border-accent-6`}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                ]}>
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSave}
+              style={tw`px-4 py-2 rounded-lg bg-accent-6`}>
+              <Text style={tw`font-nokia-bold text-primary-1`}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const SSLWeek = ({route}) => {
   const {ssl, weekId} = route.params;
@@ -35,9 +104,19 @@ const SSLWeek = ({route}) => {
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
   const daysOfWeek = ['አርብ', 'ቅዳሜ', 'እሁድ', 'ሰኞ', 'ማክሰኞ', 'ረቡዕ', 'ሐሙስ'];
+  const daysOfWeekEng = [
+    'Friday',
+    'Saturday',
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+  ];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVerseKey, setSelectedVerseKey] = useState('');
   const [selectedVerseContent, setSelectedVerseContent] = useState('');
+  const language = useSelector(state => state.language.language);
   const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
@@ -70,39 +149,11 @@ const SSLWeek = ({route}) => {
       alert('Video link not available');
     }
   };
-
-  const [notes, setNotes] = useState({});
-  const codeCounterRef = useRef(0);
-  const [temporaryNotes, setTemporaryNotes] = useState({});
+  const [showSupplementalNotes, setShowSupplementalNotes] = useState(false);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({y: 0, animated: true});
   }, [check]);
-
-  const fetchNotes = async () => {
-    try {
-      const storedNotes = await AsyncStorage.getItem('notes');
-      if (storedNotes) {
-        setNotes(JSON.parse(storedNotes));
-      }
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  const saveNote = async (key, noteContent) => {
-    const newNotes = {...notes, [key]: noteContent};
-    setNotes(newNotes);
-    await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
-  };
-
-  const handleBlur = noteKey => {
-    saveNote(noteKey, temporaryNotes[noteKey]);
-  };
 
   const darkMode = useSelector(state => state.ui.darkMode);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -147,6 +198,50 @@ const SSLWeek = ({route}) => {
     setCheck(paddedPreviousCheck);
   };
 
+  const handleToggleSupplementalNotes = () => {
+    setShowSupplementalNotes(!showSupplementalNotes);
+  };
+
+  const [notes, setNotes] = useState({});
+  const [activeNoteId, setActiveNoteId] = useState(null);
+
+  useEffect(() => {
+    const loadNotes = async () => {
+      try {
+        const savedNotes = await AsyncStorage.getItem(
+          `notes-${weekId}-${check}`,
+        );
+        if (savedNotes) {
+          setNotes(JSON.parse(savedNotes));
+        } else {
+          setNotes({});
+        }
+      } catch (error) {
+        console.error('Error loading notes:', error);
+      }
+    };
+    loadNotes();
+  }, [weekId, check]);
+
+  const handleSaveNote = useCallback(
+    async (noteId, text) => {
+      try {
+        const newNotes = {
+          ...notes,
+          [noteId]: text,
+        };
+        setNotes(newNotes);
+        await AsyncStorage.setItem(
+          `notes-${weekId}-${check}`,
+          JSON.stringify(newNotes),
+        );
+      } catch (error) {
+        console.error('Error saving note:', error);
+      }
+    },
+    [notes, weekId, check],
+  );
+
   if (isLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -188,7 +283,7 @@ const SSLWeek = ({route}) => {
       ...tw`font-nokia-bold`,
       color: '#EA9215',
       backgroundColor: darkMode ? '#333' : '#f5f5f5',
-      padding: 4,
+      padding: 8,
       borderRadius: 4,
     },
     strong: tw`text-xl`,
@@ -200,6 +295,20 @@ const SSLWeek = ({route}) => {
     // 'tr:last-child': tw`border-b-0`,
     // 'td:last-child': tw`border-r-0`,
   });
+  const parseCustomDate = dateString => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const formatDate = startDate => {
+    try {
+      const start = format(parseCustomDate(startDate), 'MMM dd');
+      return `${start}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
     if (node.name === 'a') {
@@ -246,31 +355,6 @@ const SSLWeek = ({route}) => {
         </View>
       );
     }
-
-    // if (node.name === 'code') {
-    //   codeCounterRef.current += 1;
-    //   const noteKey = `${sslWeek.index}-${check}-code-${codeCounterRef.current}`;
-    //   return (
-    //     <View key={index}>
-    //       <Text style={styles.code}>
-    //         {defaultRenderer(node.children, node)}
-    //       </Text>
-    //       <View style={tw`mt-2`}>
-    //         <TextInput
-    //           style={tw`border border-gray-300 rounded p-2 text-accent-1 font-nokia-bold`}
-    //           placeholder="Add a note..."
-    //           placeholderTextColor="#9CA3AF"
-    //           value={temporaryNotes[noteKey] || notes[noteKey] || ''}
-    //           onChangeText={text =>
-    //             setTemporaryNotes(prev => ({...prev, [noteKey]: text}))
-    //           }
-    //           onBlur={() => handleBlur(noteKey)}
-    //         />
-    //       </View>
-    //     </View>
-    //   );
-    // }
-
     if (node.name === 'table') {
       return (
         <View key={index} style={styles.table}>
@@ -291,6 +375,122 @@ const SSLWeek = ({route}) => {
       return (
         <View key={index} style={styles.td}>
           {defaultRenderer(node.children, node)}
+        </View>
+      );
+    }
+
+    if (
+      node.name === 'p' &&
+      node.children[0]?.data === 'Supplemental EGW Notes'
+    ) {
+      return (
+        <TouchableOpacity
+          key={index}
+          onPress={handleToggleSupplementalNotes}
+          style={[
+            tw`flex flex-row justify-between p-2 rounded-lg mt-4 border border-lg h-8`,
+          ]}>
+          <Text
+            style={[
+              tw`font-nokia-bold`,
+              darkMode ? tw`text-accent-6` : tw`text-secondary-6`,
+            ]}>
+            {node.children[0].data}
+          </Text>
+          {showSupplementalNotes ? (
+            <CaretUp size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+          ) : (
+            <CaretDown size={24} color={darkMode ? '#FFFFFF' : '#000000'} />
+          )}
+        </TouchableOpacity>
+      );
+    }
+
+    if (
+      node.name === 'div' &&
+      node.attribs?.class === 'ss-donation-appeal-text'
+    ) {
+      return showSupplementalNotes ? (
+        <View key={index} style={tw`mt-2`}>
+          {defaultRenderer(node.children, node)}
+        </View>
+      ) : null;
+    }
+
+    if (node.name === 'code') {
+      const codeContent = (node.children ?? [])
+        .map(child => child.data || '')
+        .join('');
+
+      const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
+        0,
+        20,
+      )}`;
+      const noteText = notes[noteId] || '';
+
+      const screenWidth = Dimensions.get('window').width;
+      const containerWidth = screenWidth - 32;
+
+      return (
+        <View
+          key={noteId}
+          style={[tw`mb-1`, {width: containerWidth, maxWidth: containerWidth}]}>
+          <View
+            style={[
+              tw`rounded-lg p-2`,
+              {
+                backgroundColor: darkMode ? '#333' : '#f5f5f5',
+                width: '100%',
+                maxWidth: '100%',
+              },
+            ]}>
+            <View style={{width: '100%', maxWidth: '100%'}}>
+              <Text
+                style={[
+                  tw`font-nokia-bold`,
+                  {
+                    color: '#EA9215',
+                    width: '100%',
+                  },
+                ]}
+                numberOfLines={undefined}
+                ellipsizeMode="clip">
+                {codeContent}
+              </Text>
+            </View>
+          </View>
+          <View style={tw`mt-1`}>
+            <View style={tw`flex flex-col`}>
+              <View style={tw`w-full`}>
+                <Text
+                  style={[
+                    tw`font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                    {
+                      textDecorationLine: 'underline',
+                      textDecorationColor: '#EA9215',
+                      textDecorationStyle: 'solid',
+                    },
+                  ]}>
+                  {noteText || ''}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setActiveNoteId(noteId)}
+                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6 mt-1`}>
+                <Text style={tw`font-nokia-bold text-primary-1`}>
+                  {noteText ? 'Edit Note' : 'Add Note'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <NoteModal
+              isVisible={activeNoteId === noteId}
+              onClose={() => setActiveNoteId(null)}
+              onSave={text => handleSaveNote(noteId, text)}
+              initialText={noteText}
+              darkMode={darkMode}
+            />
+          </View>
         </View>
       );
     }
@@ -344,14 +544,23 @@ const SSLWeek = ({route}) => {
               end={{x: 0.5, y: 0.2}}
             />
             <View style={tw`absolute bottom-0 p-4`}>
-              <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
-                {daysOfWeek[check % 7]} &nbsp;
-                <DateConverter
-                  gregorianDate={sslWeek.date}
-                  style={tw`text-2xl`}
-                  textStyle={dateStyle}
-                />
-              </Text>
+              {language === 'en' ? (
+                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                  {daysOfWeekEng[check % 7]}, &nbsp;
+                  <Text style={tw`text-accent-6`}>
+                    {formatDate(sslWeek.date)}
+                  </Text>
+                </Text>
+              ) : (
+                <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
+                  {daysOfWeek[check % 7]}፣ &nbsp;
+                  <DateConverter
+                    gregorianDate={sslWeek.date}
+                    style={tw`text-2xl`}
+                    textStyle={dateStyle}
+                  />
+                </Text>
+              )}
               <Text
                 style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1`}>
                 {sslWeek.title}

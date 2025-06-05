@@ -34,7 +34,14 @@ module.exports = {
       },
       fontFamily: {
         'nokia-bold': ['Nokia Pure Headline Bold', 'Inter', 'sans-serif'],
-        'nokia-light': [
+        'nokia-extraBold': [
+          'Nokia Pure Headline Extra Bold',
+          'Inter',
+          'sans-serif',
+        ],
+        'nokia-regular': ['Nokia Pure Headline Regular', 'Inter', 'sans-serif'],
+        'nokia-light': ['Nokia Pure Headline Light', 'Inter', 'sans-serif'],
+        'nokia-ultraLight': [
           'Nokia Pure Headline Ultra Light',
           'Inter',
           'sans-serif',

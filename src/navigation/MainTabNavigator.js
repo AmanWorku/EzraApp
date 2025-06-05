@@ -12,6 +12,7 @@ import CourseStack from './CourseStack';
 import HomeStack from './HomeStack';
 import DevotionalStack from './DevotionalStack';
 import SSLStack from './SSLStack';
+import InVerseStack from './InVerseStack';
 import Setting from '../screens/Setting';
 import {StatusBar} from 'react-native';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -57,6 +58,7 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Course" component={CourseStack} />
       <Tab.Screen name="SSL" component={SSLStack} />
+      <Tab.Screen name="InVerse" component={InVerseStack} />
       <Tab.Screen name="Devotional" component={DevotionalStack} />
       <Tab.Screen name="Setting" component={Setting} />
     </Tab.Navigator>

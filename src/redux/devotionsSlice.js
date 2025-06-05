@@ -44,6 +44,9 @@ const devotionsSlice = createSlice({
     updateForm: (state, action) => {
       state.form = {...state.form, ...action.payload};
     },
+    setDevotions: (state, action) => {
+      return action.payload;
+    },
     resetForm: state => {
       state.form = initialState.form;
       state.file = initialState.file;
@@ -70,6 +73,7 @@ export const selectDevotionToDisplay = state =>
 export const {
   selectDevotion,
   startEditing,
+  setDevotions,
   setIsEditing,
   updateForm,
   resetForm,

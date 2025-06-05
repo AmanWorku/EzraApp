@@ -9,19 +9,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import tw from './../../tailwind';
 import {useNavigation} from '@react-navigation/native';
 import {useGetDevotionsQuery} from '../redux/api-slices/apiSlice';
 import {useGetCoursesQuery} from '../services/api';
 import HomeCurrentSSL from './SSLScreens/HomeCurrentSSL';
-import {toEthiopian} from 'ethiopian-date';
-import ErrorScreen from '../components/ErrorScreen';
 import PreviousDevotions from './DevotionScreens/PreviousDevotions';
+import {toEthiopian} from 'ethiopian-date';
 import NetInfo from '@react-native-community/netinfo';
 import DevotionCard from '../components/DevotionCard';
 import CourseCard from '../components/CourseCard';
 import Header from '../components/Header';
+import {setDevotions} from '../redux/devotionsSlice';
+import {setCourses} from '../redux/courseSlice';
+import {scheduleVerseOfTheDayNotification} from '../utils/notifications';
 
 const ethiopianMonths = [
   '', // There is no month 0
@@ -44,9 +46,14 @@ const Home = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
+  const user = useSelector(state => state.auth.user); // Get user from Redux store
+  const persistedDevotions = useSelector(state => state.devotions); // Get persisted devotions from Redux store
+  const persistedCourses = useSelector(state => state.courses); // Get persisted courses from Redux store
 
   const {
     data: devotions = [],
@@ -71,35 +78,9 @@ const Home = () => {
     });
   };
 
-  const fetchData = useCallback(async () => {
-    const netInfo = await NetInfo.fetch();
-    if (!netInfo.isConnected) {
-      Toast.show({
-        type: 'info',
-        text1: 'Internet Connection Required',
-        text2: 'Please connect to the internet to reload data.',
-      });
-      setHasError(true);
-      setIsLoading(false);
-      return;
-    }
-    try {
-      setIsLoading(true);
-      setHasError(false);
-      await Promise.all([refetchDevotions(), refetchCourses()]);
-    } catch (e) {
-      setHasError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [refetchDevotions, refetchCourses]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    if (devotions && devotions.length > 0) {
+    const devotionsToUse = isOffline ? persistedDevotions : devotions;
+    if (devotionsToUse && devotionsToUse.length > 0) {
       const today = new Date();
       const ethiopianDate = toEthiopian(
         today.getFullYear(),
@@ -108,13 +89,66 @@ const Home = () => {
       );
       const [year, month, day] = ethiopianDate;
       const ethiopianMonth = ethiopianMonths[month];
-      const todaysDevotion = devotions.find(
+      const todaysDevotion = devotionsToUse.find(
         devotion =>
           devotion.month === ethiopianMonth && Number(devotion.day) === day,
       );
-      setSelectedDevotion(todaysDevotion || devotions[0]);
+      setSelectedDevotion(todaysDevotion || devotionsToUse[0]);
     }
-  }, [devotions]);
+  }, [devotions, isOffline, persistedDevotions]);
+
+  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
+  const coursesToDisplay = isOffline ? persistedCourses : courses;
+
+  const devotionToDisplay = selectedDevotion || devotionsToDisplay[0];
+
+  const fetchData = useCallback(async () => {
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      Toast.show({
+        type: 'info',
+        text1: 'Internet Connection Required',
+        text2: 'Please connect to the internet to reload data.',
+      });
+      setIsOffline(true);
+      setHasError(false);
+      setIsLoading(false);
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setHasError(false);
+      setIsOffline(false);
+      const [devotionsData, coursesData] = await Promise.all([
+        refetchDevotions(),
+        refetchCourses(),
+      ]);
+      dispatch(setDevotions(devotionsData.data));
+      dispatch(setCourses(coursesData.data));
+
+      if (devotionToDisplay) {
+        scheduleVerseOfTheDayNotification(devotionToDisplay.verse);
+      }
+    } catch (e) {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [refetchDevotions, refetchCourses, dispatch, devotionToDisplay]);
+
+  useEffect(() => {
+    const checkInternetAndFetchData = async () => {
+      const netInfo = await NetInfo.fetch();
+      if (!netInfo.isConnected) {
+        setIsOffline(true);
+        setIsLoading(false);
+      } else {
+        fetchData();
+      }
+    };
+
+    checkInternetAndFetchData();
+  }, [fetchData]);
 
   const onRefresh = useCallback(async () => {
     const netInfo = await NetInfo.fetch();
@@ -129,15 +163,31 @@ const Home = () => {
     try {
       setIsRefreshing(true);
       setHasError(false);
-      await Promise.all([refetchDevotions(), refetchCourses()]);
+      const [devotionsData, coursesData] = await Promise.all([
+        refetchDevotions(),
+        refetchCourses(),
+      ]);
+      dispatch(setDevotions(devotionsData.data));
+      dispatch(setCourses(coursesData.data));
     } catch (e) {
       setHasError(true);
     } finally {
       setIsRefreshing(false);
     }
-  }, [refetchDevotions, refetchCourses]);
+  }, [refetchDevotions, refetchCourses, dispatch]);
 
-  if ((courseIsFetching && isFetching && !devotions.length) || isLoading) {
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
+        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
+        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
+          Loading
+        </Text>
+      </SafeAreaView>
+    );
+  }
+  if (!devotionsToDisplay || devotionsToDisplay.length === 0) {
     return (
       <SafeAreaView
         style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
@@ -149,25 +199,9 @@ const Home = () => {
     );
   }
 
-  if (error || courseError || hasError) {
-    return <ErrorScreen refetch={fetchData} darkMode={darkMode} />;
-  }
-
-  if (!devotions || devotions.length === 0) {
-    return (
-      <SafeAreaView
-        style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
-        <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
-        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
-        </Text>
-      </SafeAreaView>
-    );
-  }
-
-  const devotionToDisplay = selectedDevotion || devotions[0];
-
-  const publishedCourses = courses.filter(course => course.published);
+  const publishedCourses = coursesToDisplay
+    ? coursesToDisplay.filter(course => course.published)
+    : [];
   const lastCourse = publishedCourses[publishedCourses.length - 1];
 
   return (
@@ -184,6 +218,15 @@ const Home = () => {
             />
           }>
           <Header darkMode={darkMode} navigation={navigation} />
+          {user && (
+            <Text
+              style={[
+                tw`font-nokia-bold text-2xl text-secondary-6`,
+                darkMode ? tw`text-accent-6` : null,
+              ]}>
+              Welcome, {user.firstName}!
+            </Text>
+          )}
           {devotionToDisplay && (
             <DevotionCard
               devotion={devotionToDisplay}
@@ -256,8 +299,11 @@ const Home = () => {
               </Text>
             </TouchableOpacity>
           </View>
-          {devotions.length > 0 && (
-            <PreviousDevotions devotions={devotions} darkMode={darkMode} />
+          {devotionsToDisplay.length > 0 && (
+            <PreviousDevotions
+              devotions={devotionsToDisplay}
+              darkMode={darkMode}
+            />
           )}
         </ScrollView>
       </SafeAreaView>

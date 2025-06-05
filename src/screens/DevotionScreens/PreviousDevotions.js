@@ -17,7 +17,7 @@ const PreviousDevotions = ({devotions, darkMode}) => {
     'ጥር',
     'የካቲት',
     'መጋቢት',
-    'ሚያዝያ',
+    'ሚያዚያ',
     'ግንቦት',
     'ሰኔ',
     'ሐምሌ',

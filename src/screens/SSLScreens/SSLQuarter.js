@@ -20,6 +20,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ErrorScreen from '../../components/ErrorScreen';
 const SSLQuarter = ({route}) => {
   const {sslId} = route.params;
+  const language = useSelector(state => state.language.language);
   const {
     data: sslQuarter,
     error,

@@ -1,4 +1,3 @@
-// apiSlice.js
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,7 +15,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Devotions', 'Courses'],
+  tagTypes: ['Devotions', 'Courses', 'User'],
   endpoints: builder => ({
     login: builder.mutation({
       query: credentials => ({
@@ -46,12 +45,6 @@ export const apiSlice = createApi({
       }),
     }),
     getDevotions: builder.query({
-      /**
-       * Fetch devotions with optional parameters.
-       * @param {Object} params - Query parameters.
-       * @param {number} params.limit - Number of devotions to fetch.
-       * @param {string} params.sort - Sorting order ('asc' or 'desc').
-       */
       query: ({limit, sort} = {}) => {
         const queryParams = new URLSearchParams();
         if (limit) queryParams.append('limit', limit);
@@ -74,16 +67,30 @@ export const apiSlice = createApi({
       query: id => `course/get/${id}`,
       providesTags: (result, error, id) => [{type: 'Courses', id}],
     }),
+    updateUserStatus: builder.mutation({
+      query: ({id, status}) => ({
+        url: `/users/status/${id}`,
+        method: 'PUT',
+        body: {status},
+      }),
+    }),
+    deleteUser: builder.mutation({
+      query: id => ({
+        url: `/users/${id}`,
+        method: 'DELETE',
+      }),
+    }),
   }),
 });
 
-// Export the generated hooks for each endpoint
 export const {
   useSignupMutation,
   useLoginMutation,
   useUpdateUserMutation,
+  useDeleteUserMutation,
   useGetDevotionsQuery,
   useGetCoursesQuery,
   useGetCourseByIdQuery,
   useGetCurrentUserQuery,
+  useUpdateUserStatusMutation,
 } = apiSlice;

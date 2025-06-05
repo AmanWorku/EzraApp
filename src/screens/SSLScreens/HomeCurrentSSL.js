@@ -4,11 +4,12 @@ import {useSelector} from 'react-redux';
 import {
   useGetSSLOfDayQuery,
   useGetSSLOfQuarterQuery,
-} from './../../services/SabbathSchoolApi';
+} from '../../services/SabbathSchoolApi';
 import {useNavigation} from '@react-navigation/native';
 import DateConverter from './DateConverter';
 import {View, Image, Text, TouchableOpacity} from 'react-native';
 import tw from './../../../tailwind';
+import {format} from 'date-fns';
 
 const HomeCurrentSSL = () => {
   const currentDate = new Date().toISOString().slice(0, 10);
@@ -19,11 +20,13 @@ const HomeCurrentSSL = () => {
     data: lessonDetails,
     error: lessonError,
     isLoading: lessonIsLoading,
+    refetch: refetchLesson,
   } = useGetSSLOfDayQuery({path: quarter, id: week});
   const {
     data: quarterDetails,
     error: quarterError,
     isLoading: quarterIsLoading,
+    refetch: refetchQuarter,
   } = useGetSSLOfQuarterQuery(quarter);
 
   useEffect(() => {
@@ -31,11 +34,10 @@ const HomeCurrentSSL = () => {
       setBackgroundImage(quarterDetails.quarterly.splash);
     }
   }, [quarterDetails]);
-  const darkMode = useSelector(state => state.ui.darkMode);
 
-  const textStyle = `font-nokia-bold text-secondary-5 text-xs ${
-    darkMode ? 'text-primary-1' : null
-  }`;
+  const darkMode = useSelector(state => state.ui.darkMode);
+  const language = useSelector(state => state.language.language);
+
   const handleOpenButtonPress = () => {
     navigation.navigate('SSL', {
       screen: 'SSLWeek',
@@ -46,27 +48,73 @@ const HomeCurrentSSL = () => {
     });
   };
 
+  const handleRefetch = () => {
+    refetchLesson();
+    refetchQuarter();
+  };
+
+  const parseCustomDate = dateString => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`);
+  };
+
+  const formatDateRange = (startDate, endDate) => {
+    try {
+      const start = format(parseCustomDate(startDate), 'MMM dd');
+      const end = format(parseCustomDate(endDate), 'MMM dd');
+      return `${start} - ${end}`;
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Invalid Date';
+    }
+  };
+
   if (lessonIsLoading || quarterIsLoading) {
     return <Text>Loading...</Text>;
   }
 
   if (lessonError) {
+    console.error('Lesson Error:', lessonError); // Log the entire error object
     return (
       <View style={tw`border border-accent-6 rounded my-2`}>
         <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
           Wait for quarterly update!
         </Text>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-2 mx-auto`}
+          onPress={handleRefetch}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            Reload
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   }
+
   if (quarterError) {
-    return <Text>Error: {quarterError.message}</Text>;
+    console.error('Quarter Error:', quarterError); // Log the entire error object
+    return (
+      <View style={tw`border border-accent-6 rounded my-2`}>
+        <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+          Error: {quarterError.error || 'An error occurred'}
+        </Text>
+        <TouchableOpacity
+          style={tw`bg-accent-6 px-4 py-1 rounded-full w-36 mt-2 mx-auto`}
+          onPress={handleRefetch}>
+          <Text style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+            Reload
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
+
   if (!quarterDetails || !lessonDetails) {
     return <Text>Missing data...</Text>;
   }
+
   return (
-    <View style={tw` rounded-2 overflow-hidden`}>
+    <View style={tw`rounded-2 overflow-hidden`}>
       <View
         style={tw`flex flex-row border border-accent-6 mt-4 rounded-4 p-2 gap-2`}>
         <View style={tw`h-32 w-32`}>
@@ -95,22 +143,33 @@ const HomeCurrentSSL = () => {
               darkMode ? tw`text-primary-3` : null,
             ]}>
             <View style={tw`flex flex-row items-center`}>
-              <DateConverter
-                gregorianDate={lessonDetails.lesson.start_date}
-                textStyle={textStyle}
-              />
-              <Text
-                style={[
-                  tw`font-nokia-bold text-secondary-5`,
-                  darkMode ? 'text-primary-1' : null,
-                ]}>
-                {' '}
-                -{' '}
-              </Text>
-              <DateConverter
-                gregorianDate={lessonDetails.lesson.end_date}
-                textStyle={textStyle}
-              />
+              {language === 'en' ? (
+                <Text style={tw`font-nokia-bold text-accent-6`}>
+                  {formatDateRange(
+                    lessonDetails.lesson.start_date,
+                    lessonDetails.lesson.end_date,
+                  )}
+                </Text>
+              ) : (
+                <View style={tw`flex flex-row items-center`}>
+                  <DateConverter
+                    gregorianDate={lessonDetails.lesson.start_date}
+                    textStyle={tw`font-nokia-bold text-accent-6`}
+                  />
+                  <Text
+                    style={[
+                      tw`font-nokia-bold text-secondary-5`,
+                      darkMode ? 'text-primary-1' : null,
+                    ]}>
+                    {' '}
+                    -{' '}
+                  </Text>
+                  <DateConverter
+                    gregorianDate={lessonDetails.lesson.end_date}
+                    textStyle={tw`font-nokia-bold text-accent-6`}
+                  />
+                </View>
+              )}
             </View>
           </Text>
           <TouchableOpacity
@@ -118,7 +177,7 @@ const HomeCurrentSSL = () => {
             onPress={handleOpenButtonPress}>
             <Text
               style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-              ትምህርቱን ክፈት
+              {language === 'en' ? 'Open Lesson' : 'ትምህርቱን ክፈት'}
             </Text>
           </TouchableOpacity>
         </View>

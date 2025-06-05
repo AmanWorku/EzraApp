@@ -27,6 +27,24 @@ import {toEthiopian} from 'ethiopian-date';
 import HTMLView from 'react-native-htmlview';
 import ErrorScreen from '../components/ErrorScreen';
 import PreviousDevotions from './DevotionScreens/PreviousDevotions';
+import NotificationService from '../services/NotificationService';
+
+const ethiopianMonths = [
+  '',
+  'መስከረም',
+  'ጥቅምት',
+  'ህዳር',
+  'ታህሳስ',
+  'ጥር',
+  'የካቲት',
+  'መጋቢት',
+  'ሚያዝያ',
+  'ግንቦት',
+  'ሰኔ',
+  'ሐምሌ',
+  'ነሐሴ',
+  'ጳጉሜ',
+];
 
 const Devotion = () => {
   const darkMode = useSelector(state => state.ui.darkMode);
@@ -36,23 +54,6 @@ const Devotion = () => {
   const [selectedDevotion, setSelectedDevotion] = useState(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
-
-  const ethiopianMonths = [
-    '',
-    'መስከረም',
-    'ጥቅምት',
-    'ህዳር',
-    'ታህሳስ',
-    'ጥር',
-    'የካቲት',
-    'መጋቢት',
-    'ሚያዝያ',
-    'ግንቦት',
-    'ሰኔ',
-    'ሐምሌ',
-    'ነሐሴ',
-    'ጳጉሜ',
-  ];
 
   const tailwindStyles = StyleSheet.create({
     p: {
@@ -92,9 +93,27 @@ const Devotion = () => {
         devotion =>
           devotion.month === ethiopianMonth && Number(devotion.day) === day,
       );
-      setSelectedDevotion(todaysDevotion || devotions[0]);
+      const currentDevotion = todaysDevotion || devotions[0];
+      setSelectedDevotion(currentDevotion);
+
+      // Schedule notification for current devotion if notifications are enabled
+      scheduleNotificationForCurrentDevotion(currentDevotion);
     }
   }, [devotions]);
+
+  const scheduleNotificationForCurrentDevotion = async devotion => {
+    try {
+      const settings = await NotificationService.getDailyNotificationSettings();
+      if (settings.enabled && devotion) {
+        await NotificationService.scheduleDailyVerseNotification(
+          devotion,
+          settings.time,
+        );
+      }
+    } catch (error) {
+      console.error('Error scheduling notification:', error);
+    }
+  };
 
   const previousDevotions = useMemo(() => {
     const today = new Date();
@@ -113,13 +132,6 @@ const Devotion = () => {
       .slice(0, 4);
   }, [devotions]);
 
-  if (!devotions || devotions.length === 0) {
-    return <ErrorScreen />;
-  }
-
-  const devotionToDisplay = selectedDevotion || devotions[0];
-  const url = `${devotionToDisplay.image}`;
-
   if (isFetching) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
@@ -130,6 +142,11 @@ const Devotion = () => {
       </SafeAreaView>
     );
   }
+  if (!devotions || devotions.length === 0) {
+    return <ErrorScreen />;
+  }
+  const devotionToDisplay = selectedDevotion || devotions[0];
+  const url = `${devotionToDisplay.image}`;
 
   return (
     <View style={darkMode ? tw`bg-secondary-9` : null}>
@@ -208,6 +225,7 @@ const Devotion = () => {
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
+              selectable
               style={[
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
@@ -224,7 +242,7 @@ const Devotion = () => {
           </View>
           <View
             style={[
-              tw`border border-accent-6 p-4 rounded-4 mt-4 bg-primary-4 shadow-sm mb-2`,
+              tw`border border-accent-6 p-4 rounded-4 mt-8 bg-primary-4 shadow-sm mb-2`,
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text

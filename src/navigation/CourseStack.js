@@ -8,6 +8,7 @@ import SlideSample2 from './../screens/CoursePages/SlideSample2';
 
 const Stack = createNativeStackNavigator();
 
+
 const CourseStack = () => {
   return (
     <Stack.Navigator

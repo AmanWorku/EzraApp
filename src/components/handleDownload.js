@@ -50,21 +50,13 @@ const handleDownload = async (setIsDownloading, imgUrl) => {
 
   if (Platform.OS === 'android') {
     try {
-      const hasPermission = await hasAndroidPermission();
-      if (!hasPermission) {
-        console.log('Permission Denied');
-        return;
-      }
-
       const result = await CameraRoll.save(imgUrl, {type: 'photo'});
       if (result) {
-        console.log('File saved to:', result);
         Toast.show({
           type: 'success',
           text1: 'Image downloaded successfully!',
         });
       } else {
-        console.log('Download failed.');
         Toast.show({
           type: 'error',
           text1: 'Unable to download image. Try again later.',
@@ -84,13 +76,11 @@ const handleDownload = async (setIsDownloading, imgUrl) => {
     try {
       const result = await CameraRoll.save(imgUrl, {type: 'photo'});
       if (result) {
-        console.log('File saved to:', result);
         Toast.show({
           type: 'success',
           text1: 'Image downloaded successfully!',
         });
       } else {
-        console.log('Download failed.');
         Toast.show({
           type: 'error',
           text1: 'Unable to download image. Try again later.',

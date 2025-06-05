@@ -86,6 +86,31 @@ const SlideSample2 = ({route}) => {
   const toggleMenu = () => {
     setMenuVisible(!menuVisible);
   };
+
+  const interactionMessages = {
+    quiz: 'እባክዎ ጥያቄውን ይመልሱ።',
+    accordion: 'እባክዎ ሁሉንም ሳጥኖች በመንካት ጽሁፎቹን አንብበው ይጨርሱ።',
+    sequence: 'እባክዎ ቀስቶቹን በመንጫ እስከመጨረሻው ይሂዱ።',
+    slide: 'እባክዎ ቀስቶቹን በመንጫ እስከመጨረሻው ይሂዱ።',
+    reveal: 'እባክዎ ጽሁፎቹን(ሳጥኖቹን) በመንካት ሁሉንም ጽሁፎች አንብበው ይርጨሱ።',
+    range: 'እባክዎ ቀስቱን በማንሸራተት ጥያቄውን ይመልሱ',
+    dnd: 'እባክዎ ጥያቄውን ይመልሱ።',
+  };
+
+  const [nextButtonOpacity, setNextButtonOpacity] = useState(0.5);
+  const [interactionMessage, setInteractionMessage] = useState('');
+
+  useEffect(() => {
+    const hasInteractiveElements = data[activeIndex]?.elements.some(element =>
+      ['quiz', 'accordion', 'sequence', 'reveal', 'range', 'dnd'].includes(
+        element.type,
+      ),
+    );
+
+    setNextButtonOpacity(hasInteractiveElements ? 0.5 : 1);
+    setIsNextButtonVisible(true);
+  }, [activeIndex]);
+
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setHidden(true);
@@ -133,6 +158,7 @@ const SlideSample2 = ({route}) => {
       'verse',
       'main-verse',
     ];
+
     const allNonInteractive = data[activeIndex]?.elements.every(element =>
       nonInteractiveTypes.includes(element.type),
     );
@@ -196,6 +222,73 @@ const SlideSample2 = ({route}) => {
 
   const handleButtonPress = () => {
     setTriggerNext(true);
+
+    const hasInteractiveElements = data[activeIndex]?.elements.some(element =>
+      [
+        'quiz',
+        'accordion',
+        'sequence',
+        'reveal',
+        'slide',
+        'range',
+        'dnd',
+      ].includes(element.type),
+    );
+
+    if (hasInteractiveElements) {
+      const interactiveElement = data[activeIndex].elements.find(element =>
+        [
+          'quiz',
+          'accordion',
+          'sequence',
+          'slide',
+          'reveal',
+          'range',
+          'dnd',
+        ].includes(element.type),
+      );
+
+      if (interactiveElement) {
+        let interactionComplete = false;
+
+        switch (interactiveElement.type) {
+          case 'quiz':
+            interactionComplete = isAnswerChecked;
+            break;
+          case 'accordion':
+            interactionComplete = isAccordionExpanded;
+            break;
+          case 'sequence':
+            interactionComplete = isSequenceComplete;
+            break;
+          case 'reveal':
+            interactionComplete = isRevealComplete;
+            break;
+          case 'slide':
+            interactionComplete = isSlideComplete;
+            break;
+          case 'range':
+            interactionComplete = isRangeComplete;
+            break;
+          case 'dnd':
+            interactionComplete = isAnswerChecked;
+            break;
+          default:
+            interactionComplete = false;
+        }
+
+        if (!interactionComplete) {
+          setInteractionMessage(interactionMessages[interactiveElement.type]);
+          Toast.show({
+            type: 'info',
+            text1: 'ከመቀጠልዎ በፊት!',
+            text2: interactionMessages[interactiveElement.type],
+          });
+          return;
+        }
+      }
+    }
+
     if (onLastSlide) {
       NetInfo.fetch().then(state => {
         if (state.isConnected) {
@@ -281,8 +374,6 @@ const SlideSample2 = ({route}) => {
           },
         },
       );
-
-      console.log('Progress updated successfully:', response.data);
       setProgressLoading(false);
 
       navigation.navigate('Course', {
@@ -551,19 +642,17 @@ const SlideSample2 = ({route}) => {
                 </TouchableOpacity>
               )}
 
-              {isNextButtonVisible && (
-                <TouchableOpacity
-                  style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
-                    onFirstSlide ? 'mx-auto' : ''
-                  }`}
-                  onPress={handleButtonPress}>
-                  <Text
-                    style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
-                    {onLastSlide ? 'Exit Lesson' : 'ቀጥል'}
-                  </Text>
-                  <CaretCircleRight size={18} weight="fill" color="white" />
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                style={tw`flex flex-row items-center bg-accent-6 px-4 rounded-full gap-2 h-10 ${
+                  onFirstSlide ? 'mx-auto' : ''
+                }`}
+                onPress={handleButtonPress}>
+                <Text
+                  style={tw`text-primary-1 font-nokia-bold text-sm text-center`}>
+                  {onLastSlide ? 'ዘግተህ ውጣ' : 'ቀጥል'}
+                </Text>
+                <CaretCircleRight size={18} weight="fill" color="white" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>

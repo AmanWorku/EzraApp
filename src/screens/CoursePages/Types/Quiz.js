@@ -9,6 +9,10 @@ const Quiz = ({value, setIsAnswerChecked}) => {
 
   const handleAnswerSelection = answer => {
     setSelectedAnswer(answer);
+    if (isAnswerChecked) {
+      setLocalIsAnswerChecked(false);
+      setIsAnswerChecked(false);
+    }
   };
 
   const checkAnswer = () => {
@@ -46,7 +50,7 @@ const Quiz = ({value, setIsAnswerChecked}) => {
                 ? tw`bg-primary-2 text-secondary-6 rounded-lg`
                 : null,
             ]}
-            disabled={isAnswerChecked}>
+            disabled={isAnswerChecked && selectedAnswer === choice}>
             <Text
               style={[
                 tw`font-nokia-bold text-sm text-primary-1 border border-primary-1 rounded-lg p-2`,
@@ -65,7 +69,7 @@ const Quiz = ({value, setIsAnswerChecked}) => {
           tw`mt-4 px-4 py-2 rounded-lg`,
           isAnswerChecked ? tw`bg-accent-6` : tw`bg-primary-2`,
         ]}
-        disabled={!selectedAnswer || isAnswerChecked}>
+        disabled={!selectedAnswer}>
         <Text
           style={
             isAnswerChecked

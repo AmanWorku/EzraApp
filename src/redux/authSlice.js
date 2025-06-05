@@ -1,4 +1,3 @@
-// authSlice.js
 import {createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -72,6 +71,13 @@ const authSlice = createSlice({
       // Store the token in AsyncStorage
       AsyncStorage.setItem('token', action.payload.token || '');
     },
+    deactivateAccount: state => {
+      state.user = null;
+
+      // Remove the token from AsyncStorage
+      AsyncStorage.removeItem('token');
+      AsyncStorage.removeItem('user');
+    },
   },
 });
 
@@ -83,19 +89,39 @@ export const {
   setAuthReady,
   setProgress,
   setUser,
+  deactivateAccount,
 } = authSlice.actions;
+
 export const loginUser = userData => async dispatch => {
   await AsyncStorage.setItem('token', userData.token);
   dispatch(authSlice.actions.login(userData));
 };
+
 export const signupUser = userData => async dispatch => {
   await AsyncStorage.setItem('token', userData.token);
   dispatch(authSlice.actions.signup(userData));
 };
+
 export const logoutUser = () => async dispatch => {
   await AsyncStorage.removeItem('token');
   dispatch(authSlice.actions.logout());
 };
+
+export const deactivateUserAccount = id => async dispatch => {
+  try {
+    await fetch(`https://ezrabackend.online/users/status/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({status: 'inactive'}),
+    });
+    dispatch(authSlice.actions.deactivateAccount());
+  } catch (error) {
+    console.error('Error deactivating account:', error);
+  }
+};
+
 export const selectCurrentUser = state => state.auth.user;
 
 export default authSlice.reducer;

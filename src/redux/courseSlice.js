@@ -18,6 +18,9 @@ export const courseSlice = createSlice({
     setTitle: (state, action) => {
       state.title = action.payload;
     },
+    setCourses: (state, action) => {
+      return action.payload;
+    },
     setDescription: (state, action) => {
       state.description = action.payload;
     },
@@ -145,6 +148,7 @@ export const courseSlice = createSlice({
 
 export const {
   setCourse,
+  setCourses,
   setTitle,
   setDescription,
   setImage,

@@ -61,6 +61,26 @@ const SelectedDevotional = ({route}) => {
     h3: darkMode
       ? tw`text-primary-1 font-nokia-bold text-justify text-lg leading-snug`
       : tw`text-secondary-6 font-nokia-bold text-justify text-lg leading-snug`,
+    ol: {
+      ...(darkMode
+        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
+      marginVertical: -15,
+      paddingLeft: 20,
+    },
+    ul: {
+      ...(darkMode
+        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
+      marginVertical: -15,
+      paddingLeft: 20,
+    },
+    li: {
+      ...(darkMode
+        ? tw`text-primary-1 font-nokia-bold text-justify text-sm leading-snug`
+        : tw`text-secondary-6 font-nokia-bold text-justify leading-snug`),
+      marginVertical: -5,
+    },
   });
 
   useEffect(() => {
@@ -149,6 +169,7 @@ const SelectedDevotional = ({route}) => {
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
+              selectable
               style={[
                 tw`font-nokia-bold text-secondary-6 text-lg leading-tight`,
                 darkMode ? tw`text-primary-1` : null,
@@ -161,7 +182,7 @@ const SelectedDevotional = ({route}) => {
           </View>
           <View
             style={[
-              tw`border border-accent-6 p-4 rounded-4 mt-4 bg-primary-4 shadow-sm mb-2`,
+              tw`border border-accent-6 p-4 rounded-4 mt-8 bg-primary-4 shadow-sm mb-2`,
               darkMode ? tw`bg-secondary-8` : null,
             ]}>
             <Text
