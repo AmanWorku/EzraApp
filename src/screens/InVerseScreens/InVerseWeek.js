@@ -428,13 +428,13 @@ const InVerseWeek = ({route}) => {
         const noteText = notes[noteId] || '';
 
         const screenWidth = Dimensions.get('window').width;
-        const containerWidth = screenWidth - 32; // Account for padding (px-4 = 16px each side)
+        const containerWidth = screenWidth - 32;
 
         return (
           <View
             key={noteId}
             style={[
-              tw`mb-2`,
+              tw`mb-1`,
               {width: containerWidth, maxWidth: containerWidth},
             ]}>
             <View
@@ -461,38 +461,46 @@ const InVerseWeek = ({route}) => {
                 </Text>
               </View>
             </View>
-            <View style={tw`mt-2`}>
-              <View style={tw`flex flex-col gap-2`}>
-                <View style={tw`w-full border-accent-6`}>
-                  <Text
-                    style={[
-                      tw`font-nokia-bold pb-1 text-justify`,
-                      darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
-                      {
-                        textDecorationLine: 'underline',
-                        textDecorationColor: '#EA9215', // accent-6 color
-                        textDecorationStyle: 'solid',
-                      },
-                    ]}>
-                    {noteText || ''}
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() => setActiveNoteId(noteId)}
-                  style={tw`self-start px-3 py-1 rounded-2 bg-accent-6 mt-2`}>
-                  <Text style={tw`font-nokia-bold text-primary-1`}>
-                    {noteText ? 'Edit Note' : 'Add Note'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <NoteModal
-                isVisible={activeNoteId === noteId}
-                onClose={() => setActiveNoteId(null)}
-                onSave={text => handleSaveNote(noteId, text)}
-                initialText={noteText}
-                darkMode={darkMode}
-              />
+            <View style={{margin: 0, padding: 0}}>
+              <Text
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  textDecorationLine: 'underline',
+                  color: darkMode ? '#fff' : '#222',
+                  fontFamily: 'NokiaPureText-Bold',
+                }}>
+                {noteText || ''}
+              </Text>
+              <TouchableOpacity
+                style={{
+                  margin: 0,
+                  paddingVertical: 6,
+                  paddingHorizontal: 12,
+                  backgroundColor: '#EA9215',
+                  borderRadius: 8,
+                  marginTop: 4,
+                  alignSelf: 'flex-start',
+                }}
+                onPress={() => setActiveNoteId(noteId)}>
+                <Text
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    color: '#fff',
+                    fontFamily: 'NokiaPureText-Bold',
+                  }}>
+                  {noteText ? 'Edit Note' : 'Add Note'}
+                </Text>
+              </TouchableOpacity>
             </View>
+            <NoteModal
+              isVisible={activeNoteId === noteId}
+              onClose={() => setActiveNoteId(null)}
+              onSave={text => handleSaveNote(noteId, text)}
+              initialText={noteText}
+              darkMode={darkMode}
+            />
           </View>
         );
       }
@@ -639,7 +647,6 @@ const InVerseWeek = ({route}) => {
                     {flexWrap: 'wrap'},
                   ],
                 }}
-                NodeComponent={View}
               />
             </View>
             <View style={tw`flex flex-row justify-between`}>

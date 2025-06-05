@@ -429,12 +429,12 @@ const SSLWeek = ({route}) => {
       const noteText = notes[noteId] || '';
 
       const screenWidth = Dimensions.get('window').width;
-      const containerWidth = screenWidth - 32; // Account for padding (px-4 = 16px each side)
+      const containerWidth = screenWidth - 32;
 
       return (
         <View
           key={noteId}
-          style={[tw`mb-2`, {width: containerWidth, maxWidth: containerWidth}]}>
+          style={[tw`mb-1`, {width: containerWidth, maxWidth: containerWidth}]}>
           <View
             style={[
               tw`rounded-lg p-2`,
@@ -459,12 +459,12 @@ const SSLWeek = ({route}) => {
               </Text>
             </View>
           </View>
-          <View style={tw`mt-2`}>
-            <View style={tw`flex flex-col gap-2`}>
-              <View style={tw`w-full border-accent-6`}>
+          <View style={tw`mt-1`}>
+            <View style={tw`flex flex-col`}>
+              <View style={tw`w-full`}>
                 <Text
                   style={[
-                    tw`font-nokia-bold pb-1 text-justify`,
+                    tw`font-nokia-bold text-justify`,
                     darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
                     {
                       textDecorationLine: 'underline',
@@ -477,7 +477,7 @@ const SSLWeek = ({route}) => {
               </View>
               <TouchableOpacity
                 onPress={() => setActiveNoteId(noteId)}
-                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6`}>
+                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6 mt-1`}>
                 <Text style={tw`font-nokia-bold text-primary-1`}>
                   {noteText ? 'Edit Note' : 'Add Note'}
                 </Text>
