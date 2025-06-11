@@ -423,7 +423,7 @@ const InVerseHome = () => {
             value={searchTerm}
             onChangeText={handleSearch}
             style={[
-              tw`border border-primary-7 rounded px-4 py-2 font-nokia-bold`,
+              tw`border border-primary-7 rounded-full px-4 py-2 font-nokia-bold`,
               darkMode ? tw`text-primary-1` : null,
             ]}
             placeholderTextColor={darkMode ? '#898989' : '#AAB0B4'}

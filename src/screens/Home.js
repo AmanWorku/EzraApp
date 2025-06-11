@@ -24,6 +24,7 @@ import Header from '../components/Header';
 import {setDevotions} from '../redux/devotionsSlice';
 import {setCourses} from '../redux/courseSlice';
 import {scheduleVerseOfTheDayNotification} from '../utils/notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ethiopianMonths = [
   '', // There is no month 0
@@ -47,13 +48,18 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+  const [cachedData, setCachedData] = useState({
+    devotions: [],
+    courses: [],
+    lastCacheTime: null,
+  });
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const darkMode = useSelector(state => state.ui.darkMode);
-  const user = useSelector(state => state.auth.user); // Get user from Redux store
-  const persistedDevotions = useSelector(state => state.devotions); // Get persisted devotions from Redux store
-  const persistedCourses = useSelector(state => state.courses); // Get persisted courses from Redux store
+  const user = useSelector(state => state.auth.user);
+  const persistedDevotions = useSelector(state => state.devotions);
+  const persistedCourses = useSelector(state => state.courses);
 
   const {
     data: devotions = [],
@@ -71,6 +77,51 @@ const Home = () => {
 
   const [selectedDevotion, setSelectedDevotion] = useState(null);
 
+  // Cache management functions
+  const CACHE_KEY = 'home_data_cache';
+  const CACHE_EXPIRY_HOURS = 24; // Cache expires after 24 hours
+
+  const loadCachedData = useCallback(async () => {
+    try {
+      const cachedString = await AsyncStorage.getItem(CACHE_KEY);
+      if (cachedString) {
+        const cached = JSON.parse(cachedString);
+        const now = new Date().getTime();
+        const cacheTime = new Date(cached.lastCacheTime).getTime();
+        const isExpired = now - cacheTime > CACHE_EXPIRY_HOURS * 60 * 60 * 1000;
+
+        if (!isExpired) {
+          setCachedData(cached);
+          // Update Redux store with cached data
+          if (cached.devotions?.length > 0) {
+            dispatch(setDevotions(cached.devotions));
+          }
+          if (cached.courses?.length > 0) {
+            dispatch(setCourses(cached.courses));
+          }
+          return cached;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading cached data:', error);
+    }
+    return null;
+  }, [dispatch]);
+
+  const saveCachedData = useCallback(async (devotionsData, coursesData) => {
+    try {
+      const cacheData = {
+        devotions: devotionsData || [],
+        courses: coursesData || [],
+        lastCacheTime: new Date().toISOString(),
+      };
+      await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+      setCachedData(cacheData);
+    } catch (error) {
+      console.error('Error saving cached data:', error);
+    }
+  }, []);
+
   const handleButtonPress = id => {
     navigation.navigate('Course', {
       screen: 'CourseContent',
@@ -79,7 +130,16 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const devotionsToUse = isOffline ? persistedDevotions : devotions;
+    const getDevotionsToUse = () => {
+      if (isOffline) {
+        return cachedData.devotions?.length > 0
+          ? cachedData.devotions
+          : persistedDevotions;
+      }
+      return devotions?.length > 0 ? devotions : cachedData.devotions;
+    };
+
+    const devotionsToUse = getDevotionsToUse();
     if (devotionsToUse && devotionsToUse.length > 0) {
       const today = new Date();
       const ethiopianDate = toEthiopian(
@@ -95,60 +155,135 @@ const Home = () => {
       );
       setSelectedDevotion(todaysDevotion || devotionsToUse[0]);
     }
-  }, [devotions, isOffline, persistedDevotions]);
+  }, [devotions, isOffline, persistedDevotions, cachedData.devotions]);
 
-  const devotionsToDisplay = isOffline ? persistedDevotions : devotions;
-  const coursesToDisplay = isOffline ? persistedCourses : courses;
+  const getDataToDisplay = () => {
+    if (isOffline) {
+      return {
+        devotions:
+          cachedData.devotions?.length > 0
+            ? cachedData.devotions
+            : persistedDevotions,
+        courses:
+          cachedData.courses?.length > 0
+            ? cachedData.courses
+            : persistedCourses,
+      };
+    }
+    return {
+      devotions: devotions?.length > 0 ? devotions : cachedData.devotions,
+      courses: courses?.length > 0 ? courses : cachedData.courses,
+    };
+  };
 
+  const {devotions: devotionsToDisplay, courses: coursesToDisplay} =
+    getDataToDisplay();
   const devotionToDisplay = selectedDevotion || devotionsToDisplay[0];
 
   const fetchData = useCallback(async () => {
     const netInfo = await NetInfo.fetch();
     if (!netInfo.isConnected) {
-      Toast.show({
-        type: 'info',
-        text1: 'Internet Connection Required',
-        text2: 'Please connect to the internet to reload data.',
-      });
       setIsOffline(true);
-      setHasError(false);
-      setIsLoading(false);
-      return;
+      // Load cached data when offline
+      const cached = await loadCachedData();
+      if (
+        cached &&
+        (cached.devotions?.length > 0 || cached.courses?.length > 0)
+      ) {
+        Toast.show({
+          type: 'info',
+          text1: 'Offline Mode',
+          text2: 'Showing cached data. Connect to internet for updates.',
+        });
+        setHasError(false);
+        setIsLoading(false);
+        return;
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'No Cached Data',
+          text2: 'Please connect to the internet to load data.',
+        });
+        setHasError(true);
+        setIsLoading(false);
+        return;
+      }
     }
+
     try {
       setIsLoading(true);
       setHasError(false);
       setIsOffline(false);
+
       const [devotionsData, coursesData] = await Promise.all([
         refetchDevotions(),
         refetchCourses(),
       ]);
+
+      // Update Redux store
       dispatch(setDevotions(devotionsData.data));
       dispatch(setCourses(coursesData.data));
+
+      // Save to cache
+      await saveCachedData(devotionsData.data, coursesData.data);
 
       if (devotionToDisplay) {
         scheduleVerseOfTheDayNotification(devotionToDisplay.verse);
       }
     } catch (e) {
-      setHasError(true);
+      console.error('Fetch error:', e);
+      // Try to load cached data if network request fails
+      const cached = await loadCachedData();
+      if (
+        cached &&
+        (cached.devotions?.length > 0 || cached.courses?.length > 0)
+      ) {
+        Toast.show({
+          type: 'info',
+          text1: 'Network Error',
+          text2: 'Showing cached data. Please check your connection.',
+        });
+        setHasError(false);
+      } else {
+        setHasError(true);
+      }
     } finally {
       setIsLoading(false);
     }
-  }, [refetchDevotions, refetchCourses, dispatch, devotionToDisplay]);
+  }, [
+    refetchDevotions,
+    refetchCourses,
+    dispatch,
+    devotionToDisplay,
+    loadCachedData,
+    saveCachedData,
+  ]);
 
+  // Load cached data on app start
   useEffect(() => {
-    const checkInternetAndFetchData = async () => {
-      const netInfo = await NetInfo.fetch();
-      if (!netInfo.isConnected) {
-        setIsOffline(true);
+    const initializeApp = async () => {
+      // First, try to load cached data
+      const cached = await loadCachedData();
+      if (
+        cached &&
+        (cached.devotions?.length > 0 || cached.courses?.length > 0)
+      ) {
         setIsLoading(false);
+        // Check internet connection and fetch fresh data in background
+        const netInfo = await NetInfo.fetch();
+        if (netInfo.isConnected) {
+          fetchData();
+        } else {
+          setIsOffline(true);
+        }
       } else {
+        // No cached data, must fetch from network
         fetchData();
       }
     };
 
-    checkInternetAndFetchData();
-  }, [fetchData]);
+    initializeApp();
+  }, [fetchData, loadCachedData]);
 
   const onRefresh = useCallback(async () => {
     const netInfo = await NetInfo.fetch();
@@ -160,21 +295,41 @@ const Home = () => {
       });
       return;
     }
+
     try {
       setIsRefreshing(true);
       setHasError(false);
+      setIsOffline(false);
+
       const [devotionsData, coursesData] = await Promise.all([
         refetchDevotions(),
         refetchCourses(),
       ]);
+
+      // Update Redux store
       dispatch(setDevotions(devotionsData.data));
       dispatch(setCourses(coursesData.data));
+
+      // Save to cache
+      await saveCachedData(devotionsData.data, coursesData.data);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Data Updated',
+        text2: 'Latest content has been loaded and cached.',
+      });
     } catch (e) {
+      console.error('Refresh error:', e);
       setHasError(true);
+      Toast.show({
+        type: 'error',
+        text1: 'Update Failed',
+        text2: 'Unable to refresh data. Please try again.',
+      });
     } finally {
       setIsRefreshing(false);
     }
-  }, [refetchDevotions, refetchCourses, dispatch]);
+  }, [refetchDevotions, refetchCourses, dispatch, saveCachedData]);
 
   if (isLoading) {
     return (
@@ -182,18 +337,41 @@ const Home = () => {
         style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
+          {isOffline ? 'Loading cached data...' : 'Loading...'}
         </Text>
       </SafeAreaView>
     );
   }
+
+  if (hasError && (!devotionsToDisplay || devotionsToDisplay.length === 0)) {
+    return (
+      <SafeAreaView
+        style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
+        <View style={tw`flex-1 justify-center items-center px-4`}>
+          <Text
+            style={tw`font-nokia-bold text-lg text-accent-6 text-center mb-4`}>
+            No Data Available
+          </Text>
+          <Text style={tw`font-nokia-bold text-secondary-6 text-center mb-4`}>
+            Please connect to the internet to load content.
+          </Text>
+          <TouchableOpacity
+            style={tw`bg-accent-6 px-6 py-3 rounded-lg`}
+            onPress={fetchData}>
+            <Text style={tw`font-nokia-bold text-primary-1`}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   if (!devotionsToDisplay || devotionsToDisplay.length === 0) {
     return (
       <SafeAreaView
         style={darkMode ? tw`bg-secondary-9 h-screen flex-1` : tw`flex-1`}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
+          Loading...
         </Text>
       </SafeAreaView>
     );

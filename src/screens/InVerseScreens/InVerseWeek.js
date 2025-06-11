@@ -432,7 +432,7 @@ const InVerseWeek = ({route}) => {
                 const verseText = child.children
                   .map(grandChild => grandChild.data || '')
                   .join('');
-                return `${verseText}`;
+                return verseText;
               }
               // For other tags, extract their text content
               return child.children
@@ -442,6 +442,21 @@ const InVerseWeek = ({route}) => {
             return '';
           })
           .join('');
+
+        // Extract verse elements for rendering as links
+        const verseElements = (node.children ?? [])
+          .filter(
+            child =>
+              child.type === 'tag' &&
+              child.name === 'a' &&
+              child.attribs?.class === 'verse',
+          )
+          .map(child => ({
+            verseRef: child.attribs.verse,
+            text: child.children
+              .map(grandChild => grandChild.data || '')
+              .join(''),
+          }));
 
         const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
           0,
@@ -476,7 +491,32 @@ const InVerseWeek = ({route}) => {
                   ]}
                   numberOfLines={undefined}
                   ellipsizeMode="clip">
-                  {codeContent}
+                  {node.children.map((child, childIndex) => {
+                    if (child.type === 'text') {
+                      return child.data || '';
+                    } else if (
+                      child.type === 'tag' &&
+                      child.name === 'a' &&
+                      child.attribs?.class === 'verse'
+                    ) {
+                      const verseText = child.children
+                        .map(grandChild => grandChild.data || '')
+                        .join('');
+                      return (
+                        <Text
+                          key={childIndex}
+                          style={[tw`text-accent-6 underline`]}
+                          onPress={() => handleVerseClick(child.attribs.verse)}>
+                          {verseText}
+                        </Text>
+                      );
+                    } else if (child.type === 'tag') {
+                      return child.children
+                        .map(grandChild => grandChild.data || '')
+                        .join('');
+                    }
+                    return '';
+                  })}
                 </Text>
               </View>
             </View>
@@ -498,7 +538,7 @@ const InVerseWeek = ({route}) => {
                 </View>
                 <TouchableOpacity
                   onPress={() => setActiveNoteId(noteId)}
-                  style={tw`self-start px-3 py-1 rounded-2 bg-accent-6`}>
+                  style={tw`self-start px-3 py-1 rounded-full bg-accent-6 mt-2`}>
                   <Text style={tw`font-nokia-bold text-primary-1`}>
                     {noteText ? 'Edit Note' : 'Add Note'}
                   </Text>
