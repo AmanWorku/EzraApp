@@ -99,7 +99,7 @@ const NoteModal = ({isVisible, onClose, onSave, initialText, darkMode}) => {
 };
 
 const SSLWeek = ({route}) => {
-  const {ssl, weekId} = route.params;
+  const {ssl, weekId, lessonData, quarterData, videoLink} = route.params;
   const scrollRef = useRef();
   const navigation = useNavigation();
   const [check, setCheck] = useState('01');
@@ -117,15 +117,24 @@ const SSLWeek = ({route}) => {
   const [selectedVerseKey, setSelectedVerseKey] = useState('');
   const [selectedVerseContent, setSelectedVerseContent] = useState('');
   const language = useSelector(state => state.language.language);
-  const {data: sslQuarter, error: quarterError} = useGetSSLOfDayQuery({
+
+  // notes for each <code> block
+  const [activeNoteId, setActiveNoteId] = useState(null);
+  const [notes, setNotes] = useState({});
+
+  const {
+    data: SSLQuarter,
+    error: quarterError,
+    isLoading: isQuarterLoading,
+  } = useGetSSLOfDayQuery({
     path: ssl,
     id: weekId,
   });
 
   const {
-    data: sslWeek,
-    isLoading,
-    error,
+    data: SSLWeek,
+    isLoading: isWeekLoading,
+    error: weekError,
     refetch,
   } = useGetSSLOfDayLessonQuery({
     path: ssl,
@@ -136,15 +145,15 @@ const SSLWeek = ({route}) => {
   const year = ssl.substring(0, 4);
   const quarter = ssl.substring(5, 7);
 
-  const {data: videoLink, error: videoError} = useGetVideoLinkQuery({
+  const {data: videoLinkData, error: videoError} = useGetVideoLinkQuery({
     year: year,
     quarter: quarter,
     lesson: weekId,
   });
 
   const handleWatchYouTube = () => {
-    if (videoLink && videoLink.videoUrl) {
-      Linking.openURL(videoLink.videoUrl);
+    if (videoLinkData && videoLinkData.videoUrl) {
+      Linking.openURL(videoLinkData.videoUrl);
     } else {
       alert('Video link not available');
     }
@@ -160,14 +169,14 @@ const SSLWeek = ({route}) => {
 
   const handleVerseClick = verseKey => {
     if (
-      sslWeek &&
-      sslWeek.bible &&
-      sslWeek.bible.length > 0 &&
-      sslWeek.bible[[0]].verses &&
-      sslWeek.bible[[0]].verses[verseKey]
+      SSLWeek &&
+      SSLWeek.bible &&
+      SSLWeek.bible.length > 0 &&
+      SSLWeek.bible[[0]].verses &&
+      SSLWeek.bible[[0]].verses[verseKey]
     ) {
       setSelectedVerseKey(verseKey);
-      setSelectedVerseContent(sslWeek.bible[[0]].verses[verseKey]);
+      setSelectedVerseContent(SSLWeek.bible[[0]].verses[verseKey]);
       setIsModalOpen(true);
     } else {
       console.error(`Verse key "${verseKey}" not found`);
@@ -201,9 +210,6 @@ const SSLWeek = ({route}) => {
   const handleToggleSupplementalNotes = () => {
     setShowSupplementalNotes(!showSupplementalNotes);
   };
-
-  const [notes, setNotes] = useState({});
-  const [activeNoteId, setActiveNoteId] = useState(null);
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -242,28 +248,71 @@ const SSLWeek = ({route}) => {
     [notes, weekId, check],
   );
 
-  if (isLoading) {
+  // Show loading state while data is being fetched
+  if (isQuarterLoading || isWeekLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
+          {language === 'en' ? 'Loading lesson...' : 'ትምህርቱን በመጫን ላይ...'}
         </Text>
       </SafeAreaView>
     );
   }
 
-  if (error) {
-    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
-  }
-
-  if (quarterError) {
+  // Show error state if there's an error
+  if (quarterError || weekError) {
     return (
-      <Text style={tw`text-red-500 mt-12`}>Error: {quarterError.message}</Text>
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={refetch}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`border border-accent-6 rounded mb-4 mx-4 mt-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+              {language === 'en'
+                ? 'Unable to load lesson. Pull to retry.'
+                : 'ትምህርቱን መጫን አልተቻለም። ለመሞከር ይጎትቱ።'}
+            </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
-  const {content} = sslWeek;
+  // Validate that we have the required data
+  if (!SSLQuarter || !SSLWeek || !SSLWeek.content) {
+    return (
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={refetch}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`border border-accent-6 rounded mb-4 mx-4 mt-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+              {language === 'en'
+                ? 'Lesson data not available. Pull to retry.'
+                : 'የትምህርቱ ውሂብ አይገኝም። ለመሞከር ይጎትቱ።'}
+            </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  const {content} = SSLWeek;
   const sanitizedContent = content.replace(/\n/g, '');
 
   const styles = StyleSheet.create({
@@ -419,7 +468,25 @@ const SSLWeek = ({route}) => {
 
     if (node.name === 'code') {
       const codeContent = (node.children ?? [])
-        .map(child => child.data || '')
+        .map(child => {
+          if (child.type === 'text') {
+            return child.data || '';
+          } else if (child.type === 'tag') {
+            // For tag elements, we'll handle them separately
+            if (child.name === 'a' && child.attribs?.class === 'verse') {
+              // Extract the text content from the verse element
+              const verseText = child.children
+                .map(grandChild => grandChild.data || '')
+                .join('');
+              return `${verseText}`;
+            }
+            // For other tags, extract their text content
+            return child.children
+              .map(grandChild => grandChild.data || '')
+              .join('');
+          }
+          return '';
+        })
         .join('');
 
       const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
@@ -434,7 +501,7 @@ const SSLWeek = ({route}) => {
       return (
         <View
           key={noteId}
-          style={[tw`mb-1`, {width: containerWidth, maxWidth: containerWidth}]}>
+          style={[{width: containerWidth, maxWidth: containerWidth}]}>
           <View
             style={[
               tw`rounded-lg p-2`,
@@ -459,8 +526,8 @@ const SSLWeek = ({route}) => {
               </Text>
             </View>
           </View>
-          <View style={tw`mt-1`}>
-            <View style={tw`flex flex-col`}>
+          <View>
+            <View>
               <View style={tw`w-full`}>
                 <Text
                   style={[
@@ -477,7 +544,7 @@ const SSLWeek = ({route}) => {
               </View>
               <TouchableOpacity
                 onPress={() => setActiveNoteId(noteId)}
-                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6 mt-1`}>
+                style={tw`self-start px-3 py-1 rounded-2 bg-accent-6`}>
                 <Text style={tw`font-nokia-bold text-primary-1`}>
                   {noteText ? 'Edit Note' : 'Add Note'}
                 </Text>
@@ -520,7 +587,7 @@ const SSLWeek = ({route}) => {
         }>
         <View style={tw`flex`}>
           <ImageBackground
-            source={{uri: sslQuarter.lesson.cover}}
+            source={{uri: SSLQuarter.lesson.cover}}
             style={tw`flex-5 flex-col justify-between py-6 px-4 h-80`}>
             <TouchableOpacity
               onPress={handleBackButtonPress}
@@ -548,14 +615,14 @@ const SSLWeek = ({route}) => {
                 <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
                   {daysOfWeekEng[check % 7]}, &nbsp;
                   <Text style={tw`text-accent-6`}>
-                    {formatDate(sslWeek.date)}
+                    {formatDate(SSLWeek.date)}
                   </Text>
                 </Text>
               ) : (
                 <Text style={tw`font-nokia-bold text-lg text-primary-6 py-1`}>
                   {daysOfWeek[check % 7]}፣ &nbsp;
                   <DateConverter
-                    gregorianDate={sslWeek.date}
+                    gregorianDate={SSLWeek.date}
                     style={tw`text-2xl`}
                     textStyle={dateStyle}
                   />
@@ -563,7 +630,7 @@ const SSLWeek = ({route}) => {
               )}
               <Text
                 style={tw`flex flex-col font-nokia-bold text-3xl text-primary-1`}>
-                {sslWeek.title}
+                {SSLWeek.title}
               </Text>
             </View>
           </ImageBackground>

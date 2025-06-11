@@ -45,3 +45,6 @@ export const {
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
 } = SSLapi;
+
+// For backward compatibility
+export const SabbathSchoolApi = SSLapi;

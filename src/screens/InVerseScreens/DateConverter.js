@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {EthDateTime} from 'ethiopian-calendar-date-converter';
 import {Text} from 'react-native';
-import tw from '../../../tailwind'; // Ensure this path is correct
+import tw from './../../../tailwind'; // Ensure this path is correct
 
 const DateConverter = ({gregorianDate}) => {
   // Split the date string and convert to numbers

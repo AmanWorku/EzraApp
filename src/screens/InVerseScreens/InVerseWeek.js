@@ -142,15 +142,19 @@ const InVerseWeek = ({route}) => {
   const [activeNoteId, setActiveNoteId] = useState(null);
   const [notes, setNotes] = useState({});
 
-  const {data: InVerseQuarter, error: quarterError} = useGetInVerseOfDayQuery({
+  const {
+    data: InVerseQuarter,
+    error: quarterError,
+    isLoading: isQuarterLoading,
+  } = useGetInVerseOfDayQuery({
     path: InVerse,
     id: weekId,
   });
 
   const {
     data: InVerseWeek,
-    isLoading,
-    error,
+    isLoading: isWeekLoading,
+    error: weekError,
     refetch,
   } = useGetInVerseOfDayLessonQuery({
     path: InVerse,
@@ -418,7 +422,25 @@ const InVerseWeek = ({route}) => {
       // Note section handling
       if (node.name === 'code') {
         const codeContent = (node.children ?? [])
-          .map(child => child.data || '')
+          .map(child => {
+            if (child.type === 'text') {
+              return child.data || '';
+            } else if (child.type === 'tag') {
+              // For tag elements, we'll handle them separately
+              if (child.name === 'a' && child.attribs?.class === 'verse') {
+                // Extract the text content from the verse element
+                const verseText = child.children
+                  .map(grandChild => grandChild.data || '')
+                  .join('');
+                return `[${verseText}]`;
+              }
+              // For other tags, extract their text content
+              return child.children
+                .map(grandChild => grandChild.data || '')
+                .join('');
+            }
+            return '';
+          })
           .join('');
 
         const noteId = `${weekId}-${check}-${index}-${codeContent.substring(
@@ -433,10 +455,7 @@ const InVerseWeek = ({route}) => {
         return (
           <View
             key={noteId}
-            style={[
-              tw`mb-1`,
-              {width: containerWidth, maxWidth: containerWidth},
-            ]}>
+            style={[{width: containerWidth, maxWidth: containerWidth}]}>
             <View
               style={[
                 tw`rounded-lg p-2`,
@@ -461,46 +480,38 @@ const InVerseWeek = ({route}) => {
                 </Text>
               </View>
             </View>
-            <View style={{margin: 0, padding: 0}}>
-              <Text
-                style={{
-                  margin: 0,
-                  padding: 0,
-                  textDecorationLine: 'underline',
-                  color: darkMode ? '#fff' : '#222',
-                  fontFamily: 'NokiaPureText-Bold',
-                }}>
-                {noteText || ''}
-              </Text>
-              <TouchableOpacity
-                style={{
-                  margin: 0,
-                  paddingVertical: 6,
-                  paddingHorizontal: 12,
-                  backgroundColor: '#EA9215',
-                  borderRadius: 8,
-                  marginTop: 4,
-                  alignSelf: 'flex-start',
-                }}
-                onPress={() => setActiveNoteId(noteId)}>
-                <Text
-                  style={{
-                    margin: 0,
-                    padding: 0,
-                    color: '#fff',
-                    fontFamily: 'NokiaPureText-Bold',
-                  }}>
-                  {noteText ? 'Edit Note' : 'Add Note'}
-                </Text>
-              </TouchableOpacity>
+            <View>
+              <View>
+                <View style={tw`w-full`}>
+                  <Text
+                    style={[
+                      tw`font-nokia-bold text-justify`,
+                      darkMode ? tw`text-primary-1` : tw`text-secondary-6`,
+                      {
+                        textDecorationLine: 'underline',
+                        textDecorationColor: '#EA9215',
+                        textDecorationStyle: 'solid',
+                      },
+                    ]}>
+                    {noteText || ''}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => setActiveNoteId(noteId)}
+                  style={tw`self-start px-3 py-1 rounded-2 bg-accent-6`}>
+                  <Text style={tw`font-nokia-bold text-primary-1`}>
+                    {noteText ? 'Edit Note' : 'Add Note'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <NoteModal
+                isVisible={activeNoteId === noteId}
+                onClose={() => setActiveNoteId(null)}
+                onSave={text => handleSaveNote(noteId, text)}
+                initialText={noteText}
+                darkMode={darkMode}
+              />
             </View>
-            <NoteModal
-              isVisible={activeNoteId === noteId}
-              onClose={() => setActiveNoteId(null)}
-              onSave={text => handleSaveNote(noteId, text)}
-              initialText={noteText}
-              darkMode={darkMode}
-            />
           </View>
         );
       }
@@ -529,33 +540,66 @@ const InVerseWeek = ({route}) => {
   const dateStyle = 'font-nokia-bold text-lg text-primary-6';
   const modifiedContent = selectedVerseContent.replace(/<h2>/g, '<br><h2>');
 
-  if (isLoading) {
+  // Show loading state while data is being fetched
+  if (isQuarterLoading || isWeekLoading) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
         <ActivityIndicator size="large" color="#EA9215" style={tw`mt-20`} />
         <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Loading
+          {language === 'en' ? 'Loading lesson...' : 'ትምህርቱን በመጫን ላይ...'}
         </Text>
       </SafeAreaView>
     );
   }
 
-  if (error) {
-    return <ErrorScreen refetch={refetch} darkMode={darkMode} />;
-  }
-
-  if (quarterError) {
+  // Show error state if there's an error
+  if (quarterError || weekError) {
     return (
-      <Text style={tw`text-red-500 mt-12`}>Error: {quarterError.message}</Text>
+      <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={refetch}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`border border-accent-6 rounded mb-4 mx-4 mt-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+              {language === 'en'
+                ? 'Unable to load lesson. Pull to retry.'
+                : 'ትምህርቱን መጫን አልተቻለም። ለመሞከር ይጎትቱ።'}
+            </Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
-  if (!InVerseWeek || !InVerseWeek.content) {
+  // Validate that we have the required data
+  if (!InVerseQuarter || !InVerseWeek || !InVerseWeek.content) {
     return (
       <SafeAreaView style={darkMode ? tw`bg-secondary-9 h-100%` : null}>
-        <Text style={tw`font-nokia-bold text-lg text-accent-6 text-center`}>
-          Content not available
-        </Text>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={refetch}
+              colors={['#EA9215']}
+              tintColor="#EA9215"
+            />
+          }>
+          <View style={tw`border border-accent-6 rounded mb-4 mx-4 mt-4`}>
+            <Text style={tw`font-nokia-bold text-accent-6 text-center py-4`}>
+              {language === 'en'
+                ? 'Lesson data not available. Pull to retry.'
+                : 'የትምህርቱ ውሂብ አይገኝም። ለመሞከር ይጎትቱ።'}
+            </Text>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }

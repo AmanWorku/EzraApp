@@ -11,6 +11,7 @@ import {InVerseapi} from '../services/InVerseapi'; // Import the InVerseapi
 import {videoLinksApi} from '../services/videoLinksApi'; // Import the videoLinksApi
 import {combineReducers} from 'redux';
 import {persistStore, persistReducer} from 'redux-persist';
+import {FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {setupListeners} from '@reduxjs/toolkit/query';
@@ -49,14 +50,14 @@ export const store = configureStore({
   reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      immutableCheck: false,
-      serializableCheck: false,
-    }).concat(
-      SSLapi.middleware,
-      InVerseapi.middleware, // Add the InVerseapi middleware
-      apiSlice.middleware,
-      videoLinksApi.middleware,
-    ),
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
+      .concat(apiSlice.middleware)
+      .concat(SSLapi.middleware) // Use SSLapi instead of SabbathSchoolApi
+      .concat(InVerseapi.middleware) // Add the InVerseapi middleware
+      .concat(videoLinksApi.middleware), // Add the videoLinksApi middleware
 });
 
 export const persistor = persistStore(store, null, () => {
