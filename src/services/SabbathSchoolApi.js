@@ -44,6 +44,7 @@ export const {
   useGetSSLOfQuarterQuery,
   useGetSSLOfDayQuery,
   useGetSSLOfDayLessonQuery,
+  usePrefetch,
 } = SSLapi;
 
 // For backward compatibility

@@ -19,6 +19,7 @@ import {
   useGetInVersesQuery,
   useGetInVerseOfDayQuery,
   useGetInVerseOfQuarterQuery,
+  usePrefetch,
 } from '../../services/InVerseapi';
 import {useGetVideoLinkQuery} from '../../services/videoLinksApi';
 import useCalculateLessonIndex from './hooks/useCalculateLessonIndex';
@@ -80,6 +81,7 @@ const InVerseHome = () => {
   }, [lessonRefetch, quarterRefetch, refetch]);
 
   const language = useSelector(state => state.language.language);
+  const prefetchWeeklyLessons = usePrefetch('getInVerseOfDayLesson');
 
   // Refetch data when language changes
   useEffect(() => {
@@ -164,7 +166,29 @@ const InVerseHome = () => {
 
   const textStyle = 'font-nokia-bold text-primary-3 text-2xl';
   const gradientColor = '#222222';
-  const handleOpenButtonPress = () => {
+
+  const handleOpenButtonPress = async () => {
+    // Prefetch all 7 days of lessons
+    const prefetchPromises = [];
+    for (let day = 1; day <= 7; day++) {
+      const dayString = day.toString().padStart(2, '0');
+      prefetchPromises.push(
+        prefetchWeeklyLessons({
+          path: quarter,
+          id: week,
+          day: dayString,
+        }),
+      );
+    }
+
+    // Wait for all prefetch requests to complete
+    try {
+      await Promise.all(prefetchPromises);
+    } catch (error) {
+      console.log('Prefetch error:', error);
+      // Continue navigation even if prefetch fails
+    }
+
     navigation.navigate('InVerseWeek', {
       InVerse: quarter,
       weekId: week,

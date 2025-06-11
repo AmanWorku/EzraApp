@@ -46,4 +46,5 @@ export const {
   useGetInVerseOfQuarterQuery,
   useGetInVerseOfDayQuery,
   useGetInVerseOfDayLessonQuery,
+  usePrefetch,
 } = InVerseapi;

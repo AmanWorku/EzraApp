@@ -432,7 +432,7 @@ const InVerseWeek = ({route}) => {
                 const verseText = child.children
                   .map(grandChild => grandChild.data || '')
                   .join('');
-                return `[${verseText}]`;
+                return `${verseText}`;
               }
               // For other tags, extract their text content
               return child.children
