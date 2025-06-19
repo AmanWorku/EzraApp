@@ -23,7 +23,7 @@ class NotificationService {
 
     // Listen for notification events
     notifee.onForegroundEvent(({type, detail}) => {
-      console.log('Foreground event:', type, detail);
+      // console.log('Foreground event:', type, detail);
       switch (type) {
         case EventType.DISMISSED:
           console.log('User dismissed notification', detail.notification);

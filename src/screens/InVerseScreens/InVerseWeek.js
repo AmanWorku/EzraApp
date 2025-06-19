@@ -771,7 +771,18 @@ const InVerseWeek = ({route}) => {
             <ScrollView>
               <HTMLView
                 value={`<div>${modifiedContent}</div>`}
-                stylesheet={styles}
+                stylesheet={{
+                  p: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
+                  div: [
+                    tw`text-secondary-6 font-nokia-bold text-justify`,
+                    darkMode ? tw`text-primary-1` : null,
+                  ],
+                  h2: tw`font-nokia-bold text-2xl text-accent-6`,
+                  sup: tw`text-xs font-nokia-bold text-superscript text-accent-6`,
+                }}
                 addLineBreaks={true}
               />
             </ScrollView>

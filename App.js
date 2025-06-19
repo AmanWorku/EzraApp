@@ -127,7 +127,6 @@ const App = () => {
 
       // Handle notification events
       notifee.onForegroundEvent(({type, detail}) => {
-        console.log('Foreground event:', type, detail);
         if (type === EventType.PRESS) {
           handleNotificationPress(detail.notification);
         }

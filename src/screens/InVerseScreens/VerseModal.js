@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {X} from 'phosphor-react-native';
-import tw from '../../../tailwind';
+import tw from './../../../tailwind';
 
 const VerseModal = ({isOpen, onClose, content}) => {
   if (!isOpen) return null;
